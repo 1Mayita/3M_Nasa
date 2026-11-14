@@ -57,17 +57,20 @@ export default function AtlasMap(props) {
   const [isIdle, setIsIdle] = useState(true);
   const [terrainReady, setTerrainReady] = useState(false);
   const idleTimerRef = useRef(null);
+  const hasEnteredRef = useRef(false);
   const reducedMotion = useMemo(prefersReducedMotion, []);
 
   // Vuelo de cámara al municipio elegido (o regreso al departamento)
   useEffect(
     function flyToSelection() {
       if (selectedIdx === null) {
-        if (!entered) {
+        if (!entered && !hasEnteredRef.current) {
           return;
         }
+        hasEnteredRef.current = hasEnteredRef.current || entered;
+        const targetView = entered ? DEPARTMENT_VIEW : HERO_VIEW;
         setViewState(function back(previous) {
-          return Object.assign({}, previous, DEPARTMENT_VIEW, {
+          return Object.assign({}, previous, targetView, {
             transitionDuration: reducedMotion ? 0 : 2400,
             transitionInterpolator: new FlyToInterpolator({ speed: 0.9 })
           });

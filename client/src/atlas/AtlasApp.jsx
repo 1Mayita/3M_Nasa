@@ -10,6 +10,8 @@ import gsap from 'gsap';
 import AtlasMap from './AtlasMap.jsx';
 import Ficha from './Ficha.jsx';
 import Hero from './Hero.jsx';
+import CalendarPage from './CalendarPage.jsx';
+import MethodPage from './MethodPage.jsx';
 import { fetchHotspots3d } from '../components/vista3d/focos3dApi.js';
 import { buildMockHotspots3d } from '../components/vista3d/focos3d.mock.js';
 import { aggregateByMunicipality, buildMunicipalityIndex, sumSeries } from './geo.js';
@@ -18,8 +20,11 @@ import { RAMP_GRADIENT_CSS } from './ramp.js';
 import { IconFlame, IconMoon, IconOrbit, IconPause, IconPlay, IconSearch, IconSun } from './Icons.jsx';
 import './atlas.css';
 import './atlas.extra.css';
+import './atlas.pages.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
+const ROUTES = ['inicio', 'atlas', 'calendario', 'metodo'];
+const ROUTE_LABEL_KEYS = { inicio: 'navHome', atlas: 'navAtlas', calendario: 'navCalendar', metodo: 'navMethod' };
 const PLAY_STEP_MILLISECONDS = 380;
 const NINO_COLOR = 'rgba(91,124,153,0.95)';
 const NINA_COLOR = 'rgba(150,186,184,0.75)';
@@ -39,6 +44,15 @@ function writeStored(key, value) {
   } catch (error) {
     // sin almacenamiento: la interfaz sigue funcionando
   }
+}
+
+function parseRoute() {
+  const name = window.location.hash.replace('#/', '').replace('#', '');
+  return ROUTES.indexOf(name) >= 0 ? name : 'inicio';
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 function ensoPhase(value) {
@@ -72,7 +86,10 @@ export default function AtlasApp() {
   const [language, setLanguage] = useState(readStored('atlas.language', 'es'));
   const [profile, setProfile] = useState(readStored('atlas.profile', 'bombero'));
   const [theme, setTheme] = useState(readStored('atlas.theme', 'dark'));
-  const [phase, setPhase] = useState('hero');
+  const initialRoute = useMemo(parseRoute, []);
+  const [phase, setPhase] = useState(initialRoute === 'inicio' ? 'hero' : 'atlas');
+  const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' ? initialRoute : null);
+  const [curtainLabel, setCurtainLabel] = useState('');
   const [geo, setGeo] = useState(null);
   const [data, setData] = useState(null);
   const [oni, setOni] = useState(null);
@@ -88,6 +105,8 @@ export default function AtlasApp() {
   const [mapReady, setMapReady] = useState(false);
   const rootRef = useRef(null);
   const heroRef = useRef(null);
+  const curtainRef = useRef(null);
+  const routeRef = useRef(initialRoute);
 
   const t = useMemo(function makeT() {
     return makeTranslator(language);
@@ -337,7 +356,7 @@ export default function AtlasApp() {
   );
 
   function enterAtlas() {
-    if (!heroRef.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!heroRef.current || prefersReducedMotion()) {
       setPhase('atlas');
       return;
     }
@@ -352,6 +371,84 @@ export default function AtlasApp() {
         setPhase('atlas');
       }
     });
+  }
+
+  function applyRoute(route) {
+    if (route === 'calendario' || route === 'metodo') {
+      setPage(route);
+      setHover(null);
+      setPhase('atlas');
+    } else if (route === 'atlas') {
+      setPage(null);
+      setPhase('atlas');
+    } else {
+      setPage(null);
+      setSelectedIdx(null);
+      setHover(null);
+      setPhase('hero');
+    }
+    routeRef.current = route;
+  }
+
+  // Cortina verde que cubre la pantalla, cambia de página y se retira
+  function runCurtain(route) {
+    const element = curtainRef.current;
+    if (!element) {
+      applyRoute(route);
+      return;
+    }
+    setCurtainLabel(t(ROUTE_LABEL_KEYS[route]));
+    gsap.timeline()
+      .set(element, { display: 'grid', clipPath: 'inset(100% 0% 0% 0%)' })
+      .to(element, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.55, ease: 'expo.inOut' })
+      .add(function swap() {
+        applyRoute(route);
+      })
+      .to(element, { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.7, ease: 'expo.inOut', delay: 0.35 })
+      .set(element, { display: 'none' });
+  }
+
+  // Toda la navegación pasa por el hash (#/atlas, #/calendario...): sirve el botón Atrás
+  useEffect(function listenToRoutes() {
+    function onHashChange() {
+      const target = parseRoute();
+      const from = routeRef.current;
+      if (target === from || window.location.hash === '#clasico') {
+        return;
+      }
+      if (prefersReducedMotion()) {
+        applyRoute(target);
+        return;
+      }
+      if (from === 'inicio' && target === 'atlas') {
+        routeRef.current = 'atlas';
+        enterAtlas();
+        return;
+      }
+      runCurtain(target);
+    }
+    window.addEventListener('hashchange', onHashChange);
+    return function cleanup() {
+      window.removeEventListener('hashchange', onHashChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
+
+  // Escape cierra la ficha
+  useEffect(function listenToEscape() {
+    function onKey(event) {
+      if (event.key === 'Escape') {
+        setSelectedIdx(null);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return function cleanup() {
+      window.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
+  function goTo(route) {
+    window.location.hash = '#/' + route;
   }
 
   const handleSelect = useCallback(function select(idx) {
@@ -376,6 +473,8 @@ export default function AtlasApp() {
 
   const inHero = phase === 'hero';
   const inAtlas = phase === 'atlas';
+  const onPage = page !== null;
+  const currentRoute = page !== null ? page : inHero ? 'inicio' : 'atlas';
   const isSample = (data !== null && data.isSample) || isFallback;
   const selectedMunicipality = geo !== null && selectedIdx !== null ? geo.municipalities[selectedIdx] : null;
   const hoverMunicipality = geo !== null && hover !== null && !inHero ? geo.municipalities[hover.idx] : null;
@@ -411,7 +510,7 @@ export default function AtlasApp() {
       {!isShown && errorMessage === null && inAtlas && <p className="atlas__status" role="status">{t('loading')}</p>}
       {errorMessage !== null && <p className="atlas__status is-error" role="alert">{t('loadError')}: {errorMessage}</p>}
 
-      {phase !== 'atlas' && <Hero ref={heroRef} t={t} onEnter={enterAtlas} isReady={isShown} />}
+      {phase !== 'atlas' && <Hero ref={heroRef} t={t} onEnter={function enter() { goTo('atlas'); }} isReady={isShown} />}
 
       {phase !== 'hero' && (
         <header className="atlas__title">
@@ -421,7 +520,16 @@ export default function AtlasApp() {
       )}
 
       <div className={'atlas__controls' + (inHero ? ' is-hero' : '')}>
-        {!inHero && (
+        <nav className="mainnav" aria-label="Navegación principal">
+          {ROUTES.map(function routeLink(route) {
+            return (
+              <a key={route} href={'#/' + route} aria-current={currentRoute === route ? 'page' : undefined}>
+                {t(ROUTE_LABEL_KEYS[route])}
+              </a>
+            );
+          })}
+        </nav>
+        {!inHero && !onPage && (
           <div className="segmented" role="group" aria-label={t('profile')}>
             {PROFILES.map(function profileButton(id) {
               return (
@@ -450,11 +558,11 @@ export default function AtlasApp() {
           {theme === 'dark' ? <IconSun /> : <IconMoon />}
           <span>{theme === 'dark' ? t('day') : t('night')}</span>
         </button>
-        {!inHero && <a className="classic-link" href="#clasico">{t('classic')}</a>}
+        {!inHero && !onPage && <a className="classic-link" href="#clasico">{t('classic')}</a>}
       </div>
       {language === 'qu' && <p className="atlas__notice" role="status">{t('quNotice')}</p>}
 
-      {!inHero && (
+      {!inHero && !onPage && (
         <nav className="rail" aria-label={t('municipalities')}>
           {profile === 'ciudadano' ? (
             <div className="rail__plain">
@@ -513,7 +621,7 @@ export default function AtlasApp() {
         </div>
       )}
 
-      {!inHero && selectedMunicipality !== null && aggregated !== null && (
+      {!inHero && !onPage && selectedMunicipality !== null && aggregated !== null && (
         <Ficha
           key={selectedMunicipality.idx}
           municipality={selectedMunicipality}
@@ -532,7 +640,7 @@ export default function AtlasApp() {
         />
       )}
 
-      {!inHero && (
+      {!inHero && !onPage && (
         <div className="scale">
           <span className="scale__title">{t('legendTitle')}</span>
           <div className="scale__bar" style={{ background: RAMP_GRADIENT_CSS }} />
@@ -540,7 +648,7 @@ export default function AtlasApp() {
         </div>
       )}
 
-      {!inHero && (
+      {!inHero && !onPage && (
         <div className="timeline">
           <div className="segmented segmented--small" role="group" aria-label={t('month')}>
             <button type="button" aria-pressed={mode === 'acumulado'} onClick={function pick() { setMode('acumulado'); setIsPlaying(false); }}>{t('accumulated')}</button>
@@ -585,6 +693,15 @@ export default function AtlasApp() {
           )}
         </div>
       )}
+
+      {page === 'calendario' && isReady && (
+        <CalendarPage data={data} aggregated={aggregated} geo={geo} oni={oni} t={t} language={language} isSample={isSample} />
+      )}
+      {page === 'metodo' && <MethodPage language={language} />}
+
+      <div className="curtain" ref={curtainRef} aria-hidden="true">
+        <p className="curtain__label"><IconFlame /> {curtainLabel}</p>
+      </div>
 
       <footer className="atlas__footer">
         <p>
