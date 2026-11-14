@@ -9,8 +9,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { FlyToInterpolator } from '@deck.gl/core';
-import { GeoJsonLayer, ColumnLayer } from '@deck.gl/layers';
-import { TerrainLayer } from '@deck.gl/geo-layers';
+import { GeoJsonLayer, ColumnLayer, BitmapLayer } from '@deck.gl/layers';
+import { TerrainLayer, TileLayer } from '@deck.gl/geo-layers';
+import { getGamcTileUrl } from '../services/gamcApi.js';
 import { _TerrainExtension as TerrainExtension } from '@deck.gl/extensions';
 import { rampColor, intensityRatio, EMPTY_COLOR } from './ramp.js';
 import { findMunicipalityIndex, zoomForBbox } from './geo.js';
@@ -40,6 +41,15 @@ const HERO_VIEW = {
   minZoom: 6.2
 };
 
+// Cobertura de la API de la Alcaldía (solo el municipio de Cercado)
+const GAMC_BBOX = [-66.280703, -17.53119, -66.06952, -17.257306];
+
+function lonLatToWebMercator(longitude, latitude) {
+  const x = (longitude * 20037508.34) / 180;
+  const y = (Math.log(Math.tan(((90 + latitude) * Math.PI) / 360)) / (Math.PI / 180) * 20037508.34) / 180;
+  return [x, y];
+}
+
 const ROTATION_DEGREES_PER_SECOND = 2.2;
 const HERO_ROTATION_DEGREES_PER_SECOND = 3.4;
 const IDLE_RESUME_MILLISECONDS = 9000;
@@ -51,18 +61,47 @@ function prefersReducedMotion() {
 
 export default function AtlasMap(props) {
   const { collection, municipalities, values, maxValue, selectedIdx, hoverIdx, columns, columnMax, theme } = props;
-  const { onSelect, onHover, onTerrainReady, rotationEnabled, entered, interactive } = props;
+  const { onSelect, onHover, onTerrainReady, rotationEnabled, entered, interactive, focusRegion, gamcLayers, active } = props;
 
   const [viewState, setViewState] = useState(HERO_VIEW);
   const [isIdle, setIsIdle] = useState(true);
   const [terrainReady, setTerrainReady] = useState(false);
+  const [terrainLoaded, setTerrainLoaded] = useState(false);
   const idleTimerRef = useRef(null);
   const hasEnteredRef = useRef(false);
-  const reducedMotion = useMemo(prefersReducedMotion, []);
+  const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion());
+
+  // el sistema puede cambiar la preferencia mientras la página está abierta
+  useEffect(function watchMotionPreference() {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function onChange() {
+      setReducedMotion(query.matches);
+    }
+    query.addEventListener('change', onChange);
+    return function cleanup() {
+      query.removeEventListener('change', onChange);
+    };
+  }, []);
 
   // Vuelo de cámara al municipio elegido (o regreso al departamento)
   useEffect(
     function flyToSelection() {
+      if (selectedIdx === null && focusRegion) {
+        const regionWidth = Math.max(window.innerWidth * 0.5, 420);
+        setViewState(function flyRegion(previous) {
+          return Object.assign({}, previous, {
+            longitude: (focusRegion.bbox[0] + focusRegion.bbox[2]) / 2 + (focusRegion.bbox[2] - focusRegion.bbox[0]) * 0.18,
+            latitude: (focusRegion.bbox[1] + focusRegion.bbox[3]) / 2 - (focusRegion.bbox[3] - focusRegion.bbox[1]) * 0.12,
+            zoom: Math.min(Math.max(zoomForBbox(focusRegion.bbox, regionWidth) - 0.6, 7.6), 9.6),
+            pitch: 60,
+            bearing: -18,
+            transitionDuration: reducedMotion ? 0 : 2200,
+            transitionInterpolator: new FlyToInterpolator({ speed: 1.0 })
+          });
+        });
+        holdOrbit(2600);
+        return;
+      }
       if (selectedIdx === null) {
         if (!entered && !hasEnteredRef.current) {
           return;
@@ -96,13 +135,13 @@ export default function AtlasMap(props) {
       });
       setIsIdle(false);
     },
-    [selectedIdx, municipalities, reducedMotion, entered]
+    [selectedIdx, municipalities, reducedMotion, entered, focusRegion]
   );
 
   // Órbita lenta mientras nadie interactúa
   useEffect(
     function orbit() {
-      if ((entered && !rotationEnabled) || !isIdle || reducedMotion || selectedIdx !== null) {
+      if (!rotationEnabled || !active || !isIdle || reducedMotion || selectedIdx !== null || focusRegion) {
         return undefined;
       }
       let frameId = 0;
@@ -123,7 +162,7 @@ export default function AtlasMap(props) {
         cancelAnimationFrame(frameId);
       };
     },
-    [rotationEnabled, isIdle, reducedMotion, selectedIdx, entered]
+    [rotationEnabled, active, isIdle, reducedMotion, selectedIdx, entered, focusRegion]
   );
 
   useEffect(function preloadElevation() {
@@ -133,6 +172,9 @@ export default function AtlasMap(props) {
   function locate(info) {
     if (info.viewport && info.x !== undefined && info.x >= 0) {
       const coordinate = locateOnTerrain(info.viewport, info.x, info.y);
+      if (coordinate === null) {
+        return -1;
+      }
       return findMunicipalityIndex(municipalities, coordinate[0], coordinate[1]);
     }
     return -1;
@@ -184,18 +226,23 @@ export default function AtlasMap(props) {
 
   const fillColors = useMemo(
     function computeFillColors() {
-      return values.map(function colorFor(value) {
+      return values.map(function colorFor(value, i) {
+        const dimmed = focusRegion && focusRegion.indices.indexOf(i) < 0;
         if (value <= 0) {
-          return EMPTY_COLOR.concat([120]);
+          if (focusRegion && !dimmed) {
+            return [79, 127, 99, 120];
+          }
+          return EMPTY_COLOR.concat([dimmed ? 50 : 120]);
         }
-        return rampColor(intensityRatio(value, maxValue)).concat([185]);
+        return rampColor(intensityRatio(value, maxValue)).concat([dimmed ? 55 : 185]);
       });
     },
-    [values, maxValue]
+    [values, maxValue, focusRegion]
   );
 
   const layers = useMemo(
     function buildLayers() {
+      const draping = terrainLoaded ? [new TerrainExtension()] : [];
       const reliefBrightness = theme === 'light' ? [225, 228, 222] : [150, 160, 150];
       const terrainLayer = new TerrainLayer({
           id: 'relieve',
@@ -206,6 +253,7 @@ export default function AtlasMap(props) {
           texture: SATELLITE_TILES_URL,
           operation: 'terrain+draw',
           onViewportLoad: function viewportLoaded() {
+            setTerrainLoaded(true);
             setTerrainReady(true);
           },
           color: reliefBrightness
@@ -232,6 +280,9 @@ export default function AtlasMap(props) {
             if (feature.properties.idx === hoverIdx) {
               return [234, 243, 236, 255];
             }
+            if (focusRegion) {
+              return focusRegion.indices.indexOf(feature.properties.idx) >= 0 ? [214, 232, 218, 235] : [191, 216, 196, 50];
+            }
             return [191, 216, 196, 150];
           },
           getLineWidth: function width(feature) {
@@ -241,15 +292,53 @@ export default function AtlasMap(props) {
             if (feature.properties.idx === hoverIdx) {
               return 2.4;
             }
+            if (focusRegion && focusRegion.indices.indexOf(feature.properties.idx) >= 0) {
+              return 1.8;
+            }
             return 0.9;
           },
           updateTriggers: {
             getFillColor: [fillColors],
-            getLineColor: [selectedIdx, hoverIdx],
-            getLineWidth: [selectedIdx, hoverIdx]
+            getLineColor: [selectedIdx, hoverIdx, focusRegion],
+            getLineWidth: [selectedIdx, hoverIdx, focusRegion]
           },
-          transitions: { getFillColor: 450, getLineWidth: 200 },
-          extensions: [new TerrainExtension()]
+          transitions: reducedMotion ? {} : { getFillColor: 450, getLineWidth: 200 },
+          extensions: draping
+        }),
+        ...(gamcLayers || []).map(function gamcLayer(name) {
+          return new TileLayer({
+            id: 'gamc-' + name,
+            data: null,
+            extent: GAMC_BBOX,
+            minZoom: 9,
+            maxZoom: 16,
+            tileSize: 256,
+            getTileData: function loadTile(tile) {
+              const corner1 = lonLatToWebMercator(tile.bbox.west, tile.bbox.south);
+              const corner2 = lonLatToWebMercator(tile.bbox.east, tile.bbox.north);
+              const url = getGamcTileUrl(name) + '?SRS=EPSG:3857&BBOX=' + [corner1[0], corner1[1], corner2[0], corner2[1]].join(',') + '&WIDTH=256&HEIGHT=256';
+              return fetch(url, { signal: tile.signal })
+                .then(function toBlob(response) {
+                  return response.ok ? response.blob() : null;
+                })
+                .then(function toBitmap(blob) {
+                  return blob ? createImageBitmap(blob) : null;
+                })
+                .catch(function ignore() {
+                  return null;
+                });
+            },
+            renderSubLayers: function renderTile(layerProps) {
+              const box = layerProps.tile.bbox;
+              return new BitmapLayer(layerProps, {
+                data: null,
+                image: layerProps.data,
+                bounds: [box.west, box.south, box.east, box.north],
+                opacity: 0.9,
+                extensions: draping
+              });
+            }
+          });
         }),
         new ColumnLayer({
           id: 'columnas-focos',
@@ -269,12 +358,12 @@ export default function AtlasMap(props) {
             return rampColor(0.78 + 0.22 * intensityRatio(column.value, columnMax)).concat([235]);
           },
           updateTriggers: { getElevation: [columnMax, columns], getFillColor: [columnMax, columns] },
-          transitions: { getElevation: 320 },
-          extensions: [new TerrainExtension()]
+          transitions: reducedMotion ? {} : { getElevation: 320 },
+          extensions: draping
         })
       ];
     },
-    [collection, fillColors, selectedIdx, hoverIdx, columns, columnMax, theme, terrainReady, onHover, onSelect]
+    [collection, fillColors, selectedIdx, hoverIdx, columns, columnMax, theme, terrainReady, terrainLoaded, gamcLayers, focusRegion, reducedMotion, onHover, onSelect]
   );
 
   return (
@@ -302,6 +391,7 @@ export default function AtlasMap(props) {
       }}
       controller={{ inertia: 400, touchRotate: true }}
       layers={layers}
+      useDevicePixels={Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 1.5)}
       getCursor={function cursor(state) {
         return hoverIdx !== null && hoverIdx !== undefined ? 'pointer' : state.isDragging ? 'grabbing' : 'grab';
       }}

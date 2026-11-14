@@ -17,6 +17,7 @@
   --accent-ink: #12261b;
   --amber: #e07a2f;
   --amber-soft: #f6c46a;
+  --focus: #f6c46a;
   --slate: #5b7c99;
   --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.35);
   --font-display: 'Young Serif', 'Iowan Old Style', Georgia, serif;
@@ -45,6 +46,7 @@
   --ink-2: #3f5446;
   --accent: #1f3d2b;
   --accent-ink: #f6f4ec;
+  --focus: #1f3d2b;
   --shadow: 0 18px 40px -22px rgba(31, 61, 43, 0.45), 0 2px 6px rgba(31, 61, 43, 0.12);
   color-scheme: light;
 }
@@ -85,15 +87,15 @@
   border-radius: 0;
 }
 
-.atlas button,
-.atlas input,
-.atlas a {
+:where(.atlas) button,
+:where(.atlas) input,
+:where(.atlas) a {
   font: inherit;
   color: inherit;
 }
 
 .atlas :focus-visible {
-  outline: 2px solid var(--amber-soft);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
   border-radius: 6px;
 }

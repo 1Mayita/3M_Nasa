@@ -17,7 +17,7 @@ const CONTENT = {
         paragraphs: [
           'MODIS (desde el año 2000) ve píxeles de unos 1 km. VIIRS (desde 2012) ve píxeles de 375 m, así que detecta fuegos más pequeños. Por eso sus conteos no se pueden comparar a ojo ni sumar.',
           'El atlas expresa todo en “detecciones equivalentes a VIIRS”: antes de 2012 se escala MODIS con un factor mensual calibrado en los años en que ambos sensores coincidieron; después se usa VIIRS. MODIS y VIIRS del mismo período nunca se suman, porque se contaría dos veces el mismo fuego.',
-          'El satélite Suomi NPP dejó de entregar datos el 2 de noviembre de 2026 (aviso de NOAA). La serie continúa con NOAA-20 y NOAA-21.'
+          'El satélite Suomi NPP dejó de entregar datos el 2 de noviembre de 2026, según el aviso oficial de NOAA. Después de esa fecha la serie se apoya en NOAA-20, calibrado contra S-NPP en el período en que ambos coincidieron.'
         ]
       },
       {
@@ -60,7 +60,7 @@ const CONTENT = {
         paragraphs: [
           'MODIS (since 2000) sees pixels of about 1 km. VIIRS (since 2012) sees 375 m pixels, so it detects smaller fires. That is why their counts cannot be compared by eye or added together.',
           'The atlas expresses everything as “VIIRS-equivalent detections”: before 2012 MODIS is scaled by a monthly factor calibrated in the years both sensors overlapped; afterwards VIIRS is used. MODIS and VIIRS for the same period are never added, because the same fire would be counted twice.',
-          'The Suomi NPP satellite stopped delivering data on 2 November 2026 (NOAA notice). The series continues with NOAA-20 and NOAA-21.'
+          'The Suomi NPP satellite stopped delivering data on 2 November 2026, according to the official NOAA notice. After that date the series relies on NOAA-20, calibrated against S-NPP over the period when both overlapped.'
         ]
       },
       {
@@ -97,9 +97,19 @@ const CONTENT = {
 };
 
 export default function MethodPage(props) {
-  const { language } = props;
+  const { language, isSample } = props;
   const content = CONTENT[language] || CONTENT.es;
+  const realDataNote = language === 'en'
+    ? 'The figures shown come from the harmonized series delivered by the data team. Hot spots remain satellite detections, not confirmed fires.'
+    : 'Las cifras que ves provienen de la serie armonizada entregada por el equipo de datos. Siguen siendo detecciones satelitales, no incendios confirmados.';
   const pageRef = useRef(null);
+
+  useEffect(function focusTitle() {
+    const heading = document.getElementById('method-title');
+    if (heading) {
+      heading.focus({ preventScroll: true });
+    }
+  }, []);
 
   useEffect(function animateIn() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !pageRef.current) {
@@ -118,15 +128,16 @@ export default function MethodPage(props) {
     <section className="page page--method" ref={pageRef} aria-labelledby="method-title">
       <div className="page__inner page__inner--narrow">
         <header className="method__head">
-          <h1 id="method-title">{content.title}</h1>
+          <h1 id="method-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>
         </header>
-        {content.sections.map(function section(item) {
+        {content.sections.map(function section(item, index) {
+          const isDataSection = index === content.sections.length - 1;
           return (
             <article className="method__section" key={item.heading}>
               <h2>{item.heading}</h2>
               {item.paragraphs.map(function paragraph(text, i) {
-                return <p key={i}>{text}</p>;
+                return <p key={i}>{isDataSection && !isSample ? realDataNote : text}</p>;
               })}
             </article>
           );

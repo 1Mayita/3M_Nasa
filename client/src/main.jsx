@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'leaflet/dist/leaflet.css';
 import './styles.css';
-import App from './App.jsx';
 import AtlasApp from './atlas/AtlasApp.jsx';
+
+const App = React.lazy(() => import('./App.jsx'));
 
 // Pantalla principal: atlas 3D. El calendario original sigue en #clasico.
 function Root() {
@@ -21,7 +22,9 @@ function Root() {
     return (
       <>
         <a href="#" style={{ position: 'fixed', top: 8, right: 12, zIndex: 10, fontSize: 13 }}>← Atlas 3D</a>
-        <App />
+        <React.Suspense fallback={null}>
+          <App />
+        </React.Suspense>
       </>
     );
   }

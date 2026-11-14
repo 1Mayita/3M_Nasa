@@ -359,3 +359,15 @@
     padding-top: 210px;
   }
 }
+
+/* el calendario se desplaza en horizontal en pantallas estrechas, sin aplastar las cifras */
+.calgrid {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+@media (max-width: 760px) {
+  .calgrid__head,
+  .calgrid__row {
+    min-width: 560px;
+  }
+}

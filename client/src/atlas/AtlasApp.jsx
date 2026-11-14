@@ -5,26 +5,36 @@
 // Contexto de El Niño: índice ONI de NOAA (public/data/oni.json), solo como contexto.
 // =====================================================================
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import AtlasMap from './AtlasMap.jsx';
 import Ficha from './Ficha.jsx';
 import Hero from './Hero.jsx';
-import CalendarPage from './CalendarPage.jsx';
-import MethodPage from './MethodPage.jsx';
+const CalendarPage = lazy(() => import('./CalendarPage.jsx'));
+const MethodPage = lazy(() => import('./MethodPage.jsx'));
+const TunariPage = lazy(() => import('./TunariPage.jsx'));
+import { getGamcLegendImageUrl } from '../services/gamcApi.js';
 import { fetchHotspots3d } from '../components/vista3d/focos3dApi.js';
 import { buildMockHotspots3d } from '../components/vista3d/focos3d.mock.js';
-import { aggregateByMunicipality, buildMunicipalityIndex, sumSeries } from './geo.js';
-import { LANGUAGES, formatMonth, makeTranslator, profileName } from './i18n.js';
+import { aggregateByMunicipality, buildMunicipalityIndex, medianOf, sumSeries } from './geo.js';
+import { LANGUAGES, MONTH_NAMES, formatMonth, makeTranslator, profileName } from './i18n.js';
 import { RAMP_GRADIENT_CSS } from './ramp.js';
 import { IconFlame, IconMoon, IconOrbit, IconPause, IconPlay, IconSearch, IconSun } from './Icons.jsx';
 import './atlas.css';
 import './atlas.extra.css';
 import './atlas.pages.css';
+import './atlas.tunari.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
-const ROUTES = ['inicio', 'atlas', 'calendario', 'metodo'];
-const ROUTE_LABEL_KEYS = { inicio: 'navHome', atlas: 'navAtlas', calendario: 'navCalendar', metodo: 'navMethod' };
+const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
+const USING_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
+const GAMC_LAYER_OPTIONS = [
+  { name: 'distritos', key: 'layerDistritos' },
+  { name: 'cota2750', key: 'layerCota' },
+  { name: 'periurbanos', key: 'layerPeriurbanos' }
+];
+const TUNARI_MUNICIPALITIES = ['Cochabamba', 'Sacaba', 'Colomi', 'Tiquipaya', 'Quillacollo', 'Vinto', 'Sipesipe', 'Tapacarí', 'Morochata', 'Cocapata'];
+const ROUTE_LABEL_KEYS = { inicio: 'navHome', atlas: 'navAtlas', tunari: 'navTunari', calendario: 'navCalendar', metodo: 'navMethod' };
 const PLAY_STEP_MILLISECONDS = 380;
 const NINO_COLOR = 'rgba(91,124,153,0.95)';
 const NINA_COLOR = 'rgba(150,186,184,0.75)';
@@ -88,7 +98,7 @@ export default function AtlasApp() {
   const [theme, setTheme] = useState(readStored('atlas.theme', 'dark'));
   const initialRoute = useMemo(parseRoute, []);
   const [phase, setPhase] = useState(initialRoute === 'inicio' ? 'hero' : 'atlas');
-  const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' ? initialRoute : null);
+  const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' || initialRoute === 'tunari' ? initialRoute : null);
   const [curtainLabel, setCurtainLabel] = useState('');
   const [geo, setGeo] = useState(null);
   const [data, setData] = useState(null);
@@ -103,10 +113,12 @@ export default function AtlasApp() {
   const [rotationEnabled, setRotationEnabled] = useState(true);
   const [search, setSearch] = useState('');
   const [mapReady, setMapReady] = useState(false);
+  const [gamcLayers, setGamcLayers] = useState([]);
   const rootRef = useRef(null);
   const heroRef = useRef(null);
   const curtainRef = useRef(null);
   const routeRef = useRef(initialRoute);
+  const motionRef = useRef({ curtain: null, hero: null });
 
   const t = useMemo(function makeT() {
     return makeTranslator(language);
@@ -116,7 +128,7 @@ export default function AtlasApp() {
     writeStored('atlas.language', language);
     writeStored('atlas.profile', profile);
     writeStored('atlas.theme', theme);
-    document.documentElement.lang = language;
+    document.documentElement.lang = language === 'qu' ? 'es' : language;
   }, [language, profile, theme]);
 
   // Carga de municipios, focos y contexto El Niño
@@ -152,7 +164,14 @@ export default function AtlasApp() {
       .catch(function ignore() {
         // el contexto de El Niño es opcional
       });
-    fetchHotspots3d('depto')
+    Promise.race([
+      fetchHotspots3d('depto'),
+      new Promise(function timeout(resolve, reject) {
+        setTimeout(function expire() {
+          reject(new Error('sin respuesta del servidor'));
+        }, 20000);
+      })
+    ])
       .catch(function fallback() {
         const sample = buildMockHotspots3d('depto');
         sample.isSample = true;
@@ -211,6 +230,26 @@ export default function AtlasApp() {
     return Math.max.apply(null, values.concat([1]));
   }, [values]);
 
+  const cellsById = useMemo(
+    function indexCells() {
+      const index = {};
+      if (data !== null) {
+        data.cells.forEach(function add(cell) {
+          index[cell.id] = cell;
+        });
+      }
+      return index;
+    },
+    [data]
+  );
+
+  const selectedSeries = useMemo(
+    function pickSeries() {
+      return aggregated !== null && selectedIdx !== null ? Array.from(aggregated.series[selectedIdx]) : [];
+    },
+    [aggregated, selectedIdx]
+  );
+
   const columns = useMemo(
     function computeColumns() {
       if (data === null) {
@@ -223,11 +262,11 @@ export default function AtlasApp() {
       }
       const frame = data.frames[data.months[monthIdx]] || [];
       return frame.map(function entry(item) {
-        const cell = data.cells[item[0]];
-        return { longitude: cell.longitude, latitude: cell.latitude, value: item[1] };
-      });
+        const cell = cellsById[item[0]];
+        return cell ? { longitude: cell.longitude, latitude: cell.latitude, value: item[1] } : null;
+      }).filter(Boolean);
     },
-    [data, mode, monthIdx]
+    [data, mode, monthIdx, cellsById]
   );
 
   const columnMax = data === null ? 1 : mode === 'acumulado' ? data.maxCellTotal : data.maxCellMonthly;
@@ -263,6 +302,70 @@ export default function AtlasApp() {
       return position < 0 ? null : position + 1;
     },
     [sortedAll, selectedIdx]
+  );
+
+  // meses con más detecciones en la mediana (departamento completo), para el texto de la ficha
+  const seasonMonths = useMemo(
+    function computeSeason() {
+      if (aggregated === null || data === null || data.months.length === 0) {
+        return '';
+      }
+      const totalsByMonth = new Array(data.months.length).fill(0);
+      aggregated.series.forEach(function add(series) {
+        for (let i = 0; i < totalsByMonth.length; i = i + 1) {
+          totalsByMonth[i] += series[i];
+        }
+      });
+      const medians = [];
+      for (let calendarMonth = 0; calendarMonth < 12; calendarMonth = calendarMonth + 1) {
+        const values = [];
+        data.months.forEach(function collect(month, i) {
+          if (Number.parseInt(month.slice(5, 7), 10) - 1 === calendarMonth) {
+            values.push(totalsByMonth[i]);
+          }
+        });
+        medians.push({ calendarMonth: calendarMonth, value: medianOf(values) });
+      }
+      const names = MONTH_NAMES[language] || MONTH_NAMES.es;
+      return medians
+        .sort(function descending(a, b) {
+          return b.value - a.value;
+        })
+        .slice(0, 3)
+        .map(function name(entry) {
+          return names[entry.calendarMonth];
+        })
+        .join(', ');
+    },
+    [aggregated, data, language]
+  );
+
+  const tunariRegion = useMemo(
+    function computeTunari() {
+      if (geo === null) {
+        return null;
+      }
+      const indices = [];
+      let bbox = null;
+      geo.municipalities.forEach(function check(municipality) {
+        const listed = TUNARI_MUNICIPALITIES.indexOf(municipality.name) >= 0 || municipality.capital === 'Independencia';
+        if (!listed) {
+          return;
+        }
+        indices.push(municipality.idx);
+        bbox = bbox === null
+          ? municipality.bbox.slice()
+          : [Math.min(bbox[0], municipality.bbox[0]), Math.min(bbox[1], municipality.bbox[1]), Math.max(bbox[2], municipality.bbox[2]), Math.max(bbox[3], municipality.bbox[3])];
+      });
+      return {
+        indices: indices,
+        bbox: bbox,
+        names: indices.map(function name(i) {
+          return geo.municipalities[i].name;
+        })
+      };
+    },
+    [geo]
   );
 
   const ensoGradient = useMemo(
@@ -362,19 +465,42 @@ export default function AtlasApp() {
     }
     // la cámara empieza a volar mientras la portada se desvanece
     setPhase('entering');
-    gsap.to(heroRef.current, {
+    motionRef.current.hero = gsap.to(heroRef.current, {
       opacity: 0,
       x: -40,
       duration: 0.7,
       ease: 'expo.in',
       onComplete: function done() {
+        motionRef.current.hero = null;
         setPhase('atlas');
       }
     });
   }
 
+  // Cancela transiciones pendientes: evita que una animación vieja pise la navegación nueva
+  function cancelMotion() {
+    const motion = motionRef.current;
+    if (motion.curtain) {
+      motion.curtain.kill();
+      motion.curtain = null;
+      if (curtainRef.current) {
+        gsap.set(curtainRef.current, { display: 'none' });
+      }
+    }
+    if (motion.hero) {
+      motion.hero.kill();
+      motion.hero = null;
+      setPhase(function settle(previous) {
+        return previous === 'entering' ? 'atlas' : previous;
+      });
+    }
+  }
+
   function applyRoute(route) {
     if (route === 'calendario' || route === 'metodo') {
+      setIsPlaying(false);
+    }
+    if (route === 'calendario' || route === 'metodo' || route === 'tunari') {
       setPage(route);
       setHover(null);
       setPhase('atlas');
@@ -398,7 +524,11 @@ export default function AtlasApp() {
       return;
     }
     setCurtainLabel(t(ROUTE_LABEL_KEYS[route]));
-    gsap.timeline()
+    motionRef.current.curtain = gsap.timeline({
+      onComplete: function finished() {
+        motionRef.current.curtain = null;
+      }
+    })
       .set(element, { display: 'grid', clipPath: 'inset(100% 0% 0% 0%)' })
       .to(element, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.55, ease: 'expo.inOut' })
       .add(function swap() {
@@ -411,6 +541,7 @@ export default function AtlasApp() {
   // Toda la navegación pasa por el hash (#/atlas, #/calendario...): sirve el botón Atrás
   useEffect(function listenToRoutes() {
     function onHashChange() {
+      cancelMotion();
       const target = parseRoute();
       const from = routeRef.current;
       if (target === from || window.location.hash === '#clasico') {
@@ -430,6 +561,7 @@ export default function AtlasApp() {
     window.addEventListener('hashchange', onHashChange);
     return function cleanup() {
       window.removeEventListener('hashchange', onHashChange);
+      cancelMotion();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
@@ -446,6 +578,24 @@ export default function AtlasApp() {
       window.removeEventListener('keydown', onKey);
     };
   }, []);
+
+  // Teclado en el mapa: flechas recorren los municipios por detecciones
+  function handleMapKeyDown(event) {
+    if (phase !== 'atlas' || (page !== null && page !== 'tunari') || sortedAll.length === 0) {
+      return;
+    }
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+      return;
+    }
+    event.preventDefault();
+    const position = sortedAll.findIndex(function match(entry) {
+      return entry.idx === selectedIdx;
+    });
+    const next = event.key === 'ArrowRight'
+      ? (position + 1) % sortedAll.length
+      : position <= 0 ? sortedAll.length - 1 : position - 1;
+    setSelectedIdx(sortedAll[next].idx);
+  }
 
   function goTo(route) {
     window.location.hash = '#/' + route;
@@ -480,11 +630,18 @@ export default function AtlasApp() {
   const hoverMunicipality = geo !== null && hover !== null && !inHero ? geo.municipalities[hover.idx] : null;
   const currentMonthText = data !== null ? formatMonth(language, data.months[monthIdx]) : '';
   const rankingTitle = profile === 'bombero' ? t('topNowBombero') : t('topNow');
+  const mapActive = page !== 'calendario' && page !== 'metodo';
   const rankingMax = ranking.length > 0 ? Math.max(ranking[0].value, 1) : 1;
 
   return (
     <div className="atlas" data-theme={theme} data-phase={phase} ref={rootRef}>
-      <div className="atlas__map">
+      <div
+        className="atlas__map"
+        tabIndex={inHero ? -1 : 0}
+        role="application"
+        aria-label={t('mapAria')}
+        onKeyDown={handleMapKeyDown}
+      >
         {isReady && (
           <AtlasMap
             collection={geo.collection}
@@ -501,10 +658,18 @@ export default function AtlasApp() {
             onSelect={handleSelect}
             onHover={handleHover}
             interactive={!inHero}
+            focusRegion={page === 'tunari' ? tunariRegion : null}
+            active={mapActive}
+            gamcLayers={gamcLayers}
             onTerrainReady={handleTerrainReady}
           />
         )}
       </div>
+      <p className="visually-hidden" aria-live="polite">
+        {selectedMunicipality !== null && !inHero
+          ? selectedMunicipality.name.replace('TIOC-', '') + ': ' + Math.round(values[selectedMunicipality.idx] || 0) + ' ' + t('detections')
+          : ''}
+      </p>
       <div className="atlas__veil" aria-hidden="true" />
 
       {!isShown && errorMessage === null && inAtlas && <p className="atlas__status" role="status">{t('loading')}</p>}
@@ -520,7 +685,7 @@ export default function AtlasApp() {
       )}
 
       <div className={'atlas__controls' + (inHero ? ' is-hero' : '')}>
-        <nav className="mainnav" aria-label="Navegación principal">
+        <nav className="mainnav" aria-label={t('navAria')}>
           {ROUTES.map(function routeLink(route) {
             return (
               <a key={route} href={'#/' + route} aria-current={currentRoute === route ? 'page' : undefined}>
@@ -558,6 +723,17 @@ export default function AtlasApp() {
           {theme === 'dark' ? <IconSun /> : <IconMoon />}
           <span>{theme === 'dark' ? t('day') : t('night')}</span>
         </button>
+        {inHero && (
+          <button
+            type="button"
+            className="icon-button"
+            aria-pressed={rotationEnabled}
+            aria-label={rotationEnabled ? t('rotateStop') : t('rotate')}
+            onClick={function toggleOrbit() { setRotationEnabled(!rotationEnabled); }}
+          >
+            <IconOrbit />
+          </button>
+        )}
         {!inHero && !onPage && <a className="classic-link" href="#clasico">{t('classic')}</a>}
       </div>
       {language === 'qu' && <p className="atlas__notice" role="status">{t('quNotice')}</p>}
@@ -567,7 +743,7 @@ export default function AtlasApp() {
           {profile === 'ciudadano' ? (
             <div className="rail__plain">
               <h2>{t('seasonTitle')}</h2>
-              <p>{t('seasonText')}</p>
+              <p>{seasonMonths ? t('seasonText', { months: seasonMonths }) : ''}</p>
               <p className="rail__hint">{t('clickHint')}</p>
             </div>
           ) : (
@@ -611,6 +787,31 @@ export default function AtlasApp() {
               })}
             </ul>
           )}
+        <details className="layers">
+          <summary>{t('layersTitle')}</summary>
+          <p>{USING_MOCKS ? t('layersOffline') : t('layersNote')}</p>
+          {GAMC_LAYER_OPTIONS.map(function layerOption(option) {
+            const checked = gamcLayers.indexOf(option.name) >= 0;
+            return (
+              <div key={option.name}>
+                <label className={USING_MOCKS ? 'is-disabled' : undefined}>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    disabled={USING_MOCKS}
+                    onChange={function toggle() {
+                      setGamcLayers(checked
+                        ? gamcLayers.filter(function keep(name) { return name !== option.name; })
+                        : gamcLayers.concat([option.name]));
+                    }}
+                  />
+                  {t(option.key)}
+                </label>
+                {checked && <img src={getGamcLegendImageUrl(option.name)} alt={t(option.key)} loading="lazy" />}
+              </div>
+            );
+          })}
+        </details>
         </nav>
       )}
 
@@ -621,22 +822,30 @@ export default function AtlasApp() {
         </div>
       )}
 
-      {!inHero && !onPage && selectedMunicipality !== null && aggregated !== null && (
+      {!inHero && (!onPage || page === 'tunari') && selectedMunicipality !== null && aggregated !== null && (
         <Ficha
           key={selectedMunicipality.idx}
           municipality={selectedMunicipality}
-          values={Array.from(aggregated.series[selectedMunicipality.idx])}
+          values={selectedSeries}
           months={data.months}
           monthIdx={monthIdx}
           rank={rankOfSelected}
           total={geo.municipalities.length}
           levelRatio={maxValue > 0 ? Math.min((values[selectedMunicipality.idx] || 0) / maxValue, 1) : 0}
           oni={oni}
+          seasonMonths={seasonMonths}
           t={t}
           language={language}
           profile={profile}
           isSample={isSample}
-          onClose={function close() { setSelectedIdx(null); }}
+          harmonized={data.harmonized !== false}
+          onClose={function close() {
+            setSelectedIdx(null);
+            const mapElement = document.querySelector('.atlas__map');
+            if (mapElement) {
+              mapElement.focus({ preventScroll: true });
+            }
+          }}
         />
       )}
 
@@ -694,10 +903,18 @@ export default function AtlasApp() {
         </div>
       )}
 
+      <Suspense fallback={null}>
       {page === 'calendario' && isReady && (
         <CalendarPage data={data} aggregated={aggregated} geo={geo} oni={oni} t={t} language={language} isSample={isSample} />
       )}
-      {page === 'metodo' && <MethodPage language={language} />}
+      {page === 'metodo' && <MethodPage language={language} isSample={isSample} />}
+      {page === 'tunari' && tunariRegion !== null && (
+        <TunariPage
+          language={language}
+          names={tunariRegion.names.map(function clean(name) { return name === 'Ayopaya' ? 'Independencia' : name; })}
+        />
+      )}
+      </Suspense>
 
       <div className="curtain" ref={curtainRef} aria-hidden="true">
         <p className="curtain__label"><IconFlame /> {curtainLabel}</p>

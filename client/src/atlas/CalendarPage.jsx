@@ -29,9 +29,20 @@ function classForPercent(percent) {
   return ANOMALY_CLASSES[ANOMALY_CLASSES.length - 1];
 }
 
+function relativeLuminance(color) {
+  function channel(value) {
+    const scaled = value / 255;
+    return scaled <= 0.03928 ? scaled / 12.92 : Math.pow((scaled + 0.055) / 1.055, 2.4);
+  }
+  return 0.2126 * channel(color[0]) + 0.7152 * channel(color[1]) + 0.0722 * channel(color[2]);
+}
+
+// elige la tinta (oscura o clara) con mayor contraste WCAG sobre el color de la casilla
 function inkFor(color) {
-  const luminance = (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255;
-  return luminance > 0.58 ? '#16251c' : '#f1f7f2';
+  const luminance = relativeLuminance(color);
+  const darkContrast = (luminance + 0.05) / (relativeLuminance([22, 37, 28]) + 0.05);
+  const lightContrast = (relativeLuminance([241, 247, 242]) + 0.05) / (luminance + 0.05);
+  return darkContrast >= lightContrast ? '#16251c' : '#f1f7f2';
 }
 
 function ensoOf(oni, month) {
@@ -41,11 +52,11 @@ function ensoOf(oni, month) {
   return oni[month] >= 0.5 ? 'nino' : oni[month] <= -0.5 ? 'nina' : 'neutral';
 }
 
-function toCsv(scopeName, months, values, medians) {
-  const rows = ['ambito,mes,detecciones_equivalente_viirs,mediana_del_mes'];
+function toCsv(scopeName, months, values, medians, isSample) {
+  const rows = ['ambito,mes,detecciones_equivalente_viirs,mediana_del_mes,muestra_sintetica'];
   months.forEach(function addRow(month, i) {
     const calendarMonth = Number.parseInt(month.slice(5, 7), 10) - 1;
-    rows.push('"' + scopeName + '",' + month + ',' + Math.round(values[i] * 10) / 10 + ',' + Math.round(medians[calendarMonth] * 10) / 10);
+    rows.push('"' + scopeName + '",' + month + ',' + Math.round(values[i] * 10) / 10 + ',' + Math.round(medians[calendarMonth] * 10) / 10 + ',' + (isSample ? 'si' : 'no'));
   });
   return rows.join('\n');
 }
@@ -152,6 +163,13 @@ export default function CalendarPage(props) {
     [geo]
   );
 
+  useEffect(function focusTitle() {
+    const heading = document.getElementById('cal-title');
+    if (heading) {
+      heading.focus({ preventScroll: true });
+    }
+  }, []);
+
   useEffect(function animateIn() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !pageRef.current) {
       return undefined;
@@ -167,11 +185,11 @@ export default function CalendarPage(props) {
   }, []);
 
   function download() {
-    const blob = new Blob([toCsv(scopeName, months, series, medians)], { type: 'text/csv;charset=utf-8' });
+    const blob = new Blob([toCsv(scopeName, months, series, medians, isSample)], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'calendario_focos.csv';
+    link.download = (isSample ? 'MUESTRA_' : '') + 'calendario_focos.csv';
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -187,7 +205,7 @@ export default function CalendarPage(props) {
     <section className="page page--calendar" ref={pageRef} aria-labelledby="cal-title">
       <div className="page__inner">
         <header className="page__head">
-          <h1 id="cal-title">{t('calTitle')}</h1>
+          <h1 id="cal-title" tabIndex={-1}>{t('calTitle')}</h1>
           <p className="page__lead">{t('calLead')}</p>
           <div className="page__tools">
             <label className="field">
@@ -245,7 +263,7 @@ export default function CalendarPage(props) {
                         tabIndex={0}
                         key={i}
                         style={style}
-                        aria-label={formatMonth(language, entry.month) + ': ' + Math.round(entry.value) + ' ' + t('detections')}
+                        aria-label={formatMonth(language, entry.month) + ': ' + Math.round(entry.value) + ' ' + t('detections') + '. ' + t('calMedian') + ': ' + Math.round(median * 10) / 10 + (median > 0 ? ', ' + (Math.round(((entry.value - median) / median) * 100) > 0 ? '+' : '') + Math.round(((entry.value - median) / median) * 100) + ' %' : '') + (enso ? ', ' + t(enso === 'nino' ? 'ensoNino' : enso === 'nina' ? 'ensoNina' : 'ensoNeutral') : '')}
                         onMouseEnter={function enter(event) { showTip(event, entry, color); }}
                         onMouseMove={function move(event) { showTip(event, entry, color); }}
                         onMouseLeave={function leave() { setTip(null); }}
@@ -297,7 +315,7 @@ export default function CalendarPage(props) {
       </div>
 
       {tip !== null && (
-        <div className="cal-tip" style={{ left: Math.min(tip.x + 16, window.innerWidth - 250), top: Math.max(tip.y - 10, 8) }} role="presentation">
+        <div className="cal-tip" style={{ left: Math.min(tip.x + 16, window.innerWidth - 250), top: Math.min(Math.max(tip.y - 10, 8), window.innerHeight - 150) }} role="presentation">
           <strong>{formatMonth(language, tip.month)}</strong>
           <span>{Math.round(tip.value * 10) / 10} {t('detections')}</span>
           <span>{t('calMedian')}: {Math.round(tip.median * 10) / 10}</span>

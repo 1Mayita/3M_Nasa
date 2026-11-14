@@ -92,8 +92,10 @@ export function findMunicipalityIndex(municipalities, longitude, latitude) {
 
 // Serie mensual por municipio a partir de las celdas y cuadros del API
 export function aggregateByMunicipality(data, municipalities) {
-  const cellToMunicipality = data.cells.map(function locate(cell) {
-    return findMunicipalityIndex(municipalities, cell.longitude, cell.latitude);
+  // las celdas se identifican por su id (no por su posición en el arreglo)
+  const cellToMunicipality = {};
+  data.cells.forEach(function locate(cell) {
+    cellToMunicipality[cell.id] = findMunicipalityIndex(municipalities, cell.longitude, cell.latitude);
   });
   const monthIndexByName = {};
   data.months.forEach(function index(month, i) {
@@ -106,7 +108,7 @@ export function aggregateByMunicipality(data, municipalities) {
     const frame = data.frames[month] || [];
     frame.forEach(function addEntry(entry) {
       const municipalityIndex = cellToMunicipality[entry[0]];
-      if (municipalityIndex >= 0) {
+      if (municipalityIndex !== undefined && municipalityIndex >= 0) {
         series[municipalityIndex][monthIndexByName[month]] += entry[1];
       }
     });
@@ -133,6 +135,9 @@ export function medianOf(values) {
 
 // Mediana del mismo mes calendario en años anteriores al índice dado
 export function medianForSameMonth(months, values, monthIdx) {
+  if (!months[monthIdx]) {
+    return { median: 0, years: 0 };
+  }
   const calendarMonth = months[monthIdx].slice(5, 7);
   const sameMonthValues = [];
   months.forEach(function collect(month, i) {

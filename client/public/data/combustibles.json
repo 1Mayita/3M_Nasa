@@ -1,0 +1,135 @@
+{
+  "fuente": "Referencia cualitativa del equipo para la interfaz (literatura general de combustibles). No es un modelo de comportamiento del fuego ni una predicción.",
+  "classes": {
+    "pajonal": {
+      "nombre": "Pajonal / herbazal de altura",
+      "especies": "Paja brava o ichu (Jarava/Stipa ichu), Festuca",
+      "inflamabilidad": "Alta",
+      "propagacion": "Muy rápida",
+      "intensidad": "Baja a media",
+      "recuperacion": "Rápida: rebrota en 1-2 temporadas",
+      "color": "#E3B505",
+      "explicacion": "Es como papel seco: prende rápido y el fuego corre con el viento, pero se apaga pronto. Es lo que más se quema en el Tunari (por ejemplo, 80 % del incendio de Pocona 2024).",
+      "alerta_satelital": "Fuegos cortos y rápidos: el satélite puede no verlos si pasa antes o después. VIIRS (375 m) los detecta mejor que MODIS (1 km)."
+    },
+    "eucalipto": {
+      "nombre": "Plantación de eucalipto",
+      "especies": "Eucalyptus globulus (exótica)",
+      "inflamabilidad": "Muy alta",
+      "propagacion": "Rápida, con saltos",
+      "intensidad": "Alta",
+      "recuperacion": "Rebrota del tocón y se expande",
+      "color": "#B23A48",
+      "explicacion": "Sus hojas tienen aceites que arden fácil, y la corteza se desprende en tiras que vuelan encendidas y prenden fuego más adelante (focos secundarios). Debajo se acumula hojarasca seca.",
+      "alerta_satelital": "Fuego intenso: suele detectarse bien. Ojo: después del fuego rebrota y vuelve a acumular combustible."
+    },
+    "pino": {
+      "nombre": "Plantación de pino",
+      "especies": "Pinus radiata, Pinus patula (exóticas)",
+      "inflamabilidad": "Muy alta",
+      "propagacion": "Rápida; puede subir a las copas",
+      "intensidad": "Alta",
+      "recuperacion": "Se regenera solo y desplaza a la vegetación nativa",
+      "color": "#7A3B69",
+      "explicacion": "La resina y la alfombra de acículas secas funcionan como yesca. Si el fuego sube a las copas es muy difícil de controlar. Las plantaciones del Tunari son de 1962-1991 y casi no se manejaron.",
+      "alerta_satelital": "Fuego intenso: buena detección."
+    },
+    "kewina": {
+      "nombre": "Bosque nativo de kewiña (q'ewiña, queñua)",
+      "especies": "Polylepis subtusalbida, Polylepis lanata",
+      "inflamabilidad": "Media",
+      "propagacion": "Lenta a media",
+      "intensidad": "Media",
+      "recuperacion": "Muy lenta: décadas",
+      "color": "#2E7D32",
+      "explicacion": "Es el bosque nativo de altura (3.200-3.900 m). No está adaptado al fuego: lo que se quema tarda décadas en volver. Queda solo una pequeña parte de su área original y alberga el 78 % de las aves amenazadas del Tunari.",
+      "alerta_satelital": "Parches pequeños: un foco aquí pesa mucho por el valor ecológico. Prioridad de protección."
+    },
+    "matorral": {
+      "nombre": "Matorral / arbustal",
+      "especies": "Arbustos de valle (chilca, tola, otros)",
+      "inflamabilidad": "Media a alta",
+      "propagacion": "Media",
+      "intensidad": "Media",
+      "recuperacion": "Media: algunos años",
+      "color": "#C97B2A",
+      "explicacion": "Mezcla de arbustos y pastos. Arde más fuerte que el pajonal pero se propaga más lento.",
+      "alerta_satelital": "Detección intermedia."
+    },
+    "bosque_seco": {
+      "nombre": "Bosque seco interandino",
+      "especies": "Molle, soto, algarrobo, cactáceas (valles secos)",
+      "inflamabilidad": "Media",
+      "propagacion": "Media",
+      "intensidad": "Media",
+      "recuperacion": "Lenta",
+      "color": "#8D6E63",
+      "explicacion": "Bosque bajo y ralo de los valles secos. En la época seca pierde hojas y se vuelve más inflamable.",
+      "alerta_satelital": "Detección intermedia."
+    },
+    "bosque_humedo": {
+      "nombre": "Bosque húmedo de yungas y llanura (trópico)",
+      "especies": "Bosque amazónico y de yungas",
+      "inflamabilidad": "Baja en condiciones normales; alta después del desmonte y en sequía",
+      "propagacion": "Lenta",
+      "intensidad": "Media a alta",
+      "recuperacion": "Muy lenta",
+      "color": "#1B5E20",
+      "explicacion": "Un bosque húmedo casi no se quema solo: el fuego llega con el chaqueo (tumbar, secar y quemar). En años secos (El Niño) el fuego escapa del chaco al bosque.",
+      "alerta_satelital": "Muchos focos de chaqueo en temporada (julio-octubre). Es donde el satélite ve más focos del departamento."
+    },
+    "cultivo_barbecho": {
+      "nombre": "Cultivos, rastrojos y barbechos (chaqueo)",
+      "especies": "Parcelas agrícolas",
+      "inflamabilidad": "Alta durante la quema",
+      "propagacion": "Depende del viento y del borde con vegetación",
+      "intensidad": "Baja a media",
+      "recuperacion": "—",
+      "color": "#F4A261",
+      "explicacion": "Quema intencional para limpiar el terreno. El problema empieza cuando se escapa hacia pajonal o bosque.",
+      "alerta_satelital": "Focos pequeños y repetidos cada año en las mismas zonas y meses: se ven muy bien en el calendario."
+    },
+    "pastizal_tropical": {
+      "nombre": "Pastizal ganadero tropical",
+      "especies": "Pastos de ganadería",
+      "inflamabilidad": "Alta en época seca",
+      "propagacion": "Rápida",
+      "intensidad": "Baja a media",
+      "recuperacion": "Rápida",
+      "color": "#D4A017",
+      "explicacion": "Se quema para renovar el pasto. Fuego rápido que puede entrar al bosque vecino.",
+      "alerta_satelital": "Focos frecuentes en temporada seca."
+    },
+    "interfaz_urbana": {
+      "nombre": "Interfaz urbano-forestal (periurbano)",
+      "especies": "Viviendas junto a pajonal, arbustos o plantaciones",
+      "inflamabilidad": "Variable",
+      "propagacion": "Variable",
+      "intensidad": "Variable",
+      "recuperacion": "—",
+      "color": "#6D597A",
+      "explicacion": "Zonas donde la ciudad crece hacia el parque. El fuego aquí pone en riesgo casas, y a veces se usa para avanzar con loteamientos por encima de la cota 2750.",
+      "alerta_satelital": "Ojo con falsos positivos: techos calientes o quemas de basura también pueden dar un foco. Por eso el filtro type == 0."
+    }
+  },
+  "gamcDetailRules": [
+    {
+      "contains": "arbustal",
+      "fuelClass": "matorral"
+    },
+    {
+      "contains": "herbazal",
+      "fuelClass": "pajonal"
+    },
+    {
+      "contains": "bosque",
+      "fuelClass": "eucalipto"
+    },
+    {
+      "contains": "periurbano",
+      "fuelClass": "interfaz_urbana"
+    }
+  ],
+  "gamcDefaultFuelClass": "interfaz_urbana",
+  "nota_gamc": "Reglas para traducir el campo 'Detalle' de la capa Periurbanos de la Alcaldía a una clase de combustible. Valores vistos el 14/11/2026: 'Herbazales ralos con intervención urbana', 'Herbazales ralos con alta intervención urbana', 'Arbustales ralos con herbazales e intervención urbana', 'Periurbano'. La regla 'bosque' -> eucalipto es una suposición: revisar si aparecen valores con bosque."
+}

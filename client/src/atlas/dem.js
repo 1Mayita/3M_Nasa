@@ -2,6 +2,8 @@
 // Dueño: P3 (Vista)
 // Elevación gruesa de Cochabamba (AWS Terrarium, zoom 7) para corregir el clic en 3D:
 // el rayo del cursor choca contra la montaña, no contra el plano z=0.
+// Estados: 'idle' | 'loading' | 'ready' | 'failed'. Mientras carga no se confirma ningún clic
+// (evita seleccionar el municipio equivocado); si falla, se usa el plano z=0 como respaldo.
 // =====================================================================
 
 const TILE_ZOOM = 7;
@@ -9,6 +11,7 @@ const TILE_URL = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x
 const BBOX = [-67.8, -18.8, -64.0, -15.4];
 
 let tiles = null;
+let status = 'idle';
 let loadingPromise = null;
 
 function lonToTileX(lon) {
@@ -40,9 +43,10 @@ function loadTile(x, y) {
 }
 
 export function loadElevation() {
-  if (loadingPromise !== null) {
+  if (loadingPromise !== null || status === 'ready') {
     return loadingPromise;
   }
+  status = 'loading';
   const minX = Math.floor(lonToTileX(BBOX[0]));
   const maxX = Math.floor(lonToTileX(BBOX[2]));
   const minY = Math.floor(latToTileY(BBOX[3]));
@@ -54,18 +58,28 @@ export function loadElevation() {
     }
   }
   loadingPromise = Promise.all(jobs).then(function store(results) {
-    tiles = {};
+    tiles = tiles || {};
+    let failures = 0;
     results.forEach(function add(tile) {
-      if (tile !== null) {
+      if (tile === null) {
+        failures = failures + 1;
+      } else {
         tiles[tile.key] = tile.pixels;
       }
     });
+    status = failures === 0 ? 'ready' : 'failed';
+    // si algo falló, permitir un reintento en la próxima llamada
+    loadingPromise = failures === 0 ? loadingPromise : null;
     return tiles;
   });
   return loadingPromise;
 }
 
-// Metros sobre el nivel del mar; 0 si la elevación aún no cargó
+export function elevationStatus() {
+  return status;
+}
+
+// Metros sobre el nivel del mar; 0 donde no hay dato (fuera de la zona o tile caído)
 export function elevationAt(lon, lat) {
   if (tiles === null) {
     return 0;
@@ -84,12 +98,24 @@ export function elevationAt(lon, lat) {
   return pixels[offset] * 256 + pixels[offset + 1] + pixels[offset + 2] / 256 - 32768;
 }
 
-// Punto geográfico bajo el cursor, siguiendo el rayo hasta la superficie del relieve
+// Punto geográfico bajo el cursor, siguiendo el rayo hasta la superficie del relieve.
+// Devuelve null mientras la elevación carga o si el cálculo no converge.
 export function locateOnTerrain(viewport, x, y) {
+  if (status === 'idle' || status === 'loading') {
+    loadElevation();
+    return null;
+  }
   let coordinate = viewport.unproject([x, y]);
-  for (let step = 0; step < 5; step = step + 1) {
+  let previousHeight = Infinity;
+  for (let step = 0; step < 6; step = step + 1) {
     const height = elevationAt(coordinate[0], coordinate[1]);
     coordinate = viewport.unproject([x, y], { targetZ: height });
+    if (Math.abs(height - previousHeight) < 5) {
+      return coordinate;
+    }
+    previousHeight = height;
   }
-  return coordinate;
+  // no convergió (ladera muy empinada): se acepta solo si la última diferencia fue pequeña
+  const lastHeight = elevationAt(coordinate[0], coordinate[1]);
+  return Math.abs(lastHeight - previousHeight) < 120 ? coordinate : null;
 }
