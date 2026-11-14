@@ -96,6 +96,7 @@ Contrato **Modelo ↔ Controlador**. Pegar al final de `docs/DATA.md`. Dueño de
 | `data/processed/gamc_tags.json` | Detecciones dentro de Cercado con distrito, cota y periurbano | `model/gamc_tag.py` |
 | `data/processed/gamc_cache.json` | Respuestas guardadas de la Alcaldía (no repetir consultas) | `model/gamc_tag.py` |
 | `data/processed/k_factors.json` | Factores k(mes) de la armonización | Pipeline de armonización |
+| `data/reference/cifras_oficiales.json` | Hectáreas quemadas oficiales (UGR/SERNAP), **otra métrica**: solo panel de validación, nunca sumar con focos | A mano (P1), versionado en git |
 | `data/sample/*.sample.json` | Versiones **sintéticas** para desarrollar | Kit |
 
 El servidor usa `processed/` si existe; si no, `sample/` (y la respuesta trae `isSample: true`).

@@ -9,7 +9,7 @@
       "intensidad": "Baja a media",
       "recuperacion": "Rápida: rebrota en 1-2 temporadas",
       "color": "#E3B505",
-      "explicacion": "Es como papel seco: prende rápido y el fuego corre con el viento, pero se apaga pronto. Es lo que más se quema en el Tunari (por ejemplo, 80 % del incendio de Pocona 2024).",
+      "explicacion": "Es como papel seco: prende rápido y el fuego corre con el viento, pero se apaga pronto. Es lo que más se quema en el Tunari y en los valles altos (por ejemplo, cerca del 80 % del área del incendio de Pocona, julio 2024).",
       "alerta_satelital": "Fuegos cortos y rápidos: el satélite puede no verlos si pasa antes o después. VIIRS (375 m) los detecta mejor que MODIS (1 km)."
     },
     "eucalipto": {
@@ -109,7 +109,7 @@
       "recuperacion": "—",
       "color": "#6D597A",
       "explicacion": "Zonas donde la ciudad crece hacia el parque. El fuego aquí pone en riesgo casas, y a veces se usa para avanzar con loteamientos por encima de la cota 2750.",
-      "alerta_satelital": "Ojo con falsos positivos: techos calientes o quemas de basura también pueden dar un foco. Por eso el filtro type == 0."
+      "alerta_satelital": "Ojo con falsos positivos: techos calientes, industrias o quemas de basura también pueden dar un foco. El filtro type == 0 quita las fuentes fijas que FIRMS ya identificó, pero no todas las quemas de basura."
     }
   },
   "gamcDetailRules": [
