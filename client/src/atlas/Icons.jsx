@@ -31,3 +31,34 @@ export function IconFlame() {
 export function IconPeak() {
   return (<svg {...BASE}><path d="M3 19l6-10 3.500 5.500L15 11l6 8z" /></svg>);
 }
+
+export function IconArrow() {
+  return (<svg {...BASE}><path d="M5 12h14m0 0l-5.5-5.5M19 12l-5.5 5.5" /></svg>);
+}
+export function IconCalendar() {
+  return (<svg {...BASE}><rect x="4" y="5.5" width="16" height="14" rx="2.5" /><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" /></svg>);
+}
+export function IconInfo() {
+  return (<svg {...BASE}><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5M12 8v.01" /></svg>);
+}
+export function IconPlus() {
+  return (<svg {...BASE}><path d="M12 5v14M5 12h14" /></svg>);
+}
+export function IconMinus() {
+  return (<svg {...BASE}><path d="M5 12h14" /></svg>);
+}
+export function IconReset() {
+  return (<svg {...BASE}><path d="M4 12a8 8 0 1 0 2.4-5.7" /><path d="M4 4.5v4.5h4.5" /></svg>);
+}
+export function IconTilt() {
+  return (<svg {...BASE}><path d="M3 15.5l9-4.5 9 4.5-9 4.5z" /><path d="M3 11.5l9-4.5 9 4.5" /></svg>);
+}
+export function IconShare() {
+  return (<svg {...BASE}><path d="M10 14l4-4M8.5 15.5l-1.5 1.5a3 3 0 0 1-4.2-4.2L5 10.6M15.5 8.5l1.5-1.5a3 3 0 0 1 4.2 4.2L19 13.4" /></svg>);
+}
+export function IconPrint() {
+  return (<svg {...BASE}><path d="M7 9V4.5h10V9M7 17H5a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 5 9h14a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 19 17h-2" /><rect x="7" y="14" width="10" height="6" rx="1" /></svg>);
+}
+export function IconExpand() {
+  return (<svg {...BASE}><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>);
+}

@@ -19,11 +19,12 @@ import { buildMockHotspots3d } from '../components/vista3d/focos3d.mock.js';
 import { aggregateByMunicipality, buildMunicipalityIndex, medianOf, sumSeries } from './geo.js';
 import { LANGUAGES, MONTH_NAMES, formatMonth, makeTranslator, profileName } from './i18n.js';
 import { RAMP_GRADIENT_CSS } from './ramp.js';
-import { IconFlame, IconMoon, IconOrbit, IconPause, IconPlay, IconSearch, IconSun } from './Icons.jsx';
+import { IconExpand, IconFlame, IconMinus, IconMoon, IconOrbit, IconPause, IconPlay, IconPlus, IconReset, IconSearch, IconShare, IconSun, IconTilt } from './Icons.jsx';
 import './atlas.css';
 import './atlas.extra.css';
 import './atlas.pages.css';
 import './atlas.tunari.css';
+import './atlas.polish.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
 const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
@@ -114,8 +115,13 @@ export default function AtlasApp() {
   const [search, setSearch] = useState('');
   const [mapReady, setMapReady] = useState(false);
   const [gamcLayers, setGamcLayers] = useState([]);
+  const [toast, setToast] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFlat, setIsFlat] = useState(false);
   const rootRef = useRef(null);
   const heroRef = useRef(null);
+  const mapRef = useRef(null);
+  const toastTimerRef = useRef(null);
   const curtainRef = useRef(null);
   const routeRef = useRef(initialRoute);
   const motionRef = useRef({ curtain: null, hero: null });
@@ -597,6 +603,47 @@ export default function AtlasApp() {
     setSelectedIdx(sortedAll[next].idx);
   }
 
+  function showToast(message) {
+    setToast(message);
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(function hide() {
+      setToast('');
+    }, 2200);
+  }
+
+  function copyLink() {
+    const link = window.location.href;
+    const done = function done() {
+      showToast(t('linkCopied'));
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(done).catch(done);
+    } else {
+      done();
+    }
+  }
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(function ignore() {
+        // el navegador puede negar la pantalla completa
+      });
+    }
+  }
+
+  useEffect(function trackFullscreen() {
+    function onChange() {
+      setIsFullscreen(!!document.fullscreenElement);
+    }
+    document.addEventListener('fullscreenchange', onChange);
+    return function cleanup() {
+      document.removeEventListener('fullscreenchange', onChange);
+      clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
   function goTo(route) {
     window.location.hash = '#/' + route;
   }
@@ -634,7 +681,7 @@ export default function AtlasApp() {
   const rankingMax = ranking.length > 0 ? Math.max(ranking[0].value, 1) : 1;
 
   return (
-    <div className="atlas" data-theme={theme} data-phase={phase} ref={rootRef}>
+    <div className={'atlas' + (selectedMunicipality !== null && !inHero && (!onPage || page === 'tunari') ? ' has-ficha' : '')} data-theme={theme} data-phase={phase} ref={rootRef}>
       <div
         className="atlas__map"
         tabIndex={inHero ? -1 : 0}
@@ -644,6 +691,7 @@ export default function AtlasApp() {
       >
         {isReady && (
           <AtlasMap
+            ref={mapRef}
             collection={geo.collection}
             municipalities={geo.municipalities}
             values={values}
@@ -919,6 +967,26 @@ export default function AtlasApp() {
       <div className="curtain" ref={curtainRef} aria-hidden="true">
         <p className="curtain__label"><IconFlame /> {curtainLabel}</p>
       </div>
+
+      {!inHero && (!onPage || page === 'tunari') && (
+        <div className="maptools" role="toolbar" aria-label={t('navAtlas')}>
+          <button type="button" className="tool" onClick={function zoomIn() { if (mapRef.current) mapRef.current.zoomBy(0.8); }} aria-label={t('zoomIn')} title={t('zoomIn')}><IconPlus /></button>
+          <button type="button" className="tool" onClick={function zoomOut() { if (mapRef.current) mapRef.current.zoomBy(-0.8); }} aria-label={t('zoomOut')} title={t('zoomOut')}><IconMinus /></button>
+          <button type="button" className="tool" onClick={function resetView() { setSelectedIdx(null); if (mapRef.current) mapRef.current.reset(); }} aria-label={t('resetView')} title={t('resetView')}><IconReset /></button>
+          <button
+            type="button"
+            className="tool"
+            aria-pressed={isFlat}
+            onClick={function tilt() { if (mapRef.current) mapRef.current.toggleTilt(); setIsFlat(!isFlat); }}
+            aria-label={isFlat ? t('tilt3d') : t('tilt2d')}
+            title={isFlat ? t('tilt3d') : t('tilt2d')}
+          ><IconTilt /></button>
+          <button type="button" className="tool" onClick={copyLink} aria-label={t('shareLink')} title={t('shareLink')}><IconShare /></button>
+          <button type="button" className="tool" aria-pressed={isFullscreen} onClick={toggleFullscreen} aria-label={isFullscreen ? t('exitFullscreen') : t('fullscreen')} title={isFullscreen ? t('exitFullscreen') : t('fullscreen')}><IconExpand /></button>
+        </div>
+      )}
+
+      <p className={'toast' + (toast ? ' is-visible' : '')} role="status" aria-live="polite">{toast}</p>
 
       <footer className="atlas__footer">
         <p>

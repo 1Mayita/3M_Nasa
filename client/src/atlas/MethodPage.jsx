@@ -130,6 +130,7 @@ export default function MethodPage(props) {
         <header className="method__head">
           <h1 id="method-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>
+          {language === 'qu' && <p className="page__notice" lang="es">Explicación larga en español: falta su traducción al quechua.</p>}
         </header>
         {content.sections.map(function section(item, index) {
           const isDataSection = index === content.sections.length - 1;

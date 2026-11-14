@@ -105,6 +105,7 @@ export default function TunariPage(props) {
           <h1 id="tunari-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>
           <p className="tunari__hint">{content.clickHint}</p>
+          {language === 'qu' && <p className="page__notice" lang="es">Explicación larga en español: falta su traducción al quechua.</p>}
         </header>
 
         <section aria-labelledby="tunari-municipalities">

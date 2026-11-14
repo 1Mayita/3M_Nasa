@@ -1,3 +1,6 @@
+import { QU } from './qu.js';
+import { ES_EXTRA, EN_EXTRA } from './i18n.extra.js';
+
 // =====================================================================
 // Dueño: P3 (Vista) — textos de la interfaz del atlas.
 // ES y EN completos. QU (quechua): SIN traducir a propósito; la revisa una persona
@@ -219,43 +222,12 @@ const TEXTS = {
     night: 'Night',
     day: 'Day'
   },
-  // QUECHUA PRELIMINAR: escrito sin hablante nativo; pendiente de revisión.
-  // Lo que no está aquí se muestra en español.
-  qu: {
-    title: 'Q’uñi ninakuna qhawana',
-    subtitle: 'Quchapampa · Tunari Parque Nacional · 47 llaqtakuna',
-    profiles: { bombero: 'Ninata wañuchiq / UGR', gestor: 'Gestor / SERNAP', ciudadano: 'Llaqta runa' },
-    themeDark: 'Tuta',
-    themeLight: 'P’unchaw',
-    night: 'Tuta',
-    day: 'P’unchaw',
-    honest: 'Satelitemanta rikusqakuna, manan chiqap ninakuna kanchu.',
-    sample: 'Yuyaychay willay',
-    loading: 'Urqukuna llaqtakunawan chayamushan…',
-    municipalities: 'Llaqtakuna',
-    searchMunicipality: 'Llaqta mask’ay',
-    accumulated: 'Tukuy tantasqa',
-    monthly: 'Killa killamanta',
-    play: 'Qallariy',
-    pause: 'Sayachiy',
-    month: 'Killa',
-    thisMonth: '{month} killapi',
-    detections: 'q’uñi rikch’aykuna',
-    detectionsOne: 'q’uñi rikch’ay',
-    legendLow: 'pisi',
-    legendHigh: 'achka',
-    legendTitle: 'Llaqtakunapi q’uñi rikch’aykuna',
-    close: 'Wichq’ay',
-    periodTotal: 'Tukuy pachapi',
-    download: 'CSV uraykachiy',
-    clickHint: 'Huk llaqtata ñit’iy',
-    rotate: 'Muyuchiy',
-    rotateStop: 'Muyuyta sayachiy',
-    heroCta: 'Mapata qhaway',
-    heroSkip: 'Atlasman yaykuy',
-    quNotice: 'Quechua preliminar: kay tarpuyta huk qhichwa rimaq qhawanqa. Mana tarisqa simikuna castellanopi rikhurin.'
-  }
+  // Quechua preliminar: ver qu.js
+  qu: QU
 };
+
+Object.assign(TEXTS.es, ES_EXTRA);
+Object.assign(TEXTS.en, EN_EXTRA);
 
 export function makeTranslator(language) {
   const table = TEXTS[language] || {};

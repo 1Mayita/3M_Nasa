@@ -9,7 +9,7 @@ import gsap from 'gsap';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianForSameMonth, sumSeries } from './geo.js';
 import { rampCss, intensityRatio } from './ramp.js';
-import { IconClose, IconDownload } from './Icons.jsx';
+import { IconClose, IconDownload, IconPrint } from './Icons.jsx';
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -41,6 +41,39 @@ function downloadCsv(municipality, months, values, isSample, harmonized) {
   link.download = (isSample ? 'MUESTRA_' : '') + 'focos_' + municipality.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.csv';
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function YearBars(props) {
+  const { months, values, t } = props;
+  const totals = {};
+  months.forEach(function add(month, i) {
+    const year = month.slice(0, 4);
+    totals[year] = (totals[year] || 0) + values[i];
+  });
+  const years = Object.keys(totals).sort();
+  if (years.length === 0) {
+    return null;
+  }
+  const maximum = Math.max.apply(null, years.map(function pick(year) { return totals[year]; }).concat([1]));
+  const best = years.reduce(function top(winner, year) { return totals[year] > totals[winner] ? year : winner; }, years[0]);
+  return (
+    <figure className="yearbars">
+      <figcaption>{t('chartTitle')}</figcaption>
+      <div className="yearbars__plot" role="img" aria-label={t('chartTitle') + ': ' + best + ' = ' + Math.round(totals[best]) + ' ' + t('detections')}>
+        {years.map(function column(year) {
+          const ratio = totals[year] / maximum;
+          return (
+            <div className="yearbars__col" key={year} title={year + ': ' + Math.round(totals[year])}>
+              <span className="yearbars__value">{year === best ? Math.round(totals[year]) : ''}</span>
+              <span className="yearbars__bar" style={{ height: Math.max(ratio * 100, 2) + '%', background: rampCss(intensityRatio(ratio, 1)) }} />
+              <span className="yearbars__year">{year.slice(2)}</span>
+            </div>
+          );
+        })}
+      </div>
+      <p className="ficha__muted">{t('chartHelp')}</p>
+    </figure>
+  );
 }
 
 export default function Ficha(props) {
@@ -177,6 +210,12 @@ export default function Ficha(props) {
     </section>
   );
 
+  const chartBlock = (
+    <section className="ficha__block" key="chart">
+      <YearBars months={months} values={values} t={t} />
+    </section>
+  );
+
   const nietoBlock = (
     <section className="ficha__block ficha__context" key="nino" aria-labelledby="ficha-nino">
       <h3 id="ficha-nino">{t('elNinoTitle')}</h3>
@@ -198,9 +237,9 @@ export default function Ficha(props) {
   if (profile === 'ciudadano') {
     blocks = [citizenBlock, comparisonBlock, calendarBlock, nietoBlock];
   } else if (profile === 'gestor') {
-    blocks = [calendarBlock, comparisonBlock, nietoBlock];
+    blocks = [calendarBlock, chartBlock, comparisonBlock, nietoBlock];
   } else {
-    blocks = [comparisonBlock, calendarBlock, nietoBlock];
+    blocks = [comparisonBlock, chartBlock, calendarBlock, nietoBlock];
   }
 
   return (
@@ -224,9 +263,14 @@ export default function Ficha(props) {
       {isSample && <p className="tag-sample">{t('sample')}</p>}
       {blocks}
       {harmonized && <p className="ficha__muted ficha__note">{t('sensorNote')}</p>}
-      <button type="button" className="button-ghost" onClick={function download() { downloadCsv(municipality, months, values, isSample, harmonized); }}>
-        <IconDownload /> {t('download')}
-      </button>
+      <div className="ficha__actions">
+        <button type="button" className="button-ghost" onClick={function download() { downloadCsv(municipality, months, values, isSample, harmonized); }}>
+          <IconDownload /> {t('download')}
+        </button>
+        <button type="button" className="button-ghost" onClick={function print() { window.print(); }}>
+          <IconPrint /> {t('printSheet')}
+        </button>
+      </div>
     </aside>
   );
 }

@@ -6,7 +6,7 @@
 // - Columnas ámbar opcionales por celda (los focos como relieve vivo)
 // =====================================================================
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { FlyToInterpolator } from '@deck.gl/core';
 import { GeoJsonLayer, ColumnLayer, BitmapLayer } from '@deck.gl/layers';
@@ -59,7 +59,7 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export default function AtlasMap(props) {
+const AtlasMap = forwardRef(function AtlasMap(props, ref) {
   const { collection, municipalities, values, maxValue, selectedIdx, hoverIdx, columns, columnMax, theme } = props;
   const { onSelect, onHover, onTerrainReady, rotationEnabled, entered, interactive, focusRegion, gamcLayers, active } = props;
 
@@ -164,6 +164,44 @@ export default function AtlasMap(props) {
     },
     [rotationEnabled, active, isIdle, reducedMotion, selectedIdx, entered, focusRegion]
   );
+
+  // comandos de la barra de herramientas del mapa
+  useImperativeHandle(ref, function expose() {
+    return {
+      zoomBy: function zoomBy(delta) {
+        setIsIdle(false);
+        setViewState(function change(previous) {
+          return Object.assign({}, previous, {
+            zoom: Math.min(Math.max(previous.zoom + delta, 6.2), 14),
+            transitionDuration: reducedMotion ? 0 : 400,
+            transitionInterpolator: undefined
+          });
+        });
+      },
+      reset: function reset() {
+        holdOrbit(3000);
+        setViewState(function change(previous) {
+          return Object.assign({}, previous, focusRegion ? {} : DEPARTMENT_VIEW, {
+            transitionDuration: reducedMotion ? 0 : 1600,
+            transitionInterpolator: new FlyToInterpolator({ speed: 1.2 })
+          });
+        });
+      },
+      toggleTilt: function toggleTilt() {
+        setIsIdle(false);
+        setViewState(function change(previous) {
+          return Object.assign({}, previous, {
+            pitch: previous.pitch > 30 ? 0 : 58,
+            transitionDuration: reducedMotion ? 0 : 900,
+            transitionInterpolator: undefined
+          });
+        });
+      },
+      getPitch: function getPitch() {
+        return viewState.pitch;
+      }
+    };
+  });
 
   useEffect(function preloadElevation() {
     loadElevation();
@@ -397,4 +435,6 @@ export default function AtlasMap(props) {
       }}
     />
   );
-}
+});
+
+export default AtlasMap;

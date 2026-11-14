@@ -4,7 +4,7 @@
 // =====================================================================
 
 import { forwardRef } from 'react';
-import { IconFlame, IconPeak } from './Icons.jsx';
+import { IconArrow, IconCalendar, IconFlame, IconInfo, IconPeak } from './Icons.jsx';
 
 const Hero = forwardRef(function Hero(props, ref) {
   const { t, onEnter, isReady } = props;
@@ -20,7 +20,11 @@ const Hero = forwardRef(function Hero(props, ref) {
           <button type="button" className="hero__cta" onClick={onEnter} disabled={!isReady}>
             <IconFlame />
             <span>{isReady ? t('heroCta') : t('loading')}</span>
+            <IconArrow />
           </button>
+          <a className="btn btn--secondary" href="#/tunari"><IconPeak /> {t('heroTunari')}</a>
+          <a className="btn btn--secondary" href="#/calendario"><IconCalendar /> {t('heroCalendar')}</a>
+          <a className="btn btn--secondary" href="#/metodo"><IconInfo /> {t('heroMethod')}</a>
         </div>
         <ul className="hero__facts">
           <li>{t('heroFact1')}</li>
