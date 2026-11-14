@@ -1,0 +1,416 @@
+/* =====================================================================
+   Dueño: P3 (Vista) — página "Municipios": recorrido con scroll, una escena por municipio
+   ===================================================================== */
+
+.page--places {
+  scroll-snap-type: y proximity;
+  background: #0e1a14;
+  color: #f1f7f2;
+}
+.places__scene {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* ---------- bienvenida ---------- */
+.places__welcome {
+  display: flex;
+  align-items: center;
+  padding: 120px clamp(24px, 6vw, 96px) 80px;
+  background:
+    radial-gradient(900px 520px at 80% 10%, rgba(125, 190, 140, 0.18), transparent 70%),
+    radial-gradient(800px 480px at 0% 100%, rgba(214, 140, 50, 0.14), transparent 70%),
+    #0e1a14;
+}
+.places__welcome-inner {
+  max-width: 880px;
+}
+.places__qu {
+  margin: 0 0 14px;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-style: italic;
+}
+.page--places h1 {
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+}
+.places__index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+.places__index button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(241, 247, 242, 0.24);
+  border-radius: 999px;
+  background: rgba(241, 247, 242, 0.06);
+  color: #f1f7f2;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+.places__index button:hover {
+  background: rgba(241, 247, 242, 0.16);
+  transform: translateY(-2px);
+}
+.places__index button:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* ---------- escena de municipio ---------- */
+.places__place {
+  display: flex;
+  align-items: flex-end;
+  background: #14281d;
+}
+.places__photo {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  object-fit: cover;
+  transform: scale(1.04);
+  animation: kenburns 28s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.places__place.is-live .places__photo {
+  animation-play-state: running;
+}
+.places__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, rgba(14, 26, 20, 0.92) 0%, rgba(14, 26, 20, 0.35) 45%, rgba(14, 26, 20, 0.1) 100%),
+    linear-gradient(90deg, rgba(14, 26, 20, 0.5) 0%, transparent 60%);
+}
+.places__place.is-flip .places__shade {
+  background:
+    linear-gradient(0deg, rgba(14, 26, 20, 0.92) 0%, rgba(14, 26, 20, 0.35) 45%, rgba(14, 26, 20, 0.1) 100%),
+    linear-gradient(270deg, rgba(14, 26, 20, 0.5) 0%, transparent 60%);
+}
+.places__card {
+  position: relative;
+  z-index: 2;
+  width: min(560px, 100%);
+  margin: 0 clamp(24px, 6vw, 96px) clamp(56px, 10vh, 110px);
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 900ms var(--ease-out) 150ms, transform 1000ms var(--ease-out) 150ms;
+}
+.places__place.is-flip .places__card {
+  margin-left: auto;
+}
+.places__place.is-in .places__card {
+  opacity: 1;
+  transform: none;
+}
+.places__zone {
+  margin: 0 0 10px;
+  color: var(--amber);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.places__card h2 {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.places__card p:not(.places__zone) {
+  margin: 0 0 24px;
+  color: rgba(241, 247, 242, 0.9);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.6;
+}
+
+/* ---------- cierre ---------- */
+.places__end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 28px;
+  min-height: 70vh;
+  padding: 80px clamp(24px, 6vw, 96px);
+  background: radial-gradient(900px 520px at 20% 30%, rgba(125, 190, 140, 0.16), transparent 70%), #0e1a14;
+}
+.places__end h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1;
+}
+.places__note {
+  max-width: 60ch;
+  margin: 0;
+  color: rgba(241, 247, 242, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ---------- puntos laterales ---------- */
+.places__dots {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  z-index: 8;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateY(-50%);
+}
+.places__dots button {
+  display: block;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.places__dots button::after {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: auto;
+  border: 2px solid rgba(241, 247, 242, 0.7);
+  border-radius: 50%;
+  transition: background 200ms, transform 200ms;
+}
+.places__dots button[aria-current='step']::after {
+  background: var(--amber);
+  border-color: var(--amber);
+  transform: scale(1.3);
+}
+.places__dots button:focus-visible {
+  outline: 3px solid var(--amber);
+  border-radius: 50%;
+}
+
+@media (max-width: 820px) {
+  .places__dots {
+    display: none;
+  }
+  .places__place.is-flip .places__card {
+    margin-left: clamp(24px, 6vw, 96px);
+  }
+  .places__card {
+    margin-bottom: 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page--places {
+    scroll-snap-type: none;
+  }
+  .places__photo {
+    animation: none;
+  }
+  .places__card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- los 47 municipios: filtros, rejilla y ficha ---------- */
+.places__all {
+  padding: 96px clamp(24px, 6vw, 96px);
+  background: #0e1a14;
+  scroll-snap-align: start;
+}
+.places__all h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1;
+}
+.places__alllead {
+  margin: 0 0 24px;
+  color: rgba(241, 247, 242, 0.75);
+}
+.places__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.places__filters button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(241, 247, 242, 0.24);
+  border-radius: 999px;
+  background: rgba(241, 247, 242, 0.06);
+  color: #f1f7f2;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.places__filters button[aria-pressed='true'] {
+  background: #d7ecd9;
+  border-color: #d7ecd9;
+  color: #10241a;
+}
+.places__filters button:focus-visible,
+.places__tile:focus-visible,
+.places__close:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}
+.places__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.places__tile {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(241, 247, 242, 0.14);
+  border-radius: 18px;
+  background: #14281d;
+  color: #f1f7f2;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 260ms var(--ease-out), border-color 260ms;
+}
+.places__tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--amber);
+}
+.places__tilephoto {
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #1f3d2b, #14281d) center / cover no-repeat;
+}
+.places__tiletext {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px 14px;
+}
+.places__tiletext small {
+  color: rgba(241, 247, 242, 0.7);
+  font-size: 0.8rem;
+}
+.places__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 16, 12, 0.82);
+  backdrop-filter: blur(6px);
+}
+.places__sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  width: min(1000px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 24px;
+  background: #14281d;
+  color: #f1f7f2;
+}
+.places__sheet img,
+.places__nophoto {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+}
+.places__nophoto {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #1f3d2b, #14281d);
+  color: rgba(241, 247, 242, 0.7);
+}
+.places__sheettext {
+  padding: 28px;
+}
+.places__sheettext h3 {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+}
+.places__sheettext dl {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.places__sheettext dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(241, 247, 242, 0.14);
+}
+.places__sheettext dt {
+  color: rgba(241, 247, 242, 0.7);
+}
+.places__sheettext dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+.places__sheettext p {
+  line-height: 1.6;
+}
+.places__credit {
+  color: rgba(241, 247, 242, 0.65);
+  font-size: 0.8rem;
+}
+.places__credit a {
+  color: inherit;
+}
+.places__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(14, 26, 20, 0.85);
+  color: #f1f7f2;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (max-width: 820px) {
+  .places__sheet {
+    grid-template-columns: 1fr;
+  }
+  .places__sheet img,
+  .places__nophoto {
+    min-height: 200px;
+    max-height: 260px;
+  }
+}

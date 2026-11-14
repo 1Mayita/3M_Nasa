@@ -1,0 +1,236 @@
+/* =====================================================================
+   Dueño: P3 (Vista) — página del Tunari y panel de capas de la Alcaldía
+   ===================================================================== */
+
+.page--tunari {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.tunari__panel {
+  position: absolute;
+  top: 84px;
+  bottom: 24px;
+  left: 24px;
+  width: min(480px, calc(100vw - 48px));
+  overflow: auto;
+  padding: 26px 24px 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+.tunari__panel h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.tunari__panel h2 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+}
+.tunari__panel section {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.tunari__panel .page__lead {
+  font-size: 0.98rem;
+}
+.tunari__panel .muted {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 0.86rem;
+}
+.tunari__hint {
+  margin: 14px 0 0;
+  font-weight: 700;
+}
+.tunari__names {
+  margin: 0 0 8px;
+  font-weight: 600;
+  line-height: 1.7;
+}
+.fuels {
+  display: grid;
+  gap: 16px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fuels li {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 12px;
+}
+.fuels__dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 50%;
+}
+.fuels strong {
+  display: block;
+  font-size: 1rem;
+}
+.fuels__meta {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: 0.82rem;
+}
+.fuels p {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.facts {
+  display: grid;
+  margin: 12px 0 10px;
+}
+.facts div {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.facts dt {
+  font-weight: 700;
+}
+.facts dd {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* ---------- panel de capas de la Alcaldía ---------- */
+.layers {
+  position: absolute;
+  left: 24px;
+  bottom: 218px;
+  width: 292px;
+  padding: 14px 14px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.layers h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1rem;
+}
+.layers p {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 0.78rem;
+}
+.layers label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.layers input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--amber);
+}
+.layers label.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.layers img {
+  display: block;
+  max-width: 100%;
+  margin: 2px 0 4px 26px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+@media (max-width: 820px) {
+  .tunari__panel {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 56vh;
+    border-radius: 20px 20px 0 0;
+  }
+  .layers {
+    display: none;
+  }
+}
+@media (min-width: 821px) and (max-width: 1100px) {
+  .layers {
+    bottom: 230px;
+  }
+}
+
+/* el panel de capas es plegable para no tapar el mapa */
+.layers summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+.layers summary::-webkit-details-marker {
+  display: none;
+}
+.layers summary::after {
+  content: '+';
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1;
+}
+.layers[open] summary::after {
+  content: '–';
+}
+.layers[open] summary {
+  margin-bottom: 6px;
+}
+.layers {
+  width: 250px;
+  max-height: 46vh;
+  overflow: auto;
+}
+
+/* las capas viven dentro del riel lateral: no flotan ni tapan el ranking */
+.rail .layers {
+  position: static;
+  width: auto;
+  max-height: none;
+  margin-top: 12px;
+  padding: 12px 4px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}

@@ -77,3 +77,18 @@ test('errores claros', async function () {
   await assert.rejects(getHotspots3d('no-existe'), Focos3dServiceError);
   await assert.rejects(getHotspots3d('depto', '2020-1'), Focos3dServiceError);
 });
+
+test('zona depto: solo celdas dentro de los 48 municipios de Cochabamba', async function () {
+  const { readMonthlyHotspots } = await import('../src/models/focos3d.model.js');
+  const { readMunicipalities } = await import('../src/models/municipios.model.js');
+  const { prepareMunicipalities, findMunicipality } = await import('../src/services/municipios.service.js');
+  const dataset = await readMonthlyHotspots();
+  const prepared = prepareMunicipalities(await readMunicipalities());
+  const result = await getHotspots3d('depto');
+  assert.ok(result.cells.length > 0);
+  for (const cell of result.cells) {
+    assert.notEqual(findMunicipality(cell.longitude, cell.latitude, prepared), null);
+  }
+  const allCellKeys = new Set(dataset.records.map(function (record) { return record[0] + '|' + record[1]; }));
+  assert.ok(result.cells.length < allCellKeys.size);
+});
