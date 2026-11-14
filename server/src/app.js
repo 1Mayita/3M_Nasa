@@ -5,6 +5,7 @@ import api from './routes/api.routes.js';
 import gamcRoutes from './routes/gamc.routes.js';
 import zonesRoutes from './routes/zones.routes.js';
 import focos3dRoutes from './routes/focos3d.routes.js';
+import municipiosRoutes from './routes/municipios.routes.js';
 import { env } from './config/env.js';
 
 export function createApp() {
@@ -14,6 +15,7 @@ export function createApp() {
   app.use('/api/gamc', gamcRoutes);
   app.use('/api/zones', zonesRoutes);
   app.use('/api', focos3dRoutes);
+  app.use('/api', municipiosRoutes);
   app.use('/api', api);
   app.use((req, res) => res.status(404).json({ error: 'No encontrado' }));
   // eslint-disable-next-line no-unused-vars

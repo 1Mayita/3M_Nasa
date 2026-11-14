@@ -203,3 +203,20 @@ Lo genera `model/export_focos_mensuales.py`:
   "records": [[-66.15, -17.31, "2020-08", 10.0]] }
 ```
 `records` = `[longitud_centro, latitud_centro, "YYYY-MM", cantidad_armonizada]`, ordenado por mes.
+
+## GET /api/municipios/mensual?desde=YYYY-MM&hasta=YYYY-MM
+Detecciones armonizadas por municipio y por mes (48 unidades: 47 municipios + TIOC Raqaypampa), con los mismos `id` que `client/public/data/municipios_cochabamba.geojson`. Copia de los límites en `data/reference/municipios_cochabamba.geojson` (Lab TecnoSocial 2024, CC BY 4.0, compilación no oficial). `desde` y `hasta` son opcionales.
+
+```json
+{
+  "unit": "detecciones (equivalente VIIRS S-NPP)",
+  "harmonized": true,
+  "isSample": false,
+  "note": "Cada celda de ~2 km se asigna al municipio donde cae su centro. Una detección es un píxel caliente, no un incendio. Análisis histórico, no predicción.",
+  "months": ["2001-01", "…", "2026-10"],
+  "municipios": [ { "id": "031101", "nombre": "Villa Tunari", "provincia": "Chapare", "total": 19070, "serie": [0, 1.5, "…"] } ],
+  "fueraDeMunicipios": 0
+}
+```
+- `serie[i]` corresponde a `months[i]` (mismo largo). Ordenados de mayor a menor `total`.
+- `fueraDeMunicipios`: detecciones cuyas celdas caen fuera de todos los polígonos (borde del departamento).
