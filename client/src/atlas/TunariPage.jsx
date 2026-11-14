@@ -12,6 +12,7 @@ const FUEL_ORDER = ['pajonal', 'eucalipto', 'pino', 'kewina'];
 
 const CONTENT = {
   es: {
+    imageLabel: 'Ilustración generada con IA: laderas del Tunari en época seca',
     title: 'El Parque Nacional Tunari',
     lead: 'La cordillera que cierra el valle de Cochabamba. El mapa resalta los municipios que, según el mapa de SERNAP reproducido por CEDIB, comparten el parque; la lista aún no es definitiva.',
     clickHint: 'Haz clic en un municipio del mapa para abrir su ficha.',
@@ -32,6 +33,7 @@ const CONTENT = {
     municipalitiesNote: 'Lista según un mapa atribuido a SERNAP; otras fuentes incluyen también a Villa Tunari y Colcapirhua.'
   },
   en: {
+    imageLabel: 'AI-generated illustration: Tunari slopes in the dry season',
     title: 'Tunari National Park',
     lead: 'The mountain range that closes the Cochabamba valley. The map highlights the municipalities that, according to the SERNAP map reproduced by CEDIB, share the park; the list is not final yet.',
     clickHint: 'Click a municipality on the map to open its sheet.',
@@ -101,6 +103,7 @@ export default function TunariPage(props) {
   return (
     <section className="page--tunari" ref={pageRef} aria-labelledby="tunari-title">
       <div className="tunari__panel">
+        <div className="tunari__photo" style={{ backgroundImage: 'url(' + (import.meta.env.BASE_URL || '/') + 'img/tunari_ladera.webp), linear-gradient(135deg, #1f3d2b, #0e1a14)' }} role="img" aria-label={content.imageLabel} />
         <header>
           <h1 id="tunari-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>

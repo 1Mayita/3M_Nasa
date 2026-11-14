@@ -6,9 +6,13 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import Banner from './Banner.jsx';
+
+const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/tunari_ladera.webp';
 
 const CONTENT = {
   es: {
+    imageLabel: 'Ilustración generada con IA: laderas del Tunari en época seca',
     title: 'Cómo se construyó este atlas',
     lead: 'Un foco de calor es un píxel que un satélite vio más caliente de lo normal. No es un incendio confirmado. Esta página explica qué se muestra, cómo se juntan dos satélites y qué límites tiene.',
     sections: [
@@ -52,6 +56,7 @@ const CONTENT = {
     ]
   },
   en: {
+    imageLabel: 'AI-generated illustration: Tunari slopes in the dry season',
     title: 'How this atlas was built',
     lead: 'A hot spot is a pixel a satellite saw hotter than usual. It is not a confirmed fire. This page explains what is shown, how two satellites are combined and what the limits are.',
     sections: [
@@ -126,12 +131,14 @@ export default function MethodPage(props) {
 
   return (
     <section className="page page--method" ref={pageRef} aria-labelledby="method-title">
-      <div className="page__inner page__inner--narrow">
-        <header className="method__head">
+      <Banner image={BANNER_IMAGE} label={content.imageLabel}>
+        <div className="method__head">
           <h1 id="method-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>
           {language === 'qu' && <p className="page__notice" lang="es">Explicación larga en español: falta su traducción al quechua.</p>}
-        </header>
+        </div>
+      </Banner>
+      <div className="page__inner page__inner--narrow page__inner--banner">
         {content.sections.map(function section(item, index) {
           const isDataSection = index === content.sections.length - 1;
           return (

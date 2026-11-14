@@ -10,6 +10,7 @@ import gsap from 'gsap';
 import AtlasMap from './AtlasMap.jsx';
 import Ficha from './Ficha.jsx';
 import Hero from './Hero.jsx';
+import Embers from './Embers.jsx';
 const CalendarPage = lazy(() => import('./CalendarPage.jsx'));
 const MethodPage = lazy(() => import('./MethodPage.jsx'));
 const TunariPage = lazy(() => import('./TunariPage.jsx'));
@@ -26,6 +27,7 @@ import './atlas.pages.css';
 import './atlas.tunari.css';
 import './atlas.polish.css';
 import './atlas.layout.css';
+import './atlas.identity.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
 const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
@@ -727,7 +729,7 @@ export default function AtlasApp() {
             onSelect={handleSelect}
             onHover={handleHover}
             interactive={!inHero}
-            focusRegion={page === 'tunari' || (inHero && storyStep === 2) ? tunariRegion : null}
+            focusRegion={page === 'tunari' || (inHero && storyStep === 3) ? tunariRegion : null}
             active={mapActive}
             gamcLayers={gamcLayers}
             onTerrainReady={handleTerrainReady}
@@ -744,6 +746,7 @@ export default function AtlasApp() {
       {!isShown && errorMessage === null && inAtlas && <p className="atlas__status" role="status">{t('loading')}</p>}
       {errorMessage !== null && <p className="atlas__status is-error" role="alert">{t('loadError')}: {errorMessage}</p>}
 
+      {phase !== 'atlas' && <Embers />}
       {phase !== 'atlas' && <Hero ref={heroRef} t={t} onEnter={function enter() { goTo('atlas'); }} isReady={isShown} onStep={setStoryStep} step={storyStep} />}
 
       {phase !== 'hero' && (

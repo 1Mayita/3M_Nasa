@@ -48,3 +48,6 @@ Teclado: las flechas ← → sobre el mapa recorren los municipios por cantidad 
 
 ## Pendiente de la Vista (P3)
 Revisión del quechua por una persona hablante (hoy es preliminar y se rotula así); datos reales; cifras oficiales de hectáreas más allá de las citadas en la página del Tunari.
+
+## Im�genes
+- client/public/img/*.webp: ilustraciones generadas con IA (valle de Cochabamba, Cristo de la Concordia, laderas del Tunari y un textil andino original). Se rotulan en los cr�ditos de la web como ilustraciones generadas con IA. Si el equipo consigue fotograf�as propias, basta reemplazar esos cuatro archivos con el mismo nombre.

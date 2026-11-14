@@ -1,5 +1,12 @@
 // Textos nuevos (botones, barra del mapa, gráfico) en español e inglés.
 export const ES_EXTRA = {
+  credits: 'Focos: NASA FIRMS · Relieve: AWS Terrain Tiles · Imagen satelital: Esri, Maxar, Earthstar Geographics · Límites: Lab TecnoSocial 2024 (CC BY 4.0) · Fotografías: ilustraciones generadas con IA',
+  identityName: 'Cochabamba',
+  identityQu: 'Quchapampa',
+  identityText: 'Un valle entre montañas, con el Tunari de telón de fondo. Aquí el fuego no es una imagen lejana: se vigila, se mide y se cuenta.',
+  imgValley: 'Ilustración generada con IA: el valle de Cochabamba al atardecer con la cordillera del Tunari al fondo',
+  imgCristo: 'Ilustración generada con IA: el Cristo de la Concordia sobre el cerro San Pedro al atardecer',
+  imgTunari: 'Ilustración generada con IA: laderas del Tunari en época seca',
   storyScroll: 'Desplázate',
   storyWhereTitle: '48 territorios, un solo valle.',
   storyWhereText: 'Cochabamba tiene 47 municipios y un territorio indígena con límites propios, Raqaypampa. En el atlas cada uno se abre con un clic y cuenta su propia historia de focos de calor.',
@@ -29,6 +36,13 @@ export const ES_EXTRA = {
 };
 
 export const EN_EXTRA = {
+  credits: 'Hot spots: NASA FIRMS · Terrain: AWS Terrain Tiles · Satellite imagery: Esri, Maxar, Earthstar Geographics · Boundaries: Lab TecnoSocial 2024 (CC BY 4.0) · Photographs: AI-generated illustrations',
+  identityName: 'Cochabamba',
+  identityQu: 'Quchapampa',
+  identityText: 'A valley between mountains, with the Tunari as its backdrop. Here fire is not a distant image: it is watched, measured and told.',
+  imgValley: 'AI-generated illustration: the Cochabamba valley at sunset with the Tunari range behind',
+  imgCristo: 'AI-generated illustration: the Christ of the Concord on San Pedro hill at sunset',
+  imgTunari: 'AI-generated illustration: Tunari slopes in the dry season',
   storyScroll: 'Scroll',
   storyWhereTitle: '48 territories, one valley.',
   storyWhereText: 'Cochabamba has 47 municipalities and an Indigenous territory with its own boundaries, Raqaypampa. In the atlas each one opens with a click and tells its own story of hot spots.',

@@ -1,24 +1,31 @@
 // =====================================================================
 // Dueño: P3 (Vista)
 // Portada con historia que se recorre con scroll (inspirada en los sitios de estudio de la referencia):
-// pantalla de entrada + cuatro escenas de tipografía grande. El mapa 3D de fondo cambia de cámara
-// con cada escena. Un solo botón principal entra al atlas.
+// pantalla de entrada con el mapa 3D, una escena de identidad (Cochabamba / Quchapampa) con imagen a
+// pantalla completa, cuatro escenas de tipografía grande y un cierre. La cámara del mapa cambia con cada escena.
+// Las imágenes son ilustraciones generadas con IA y se rotulan en los créditos.
 // =====================================================================
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { IconArrow, IconCalendar, IconFlame, IconInfo, IconPeak } from './Icons.jsx';
 
-const SCENES = [
+const BASE = import.meta.env.BASE_URL || '/';
+const IMAGE_VALLEY = BASE + 'img/cochabamba_valle.webp';
+const IMAGE_CRISTO = BASE + 'img/cristo_concordia.webp';
+
+const MAP_SCENES = [
   { id: 'where', title: 'storyWhereTitle', text: 'storyWhereText', href: '#/atlas', cta: 'storyWhereCta', Icon: IconFlame },
   { id: 'tunari', title: 'storyTunariTitle', text: 'storyTunariText', href: '#/tunari', cta: 'heroTunari', Icon: IconPeak },
   { id: 'when', title: 'storyWhenTitle', text: 'storyWhenText', href: '#/calendario', cta: 'heroCalendar', Icon: IconCalendar },
   { id: 'how', title: 'storyHowTitle', text: 'storyHowText', href: '#/metodo', cta: 'heroMethod', Icon: IconInfo }
 ];
 
+// pasos: 0 portada · 1 identidad · 2 dónde · 3 Tunari · 4 cuándo · 5 cómo · 6 cierre
+export const STORY_STEPS = MAP_SCENES.length + 3;
+
 const Hero = forwardRef(function Hero(props, ref) {
   const { t, onEnter, isReady, onStep, step } = props;
   const sectionRefs = useRef([]);
-  const screenCount = SCENES.length + 2;
 
   // Cada escena avisa cuando ocupa la pantalla: sirve para mover la cámara del mapa y revelar el texto
   useEffect(function observeScenes() {
@@ -57,9 +64,15 @@ const Hero = forwardRef(function Hero(props, ref) {
     }
   }
 
+  function register(index) {
+    return function set(element) {
+      sectionRefs.current[index] = element;
+    };
+  }
+
   return (
     <section className="hero" ref={ref} aria-labelledby="hero-title">
-      <div className="hero__screen story__scene" data-step="0" ref={function setFirst(element) { sectionRefs.current[0] = element; }}>
+      <div className="hero__screen story__scene" data-step="0" ref={register(0)}>
         <div className="hero__content">
           <h1 id="hero-title" className="hero__title">
             {t('title')}
@@ -91,14 +104,25 @@ const Hero = forwardRef(function Hero(props, ref) {
         </button>
       </div>
 
-      {SCENES.map(function scene(item, i) {
+      <div
+        className="story__scene story__block story__identity story__photo"
+        data-step="1"
+        ref={register(1)}
+        style={{ '--photo': 'url(' + IMAGE_VALLEY + ')' }}
+        role="img"
+        aria-label={t('imgValley')}
+      >
+        <div className="story__inner">
+          <p className="story__mega">{t('identityName')}</p>
+          <p className="story__qu" lang="qu">{t('identityQu')}</p>
+          <p className="story__text">{t('identityText')}</p>
+        </div>
+        <div className="story__textile" aria-hidden="true" />
+      </div>
+
+      {MAP_SCENES.map(function scene(item, i) {
         return (
-          <div
-            className="story__scene story__block"
-            key={item.id}
-            data-step={i + 1}
-            ref={function setScene(element) { sectionRefs.current[i + 1] = element; }}
-          >
+          <div className="story__scene story__block" key={item.id} data-step={i + 2} ref={register(i + 2)}>
             <div className="story__inner">
               <h2 className="story__title">{t(item.title)}</h2>
               <p className="story__text">{t(item.text)}</p>
@@ -108,7 +132,14 @@ const Hero = forwardRef(function Hero(props, ref) {
         );
       })}
 
-      <div className="story__scene story__block story__end" data-step={SCENES.length + 1} ref={function setEnd(element) { sectionRefs.current[SCENES.length + 1] = element; }}>
+      <div
+        className="story__scene story__block story__end story__photo"
+        data-step={MAP_SCENES.length + 2}
+        ref={register(MAP_SCENES.length + 2)}
+        style={{ '--photo': 'url(' + IMAGE_CRISTO + ')' }}
+        role="img"
+        aria-label={t('imgCristo')}
+      >
         <div className="story__inner">
           <h2 className="story__title">{t('storyEndTitle')}</h2>
           <button type="button" className="hero__cta" onClick={onEnter} disabled={!isReady}>
@@ -117,10 +148,11 @@ const Hero = forwardRef(function Hero(props, ref) {
             <IconArrow />
           </button>
         </div>
+        <div className="story__textile" aria-hidden="true" />
       </div>
 
       <ol className="story__dots" aria-label={t('storyScroll')}>
-        {Array.from({ length: screenCount }).map(function dot(unused, i) {
+        {Array.from({ length: STORY_STEPS }).map(function dot(unused, i) {
           return (
             <li key={i}>
               <button type="button" onClick={function jump() { goToStep(i); }} aria-label={String(i + 1)} aria-current={step === i ? 'step' : undefined} />

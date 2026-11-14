@@ -6,6 +6,9 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
+import Banner from './Banner.jsx';
+
+const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/cochabamba_valle.webp';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianOf } from './geo.js';
 import { rampColor, intensityRatio } from './ramp.js';
@@ -203,10 +206,14 @@ export default function CalendarPage(props) {
 
   return (
     <section className="page page--calendar" ref={pageRef} aria-labelledby="cal-title">
-      <div className="page__inner">
-        <header className="page__head">
+      <Banner image={BANNER_IMAGE} label={t('imgValley')}>
+        <div className="page__head">
           <h1 id="cal-title" tabIndex={-1}>{t('calTitle')}</h1>
           <p className="page__lead">{t('calLead')}</p>
+        </div>
+      </Banner>
+      <div className="page__inner page__inner--banner">
+        <header className="page__head">
           <div className="page__tools">
             <label className="field">
               <span>{t('calScope')}</span>

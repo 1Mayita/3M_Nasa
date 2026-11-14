@@ -9,7 +9,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { FlyToInterpolator } from '@deck.gl/core';
-import { GeoJsonLayer, ColumnLayer, BitmapLayer } from '@deck.gl/layers';
+import { GeoJsonLayer, ColumnLayer, BitmapLayer, TextLayer } from '@deck.gl/layers';
 import { TerrainLayer, TileLayer } from '@deck.gl/geo-layers';
 import { getGamcTileUrl } from '../services/gamcApi.js';
 import { _TerrainExtension as TerrainExtension } from '@deck.gl/extensions';
@@ -281,6 +281,17 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
     [values, maxValue, focusRegion]
   );
 
+  // nombres de los municipios: aparecen al acercarse, para reconocer Cochabamba y su valle
+  const showLabels = viewState.zoom >= 8.0;
+  const labelData = useMemo(
+    function buildLabels() {
+      return municipalities.map(function toLabel(municipality) {
+        return { name: municipality.name.replace('TIOC-', ''), position: municipality.center, big: municipality.km2 > 1500 };
+      });
+    },
+    [municipalities]
+  );
+
   const layers = useMemo(
     function buildLayers() {
       const draping = terrainLoaded ? [new TerrainExtension()] : [];
@@ -293,6 +304,9 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
           elevationData: ELEVATION_TILES_URL,
           texture: SATELLITE_TILES_URL,
           operation: 'terrain+draw',
+          onTileLoad: function tileLoaded() {
+            setTerrainLoaded(true);
+          },
           onViewportLoad: function viewportLoaded() {
             setTerrainLoaded(true);
             setTerrainReady(true);
@@ -346,6 +360,33 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
           transitions: reducedMotion ? {} : { getFillColor: 450, getLineWidth: 200 },
           extensions: draping
         }),
+        showLabels
+          ? new TextLayer({
+              id: 'nombres',
+              data: labelData,
+              getPosition: function labelPosition(item) {
+                return item.position;
+              },
+              getText: function labelText(item) {
+                return item.name;
+              },
+              getSize: function labelSize(item) {
+                return item.big ? 15 : 13;
+              },
+              sizeUnits: 'pixels',
+              getColor: [246, 244, 236, 240],
+              fontFamily: 'Hanken Grotesk, system-ui, sans-serif',
+              fontWeight: 700,
+              outlineWidth: 4,
+              outlineColor: [14, 26, 20, 235],
+              fontSettings: { sdf: true, radius: 8 },
+              billboard: true,
+              pickable: false,
+              getTextAnchor: 'middle',
+              getAlignmentBaseline: 'center',
+              extensions: draping
+            })
+          : null,
         ...(gamcLayers || []).map(function gamcLayer(name) {
           return new TileLayer({
             id: 'gamc-' + name,
@@ -402,9 +443,9 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
           transitions: reducedMotion ? {} : { getElevation: 320 },
           extensions: draping
         })
-      ];
+      ].filter(Boolean);
     },
-    [collection, fillColors, selectedIdx, hoverIdx, columns, columnMax, theme, terrainReady, terrainLoaded, gamcLayers, focusRegion, reducedMotion, onHover, onSelect]
+    [collection, fillColors, selectedIdx, hoverIdx, columns, columnMax, theme, terrainReady, terrainLoaded, gamcLayers, focusRegion, reducedMotion, showLabels, labelData, onHover, onSelect]
   );
 
   return (
