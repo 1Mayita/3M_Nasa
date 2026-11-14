@@ -1,0 +1,265 @@
+import { QU } from './qu.js';
+import { ES_EXTRA, EN_EXTRA } from './i18n.extra.js';
+
+// =====================================================================
+// Dueño: P3 (Vista) — textos de la interfaz del atlas.
+// ES y EN completos. QU (quechua): SIN traducir a propósito; la revisa una persona
+// hablante (textos de P1 en docs/textos_i18n.md). Mientras tanto cae a español.
+// =====================================================================
+
+export const LANGUAGES = ['es', 'qu', 'en'];
+
+const TEXTS = {
+  es: {
+    title: 'Observatorio de focos de calor',
+    subtitle: 'Cochabamba · Parque Nacional Tunari · 47 municipios',
+    profile: 'Perfil',
+    profiles: { bombero: 'Bombero / UGR', gestor: 'Gestor / SERNAP', ciudadano: 'Ciudadano' },
+    language: 'Idioma',
+    quNotice: 'Quechua preliminar, pendiente de revisión por una persona hablante. Lo que falta se muestra en español.',
+    theme: 'Tema',
+    themeDark: 'Oscuro',
+    themeLight: 'Claro',
+    honest: 'Detecciones satelitales, no incendios confirmados. Análisis histórico, no predicción.',
+    sample: 'Muestra sintética',
+    sampleLong: 'Datos de muestra sintéticos: no usar para conclusiones.',
+    loading: 'Cargando relieve y municipios…',
+    loadError: 'No se pudo cargar el atlas',
+    municipalities: 'Municipios',
+    searchMunicipality: 'Buscar municipio',
+    chooseMunicipality: 'Elige un municipio…',
+    topNow: 'Con más focos en este período',
+    topNowBombero: 'Zonas con más focos en este período',
+    rotate: 'Girar la cámara',
+    rotateStop: 'Detener giro',
+    accumulated: 'Acumulado',
+    monthly: 'Mes a mes',
+    play: 'Reproducir',
+    pause: 'Pausar',
+    month: 'Mes',
+    detections: 'detecciones',
+    detectionsOne: 'detección',
+    legendLow: 'menos',
+    legendHigh: 'más',
+    legendTitle: 'Focos por municipio',
+    close: 'Cerrar',
+    province: 'Provincia',
+    area: 'Superficie',
+    nameTiocNote: 'Territorio indígena originario campesino, unidad aparte de Mizque.',
+    sensorNote: 'Serie armonizada, equivalente VIIRS. MODIS y VIIRS nunca se suman.',
+    periodTotal: 'En todo el período',
+    thisMonth: 'En {month}',
+    vsMedian: 'La mediana de ese mes en años anteriores es {median} ({years} años).',
+    aboveMedian: '{pct} % por encima de la mediana',
+    belowMedian: '{pct} % por debajo de la mediana',
+    atMedian: 'Igual que la mediana',
+    noMedian: 'Sin años anteriores para comparar',
+    medianZero: 'La mediana de ese mes es 0: no se puede calcular un porcentaje',
+    calendarTitle: 'Calendario de actividad',
+    calendarHelp: 'Cada casilla es un mes; el color indica la cantidad de detecciones.',
+    elNinoTitle: 'El Niño, solo contexto',
+    elNinoText: 'Los años de El Niño suelen traer condiciones más cálidas y secas en la región. Se muestra como contexto histórico: no demuestra que cause más focos.',
+    download: 'Descargar CSV',
+    citizenTitle: 'Si ves humo o fuego',
+    citizenText: 'Aléjate, no intentes apagarlo y avisa de inmediato a los bomberos o a la UGR de tu municipio. Evita hacer fuego en la temporada seca.',
+    seasonTitle: 'Cuándo se detectan más focos',
+    seasonText: 'Según los datos del atlas, los meses con más detecciones (en la mediana) son {months}. Es lo ocurrido en el pasado, no una predicción.',
+    clickHint: 'Haz clic en un municipio',
+    credits: 'Focos: NASA FIRMS · Relieve: AWS Terrain Tiles · Imagen: Esri, Maxar, Earthstar Geographics · Límites: Lab TecnoSocial 2024 (CC BY 4.0)',
+    classic: 'Calendario clásico',
+    navHome: 'Inicio',
+    navAtlas: 'Atlas 3D',
+    navTunari: 'Tunari',
+    navAria: 'Navegación principal',
+    mapAria: 'Mapa 3D de Cochabamba. Con las flechas izquierda y derecha recorres los municipios por cantidad de detecciones; Esc cierra la ficha.',
+    layersTitle: 'Capas de la Alcaldía',
+    layersNote: 'Solo el municipio de Cercado. Acércate al valle para verlas.',
+    layersOffline: 'Necesitan el servidor del proyecto (no disponibles en modo muestra).',
+    layerDistritos: 'Distritos',
+    layerCota: 'Cota 2750',
+    layerPeriurbanos: 'Periurbanos',
+    navCalendar: 'Calendario',
+    navMethod: 'Método',
+    calTitle: 'Calendario de actividad',
+    calLead: 'Cada fila es un año y cada columna un mes. Elige el departamento o un municipio y compara la cantidad de detecciones con la mediana de ese mes.',
+    calScope: 'Ámbito',
+    calScopeAll: 'Todo el departamento',
+    calMode: 'Qué mostrar',
+    calCount: 'Cantidad',
+    calAnomaly: 'Anomalía',
+    calReadTitle: 'Cómo leerlo',
+    calReadCount: 'El número y el color indican las detecciones de cada mes. Una casilla vacía es un mes sin detecciones o sin datos.',
+    calReadAnomaly: 'El color indica cuánto se aleja ese mes de la mediana histórica del mismo mes. Las casillas grises no tienen mediana para comparar.',
+    calClassLowest: '50 % o menos de lo habitual',
+    calClassLow: 'Entre 25 % y 49 % menos',
+    calClassSame: 'Parecido a lo habitual',
+    calClassHigh: 'Entre 25 % y 49 % más',
+    calClassHigher: 'Entre 50 % y 74 % más',
+    calClassHighest: '75 % o más por encima de lo habitual',
+    calSummaryTitle: 'Lo que dice este ámbito',
+    calTopMonths: 'Los meses con más detecciones, en la mediana, son {months}.',
+    calTopYears: 'Los años con más detecciones fueron {years}.',
+    calEnsoNote: 'El punto de la esquina de cada casilla marca la fase de ese mes (azul oscuro: El Niño; celeste: La Niña). Es contexto histórico, no una explicación.',
+    calMedian: 'Mediana del mes',
+    heroLead: 'Mira dónde se detectan focos de calor en Cochabamba, municipio por municipio: el Parque Tunari, 47 municipios y los años de detecciones satelitales de la NASA (MODIS y VIIRS).',
+    heroCta: 'Explorar el mapa',
+    heroSkip: 'Entrar al atlas',
+    heroFact1: '47 municipios + Raqaypampa',
+    heroFact2: 'Tunari y su valle en 3D',
+    heroFact3: 'MODIS y VIIRS, sin sumarlos',
+    ensoLabel: 'El Niño / La Niña (ONI, NOAA): contexto',
+    ensoNino: 'fase cálida (El Niño)',
+    ensoNina: 'fase fría (La Niña)',
+    ensoNeutral: 'fase neutral',
+    ensoLine: 'ONI de {month}: {value} · {phase}',
+    rankLine: 'Puesto {rank} de {total} por detecciones en este período',
+    night: 'Noche',
+    day: 'Día'
+  },
+  en: {
+    title: 'Hot spot observatory',
+    subtitle: 'Cochabamba · Tunari National Park · 47 municipalities',
+    profile: 'Profile',
+    profiles: { bombero: 'Firefighter / UGR', gestor: 'Manager / SERNAP', ciudadano: 'Citizen' },
+    language: 'Language',
+    quNotice: 'Preliminary Quechua, pending review by a speaker. Missing text is shown in Spanish.',
+    theme: 'Theme',
+    themeDark: 'Dark',
+    themeLight: 'Light',
+    honest: 'Satellite detections, not confirmed fires. Historical analysis, not a forecast.',
+    sample: 'Synthetic sample',
+    sampleLong: 'Synthetic sample data: do not use for conclusions.',
+    loading: 'Loading terrain and municipalities…',
+    loadError: 'The atlas could not be loaded',
+    municipalities: 'Municipalities',
+    searchMunicipality: 'Find a municipality',
+    chooseMunicipality: 'Choose a municipality…',
+    topNow: 'Most detections in this period',
+    topNowBombero: 'Zones with most detections in this period',
+    rotate: 'Rotate the camera',
+    rotateStop: 'Stop rotation',
+    accumulated: 'Accumulated',
+    monthly: 'Month by month',
+    play: 'Play',
+    pause: 'Pause',
+    month: 'Month',
+    detections: 'detections',
+    detectionsOne: 'detection',
+    legendLow: 'fewer',
+    legendHigh: 'more',
+    legendTitle: 'Detections per municipality',
+    close: 'Close',
+    province: 'Province',
+    area: 'Area',
+    nameTiocNote: 'Indigenous territory, separate from Mizque.',
+    sensorNote: 'Harmonized series, VIIRS-equivalent. MODIS and VIIRS are never added together.',
+    periodTotal: 'Over the whole period',
+    thisMonth: 'In {month}',
+    vsMedian: 'The median for that month in previous years is {median} ({years} years).',
+    aboveMedian: '{pct} % above the median',
+    belowMedian: '{pct} % below the median',
+    atMedian: 'Same as the median',
+    noMedian: 'No earlier years to compare',
+    medianZero: 'The median for that month is 0: a percentage cannot be calculated',
+    calendarTitle: 'Activity calendar',
+    calendarHelp: 'Each square is a month; color shows the number of detections.',
+    elNinoTitle: 'El Niño, context only',
+    elNinoText: 'El Niño years tend to bring warmer, drier conditions in the region. It is shown as historical context: it does not prove it causes more hot spots.',
+    download: 'Download CSV',
+    citizenTitle: 'If you see smoke or fire',
+    citizenText: 'Move away, do not try to put it out, and notify the fire brigade or your municipality UGR immediately. Avoid lighting fires in the dry season.',
+    seasonTitle: 'When more hot spots are detected',
+    seasonText: 'According to the atlas data, the months with the most detections (by median) are {months}. This is what happened in the past, not a forecast.',
+    clickHint: 'Click a municipality',
+    credits: 'Hot spots: NASA FIRMS · Terrain: AWS Terrain Tiles · Imagery: Esri, Maxar, Earthstar Geographics · Boundaries: Lab TecnoSocial 2024 (CC BY 4.0)',
+    classic: 'Classic calendar',
+    navHome: 'Home',
+    navAtlas: '3D atlas',
+    navTunari: 'Tunari',
+    navAria: 'Main navigation',
+    mapAria: '3D map of Cochabamba. Use the left and right arrow keys to move through municipalities by number of detections; Esc closes the sheet.',
+    layersTitle: 'Municipal layers',
+    layersNote: 'Cercado municipality only. Zoom into the valley to see them.',
+    layersOffline: 'They need the project server (not available in sample mode).',
+    layerDistritos: 'Districts',
+    layerCota: '2750 m contour',
+    layerPeriurbanos: 'Peri-urban areas',
+    navCalendar: 'Calendar',
+    navMethod: 'Method',
+    calTitle: 'Activity calendar',
+    calLead: 'Each row is a year and each column a month. Pick the department or a municipality and compare the number of detections with that month’s median.',
+    calScope: 'Scope',
+    calScopeAll: 'Whole department',
+    calMode: 'What to show',
+    calCount: 'Count',
+    calAnomaly: 'Anomaly',
+    calReadTitle: 'How to read it',
+    calReadCount: 'The number and color show each month’s detections. An empty cell is a month with no detections or no data.',
+    calReadAnomaly: 'Color shows how far that month is from the historical median for the same month. Grey cells have no median to compare.',
+    calClassLowest: '50 % or less than usual',
+    calClassLow: '25 % to 49 % less',
+    calClassSame: 'Close to usual',
+    calClassHigh: '25 % to 49 % more',
+    calClassHigher: '50 % to 74 % more',
+    calClassHighest: '75 % or more above usual',
+    calSummaryTitle: 'What this scope says',
+    calTopMonths: 'The months with the most detections, by median, are {months}.',
+    calTopYears: 'The years with the most detections were {years}.',
+    calEnsoNote: 'The dot in each cell’s corner marks that month’s phase (dark blue: El Niño; light blue: La Niña). It is historical context, not an explanation.',
+    calMedian: 'Month median',
+    heroLead: 'See where hot spots are detected in Cochabamba, municipality by municipality: the Tunari park, 47 municipalities and years of NASA satellite detections (MODIS and VIIRS).',
+    heroCta: 'Explore the map',
+    heroSkip: 'Enter the atlas',
+    heroFact1: '47 municipalities + Raqaypampa',
+    heroFact2: 'Tunari and its valley in 3D',
+    heroFact3: 'MODIS and VIIRS, never added together',
+    ensoLabel: 'El Niño / La Niña (ONI, NOAA): context',
+    ensoNino: 'warm phase (El Niño)',
+    ensoNina: 'cool phase (La Niña)',
+    ensoNeutral: 'neutral phase',
+    ensoLine: 'ONI for {month}: {value} · {phase}',
+    rankLine: 'Rank {rank} of {total} by detections in this period',
+    night: 'Night',
+    day: 'Day'
+  },
+  // Quechua preliminar: ver qu.js
+  qu: QU
+};
+
+Object.assign(TEXTS.es, ES_EXTRA);
+Object.assign(TEXTS.en, EN_EXTRA);
+
+export function makeTranslator(language) {
+  const table = TEXTS[language] || {};
+  const fallback = TEXTS.es;
+  return function translate(key, values) {
+    let text = table[key];
+    if (text === undefined) {
+      text = fallback[key];
+    }
+    if (values && typeof text === 'string') {
+      Object.keys(values).forEach(function replace(name) {
+        text = text.replace('{' + name + '}', values[name]);
+      });
+    }
+    return text;
+  };
+}
+
+export function profileName(language, profile) {
+  const table = TEXTS[language] && TEXTS[language].profiles ? TEXTS[language].profiles : TEXTS.es.profiles;
+  return table[profile];
+}
+
+export const MONTH_NAMES = {
+  es: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+};
+
+export function formatMonth(language, monthText) {
+  if (!monthText) {
+    return '';
+  }
+  const names = MONTH_NAMES[language] || MONTH_NAMES.es;
+  return names[Number.parseInt(monthText.slice(5, 7), 10) - 1] + ' ' + monthText.slice(0, 4);
+}

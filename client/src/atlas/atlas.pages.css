@@ -1,0 +1,373 @@
+/* =====================================================================
+   Dueño: P3 (Vista) — navegación, cortina de transición y páginas Calendario / Método
+   ===================================================================== */
+
+/* ---------- navegación principal ---------- */
+.mainnav {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+.mainnav a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+.mainnav a:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.mainnav a[aria-current='page'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- cortina de transición ---------- */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  place-items: center;
+  background: #14281d;
+  color: #eaf3ec;
+  pointer-events: none;
+  will-change: clip-path;
+}
+.curtain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.curtain__label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  letter-spacing: -0.01em;
+}
+.curtain__label svg {
+  width: 1em;
+  height: 1em;
+  color: var(--amber);
+}
+
+/* ---------- páginas ---------- */
+.page {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: auto;
+  background: var(--bg);
+  background-image:
+    radial-gradient(1200px 520px at 85% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+    radial-gradient(900px 480px at -10% 110%, color-mix(in srgb, var(--amber) 8%, transparent), transparent 70%);
+}
+.page__inner {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 150px clamp(20px, 5vw, 56px) 96px;
+}
+.page__inner--narrow {
+  width: min(820px, 100%);
+}
+.page h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.page__lead {
+  max-width: 62ch;
+  margin: 14px 0 0;
+  color: var(--ink-2);
+  font-size: 1.05rem;
+  text-wrap: pretty;
+}
+.page .muted {
+  color: var(--ink-2);
+  font-size: 0.88rem;
+}
+.page__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-top: 24px;
+}
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+.field select {
+  min-width: 220px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-solid);
+  color: var(--ink);
+  font: inherit;
+}
+.field select:focus-visible {
+  outline: 2px solid var(--amber-soft);
+}
+
+/* ---------- calendario ---------- */
+.calwrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 32px;
+  margin-top: 30px;
+  align-items: start;
+}
+.calgrid {
+  display: grid;
+  gap: 4px;
+}
+.calgrid__head,
+.calgrid__row {
+  display: grid;
+  grid-template-columns: 46px repeat(12, minmax(0, 1fr));
+  gap: 4px;
+  align-items: stretch;
+}
+.calgrid__head span {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.calgrid__year {
+  display: grid;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.calcell {
+  display: grid;
+  place-items: center;
+  height: 38px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: default;
+  transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+.calcell:hover,
+.calcell:focus-visible {
+  transform: scale(1.12);
+  z-index: 2;
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.55);
+}
+.calcell.is-none {
+  background: repeating-linear-gradient(135deg, transparent 0 5px, var(--line) 5px 6px);
+  opacity: 0.55;
+}
+.calcell.is-zero {
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+}
+.calcell {
+  position: relative;
+}
+.calcell.enso-nino::after,
+.calcell.enso-nina::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+.calcell.enso-nino::after {
+  background: rgba(91, 124, 153, 1);
+}
+.calcell.enso-nina::after {
+  background: rgba(150, 186, 184, 1);
+}
+.calside {
+  display: grid;
+  gap: 22px;
+  position: sticky;
+  top: 110px;
+}
+.calside h2 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.15rem;
+}
+.calside p {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+}
+.calside__enso {
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--slate) 55%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--slate) 18%, transparent);
+}
+.calside__enso p {
+  color: var(--ink);
+}
+.calclasses {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.86rem;
+}
+.calclasses i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  border-radius: 4px;
+  vertical-align: -2px;
+}
+.page .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin: 0 3px 0 0;
+  border-radius: 50%;
+}
+.cal-tip {
+  position: fixed;
+  z-index: 70;
+  display: grid;
+  gap: 1px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-solid);
+  box-shadow: var(--shadow);
+  font-size: 0.84rem;
+  pointer-events: none;
+}
+.cal-tip strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1rem;
+}
+.cal-tip span {
+  color: var(--ink-2);
+}
+
+/* ---------- método ---------- */
+.method__head {
+  margin-bottom: 40px;
+}
+.method__section {
+  margin-top: 38px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.method__section h2 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  letter-spacing: -0.01em;
+}
+.method__section p {
+  margin: 0 0 12px;
+  max-width: 68ch;
+  font-size: 1.04rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.method__sources dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+.method__sources dl div {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.method__sources dt {
+  font-weight: 700;
+}
+.method__sources dd {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+/* en las páginas internas el pie queda sobre el contenido */
+.atlas[data-phase='atlas'] .page ~ .atlas__footer {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .calwrap {
+    grid-template-columns: 1fr;
+  }
+  .calside {
+    position: static;
+  }
+  .page__inner {
+    padding-top: 190px;
+  }
+}
+@media (max-width: 560px) {
+  .calgrid__head,
+  .calgrid__row {
+    grid-template-columns: 34px repeat(12, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .calcell {
+    height: 30px;
+    font-size: 0.62rem;
+    border-radius: 5px;
+  }
+  .mainnav a {
+    padding: 6px 9px;
+    font-size: 0.8rem;
+  }
+  .method__sources dl div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .page__inner {
+    padding-top: 210px;
+  }
+}
+
+/* el calendario se desplaza en horizontal en pantallas estrechas, sin aplastar las cifras */
+.calgrid {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+@media (max-width: 760px) {
+  .calgrid__head,
+  .calgrid__row {
+    min-width: 560px;
+  }
+}
