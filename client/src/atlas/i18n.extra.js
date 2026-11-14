@@ -1,5 +1,7 @@
 // Textos nuevos (botones, barra del mapa, gráfico) en español e inglés.
 export const ES_EXTRA = {
+  navPlaces: 'Municipios',
+  heroPlaces: 'Conoce los municipios',
   watchTitle: 'Detrás de cada foco hay quien vigila.',
   watchText: 'Bomberos forestales, guardaparques y voluntarios suben a la ladera cuando el satélite avisa. Este atlas existe para ayudarles a decidir dónde mirar primero.',
   aiPrefix: 'Ilustración generada con IA: ',
@@ -55,6 +57,8 @@ export const ES_EXTRA = {
 };
 
 export const EN_EXTRA = {
+  navPlaces: 'Places',
+  heroPlaces: 'Explore the municipalities',
   watchTitle: 'Behind every hot spot, someone is watching.',
   watchText: 'Forest firefighters, park rangers and volunteers climb the slopes when the satellite signals. This atlas exists to help them decide where to look first.',
   aiPrefix: 'AI-generated illustration: ',

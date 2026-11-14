@@ -14,6 +14,7 @@ import Embers from './Embers.jsx';
 import { TUNARI_STEP } from './Hero.jsx';
 const CalendarPage = lazy(() => import('./CalendarPage.jsx'));
 const MethodPage = lazy(() => import('./MethodPage.jsx'));
+const MunicipiosPage = lazy(() => import('./MunicipiosPage.jsx'));
 const TunariPage = lazy(() => import('./TunariPage.jsx'));
 import { getGamcLegendImageUrl } from '../services/gamcApi.js';
 import { fetchHotspots3d } from '../components/vista3d/focos3dApi.js';
@@ -30,9 +31,10 @@ import './atlas.polish.css';
 import './atlas.layout.css';
 import './atlas.identity.css';
 import './atlas.gallery.css';
+import './atlas.places.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
-const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
+const ROUTES = ['inicio', 'municipios', 'atlas', 'tunari', 'calendario', 'metodo'];
 const USING_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 const GAMC_LAYER_OPTIONS = [
   { name: 'distritos', key: 'layerDistritos' },
@@ -40,7 +42,7 @@ const GAMC_LAYER_OPTIONS = [
   { name: 'periurbanos', key: 'layerPeriurbanos' }
 ];
 const TUNARI_MUNICIPALITIES = ['Cochabamba', 'Sacaba', 'Colomi', 'Tiquipaya', 'Quillacollo', 'Vinto', 'Sipesipe', 'Tapacarí', 'Morochata', 'Cocapata'];
-const ROUTE_LABEL_KEYS = { inicio: 'navHome', atlas: 'navAtlas', tunari: 'navTunari', calendario: 'navCalendar', metodo: 'navMethod' };
+const ROUTE_LABEL_KEYS = { inicio: 'navHome', municipios: 'navPlaces', atlas: 'navAtlas', tunari: 'navTunari', calendario: 'navCalendar', metodo: 'navMethod' };
 const PLAY_STEP_MILLISECONDS = 380;
 const NINO_COLOR = 'rgba(91,124,153,0.95)';
 const NINA_COLOR = 'rgba(150,186,184,0.75)';
@@ -104,7 +106,7 @@ export default function AtlasApp() {
   const [theme, setTheme] = useState(readStored('atlas.theme', 'dark'));
   const initialRoute = useMemo(parseRoute, []);
   const [phase, setPhase] = useState(initialRoute === 'inicio' ? 'hero' : 'atlas');
-  const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' || initialRoute === 'tunari' ? initialRoute : null);
+  const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' || initialRoute === 'tunari' || initialRoute === 'municipios' ? initialRoute : null);
   const [curtainLabel, setCurtainLabel] = useState('');
   const [geo, setGeo] = useState(null);
   const [data, setData] = useState(null);
@@ -510,10 +512,10 @@ export default function AtlasApp() {
   }
 
   function applyRoute(route) {
-    if (route === 'calendario' || route === 'metodo') {
+    if (route === 'calendario' || route === 'metodo' || route === 'municipios') {
       setIsPlaying(false);
     }
-    if (route === 'calendario' || route === 'metodo' || route === 'tunari') {
+    if (route === 'calendario' || route === 'metodo' || route === 'tunari' || route === 'municipios') {
       setPage(route);
       setHover(null);
       setPhase('atlas');
@@ -725,7 +727,7 @@ export default function AtlasApp() {
   const hoverMunicipality = geo !== null && hover !== null && !inHero ? geo.municipalities[hover.idx] : null;
   const currentMonthText = data !== null ? formatMonth(language, data.months[monthIdx]) : '';
   const rankingTitle = profile === 'bombero' ? t('topNowBombero') : t('topNow');
-  const mapActive = page !== 'calendario' && page !== 'metodo';
+  const mapActive = page !== 'calendario' && page !== 'metodo' && page !== 'municipios';
   const rankingMax = ranking.length > 0 ? Math.max(ranking[0].value, 1) : 1;
 
   return (
@@ -1003,6 +1005,7 @@ export default function AtlasApp() {
         <CalendarPage data={data} aggregated={aggregated} geo={geo} oni={oni} t={t} language={language} isSample={isSample} />
       )}
       {page === 'metodo' && <MethodPage language={language} isSample={isSample} t={t} />}
+      {page === 'municipios' && <MunicipiosPage language={language} t={t} />}
       {page === 'tunari' && tunariRegion !== null && (
         <TunariPage
           language={language}

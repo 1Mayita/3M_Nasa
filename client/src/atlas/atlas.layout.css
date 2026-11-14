@@ -181,6 +181,18 @@
     flex-wrap: wrap;
     justify-content: flex-end;
   }
+  .mainnav {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .mainnav::-webkit-scrollbar {
+    display: none;
+  }
+  .mainnav a {
+    flex: none;
+    white-space: nowrap;
+  }
 }
 
 /* ---------- riel izquierdo: perfil, ranking, búsqueda, capas ---------- */

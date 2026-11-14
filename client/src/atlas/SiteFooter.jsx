@@ -9,6 +9,7 @@ import { IconFlame } from './Icons.jsx';
 const BASE = import.meta.env.BASE_URL || '/';
 
 const LINKS = [
+  { href: '#/municipios', key: 'navPlaces' },
   { href: '#/atlas', key: 'navAtlas' },
   { href: '#/tunari', key: 'navTunari' },
   { href: '#/calendario', key: 'navCalendar' },

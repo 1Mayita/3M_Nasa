@@ -128,6 +128,7 @@ const Hero = forwardRef(function Hero(props, ref) {
         <div className="story__inner story__inner--wide">
           <h2 className="story__title">{t('galleryTitle')}</h2>
           <p className="story__text">{t('galleryText')}</p>
+          <a className="btn btn--secondary" href="#/municipios"><IconArrow /> {t('heroPlaces')}</a>
         </div>
         <Gallery t={t} />
       </div>
