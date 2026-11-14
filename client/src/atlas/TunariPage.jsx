@@ -103,7 +103,7 @@ export default function TunariPage(props) {
   return (
     <section className="page--tunari" ref={pageRef} aria-labelledby="tunari-title">
       <div className="tunari__panel">
-        <div className="tunari__photo" style={{ backgroundImage: 'url(' + (import.meta.env.BASE_URL || '/') + 'img/tunari_ladera.webp), linear-gradient(135deg, #1f3d2b, #0e1a14)' }} role="img" aria-label={content.imageLabel} />
+        <div className="tunari__photo" style={{ backgroundImage: 'url(' + (import.meta.env.BASE_URL || '/') + 'img/tunari_cumbre.webp), linear-gradient(135deg, #1f3d2b, #0e1a14)' }} role="img" aria-label={content.imageLabel} />
         <header>
           <h1 id="tunari-title" tabIndex={-1}>{content.title}</h1>
           <p className="page__lead">{content.lead}</p>

@@ -7,8 +7,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import Banner from './Banner.jsx';
+import SiteFooter from './SiteFooter.jsx';
 
-const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/cochabamba_valle.webp';
+const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/valle_alto.webp';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianOf } from './geo.js';
 import { rampColor, intensityRatio } from './ramp.js';
@@ -206,7 +207,7 @@ export default function CalendarPage(props) {
 
   return (
     <section className="page page--calendar" ref={pageRef} aria-labelledby="cal-title">
-      <Banner image={BANNER_IMAGE} label={t('imgValley')}>
+      <Banner image={BANNER_IMAGE} label={t('aiPrefix') + t('capValleAlto')}>
         <div className="page__head">
           <h1 id="cal-title" tabIndex={-1}>{t('calTitle')}</h1>
           <p className="page__lead">{t('calLead')}</p>
@@ -320,6 +321,8 @@ export default function CalendarPage(props) {
           </aside>
         </div>
       </div>
+
+      <SiteFooter t={t} />
 
       {tip !== null && (
         <div className="cal-tip" style={{ left: Math.min(tip.x + 16, window.innerWidth - 250), top: Math.min(Math.max(tip.y - 10, 8), window.innerHeight - 150) }} role="presentation">

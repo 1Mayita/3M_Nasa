@@ -7,12 +7,13 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import Banner from './Banner.jsx';
+import SiteFooter from './SiteFooter.jsx';
 
-const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/tunari_ladera.webp';
+const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/andes_satelite.webp';
 
 const CONTENT = {
   es: {
-    imageLabel: 'Ilustración generada con IA: laderas del Tunari en época seca',
+    imageLabel: 'Ilustración generada con IA: los Andes desde el espacio',
     title: 'Cómo se construyó este atlas',
     lead: 'Un foco de calor es un píxel que un satélite vio más caliente de lo normal. No es un incendio confirmado. Esta página explica qué se muestra, cómo se juntan dos satélites y qué límites tiene.',
     sections: [
@@ -56,7 +57,7 @@ const CONTENT = {
     ]
   },
   en: {
-    imageLabel: 'AI-generated illustration: Tunari slopes in the dry season',
+    imageLabel: 'AI-generated illustration: the Andes from space',
     title: 'How this atlas was built',
     lead: 'A hot spot is a pixel a satellite saw hotter than usual. It is not a confirmed fire. This page explains what is shown, how two satellites are combined and what the limits are.',
     sections: [
@@ -164,6 +165,7 @@ export default function MethodPage(props) {
           </dl>
         </article>
       </div>
+      <SiteFooter t={props.t} />
     </section>
   );
 }

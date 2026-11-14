@@ -11,6 +11,7 @@ import AtlasMap from './AtlasMap.jsx';
 import Ficha from './Ficha.jsx';
 import Hero from './Hero.jsx';
 import Embers from './Embers.jsx';
+import { TUNARI_STEP } from './Hero.jsx';
 const CalendarPage = lazy(() => import('./CalendarPage.jsx'));
 const MethodPage = lazy(() => import('./MethodPage.jsx'));
 const TunariPage = lazy(() => import('./TunariPage.jsx'));
@@ -28,6 +29,7 @@ import './atlas.tunari.css';
 import './atlas.polish.css';
 import './atlas.layout.css';
 import './atlas.identity.css';
+import './atlas.gallery.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
 const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
@@ -122,6 +124,7 @@ export default function AtlasApp() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFlat, setIsFlat] = useState(false);
   const [storyStep, setStoryStep] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const rootRef = useRef(null);
   const heroRef = useRef(null);
   const mapRef = useRef(null);
@@ -595,6 +598,28 @@ export default function AtlasApp() {
     };
   }, [phase]);
 
+  // Con scroll en la portada o en una página, la barra superior toma fondo para no mezclarse con el contenido
+  useEffect(function trackScroll() {
+    const root = rootRef.current;
+    if (!root) {
+      return undefined;
+    }
+    function onScroll(event) {
+      const target = event.target;
+      if (target && target.classList && (target.classList.contains('page') || target.classList.contains('hero'))) {
+        setIsScrolled(target.scrollTop > 60);
+      }
+    }
+    root.addEventListener('scroll', onScroll, true);
+    return function cleanup() {
+      root.removeEventListener('scroll', onScroll, true);
+    };
+  }, []);
+
+  useEffect(function resetScrollFlag() {
+    setIsScrolled(false);
+  }, [phase, page]);
+
   // Escape cierra la ficha
   useEffect(function listenToEscape() {
     function onKey(event) {
@@ -704,7 +729,7 @@ export default function AtlasApp() {
   const rankingMax = ranking.length > 0 ? Math.max(ranking[0].value, 1) : 1;
 
   return (
-    <div className={'atlas' + (selectedMunicipality !== null && !inHero && (!onPage || page === 'tunari') ? ' has-ficha' : '')} data-theme={theme} data-phase={phase} ref={rootRef}>
+    <div className={'atlas' + (selectedMunicipality !== null && !inHero && (!onPage || page === 'tunari') ? ' has-ficha' : '') + (isScrolled ? ' is-scrolled' : '')} data-theme={theme} data-phase={phase} data-page={page || ''} ref={rootRef}>
       <div
         className="atlas__map"
         tabIndex={inHero ? -1 : 0}
@@ -729,7 +754,7 @@ export default function AtlasApp() {
             onSelect={handleSelect}
             onHover={handleHover}
             interactive={!inHero}
-            focusRegion={page === 'tunari' || (inHero && storyStep === 3) ? tunariRegion : null}
+            focusRegion={page === 'tunari' || (inHero && storyStep === TUNARI_STEP) ? tunariRegion : null}
             active={mapActive}
             gamcLayers={gamcLayers}
             onTerrainReady={handleTerrainReady}
@@ -742,6 +767,7 @@ export default function AtlasApp() {
           : ''}
       </p>
       <div className="atlas__veil" aria-hidden="true" />
+      <div className="topbar-veil" aria-hidden="true" />
 
       {!isShown && errorMessage === null && inAtlas && <p className="atlas__status" role="status">{t('loading')}</p>}
       {errorMessage !== null && <p className="atlas__status is-error" role="alert">{t('loadError')}: {errorMessage}</p>}
@@ -976,7 +1002,7 @@ export default function AtlasApp() {
       {page === 'calendario' && isReady && (
         <CalendarPage data={data} aggregated={aggregated} geo={geo} oni={oni} t={t} language={language} isSample={isSample} />
       )}
-      {page === 'metodo' && <MethodPage language={language} isSample={isSample} />}
+      {page === 'metodo' && <MethodPage language={language} isSample={isSample} t={t} />}
       {page === 'tunari' && tunariRegion !== null && (
         <TunariPage
           language={language}

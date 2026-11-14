@@ -12,7 +12,7 @@ import { FlyToInterpolator } from '@deck.gl/core';
 import { GeoJsonLayer, ColumnLayer, BitmapLayer, TextLayer } from '@deck.gl/layers';
 import { TerrainLayer, TileLayer } from '@deck.gl/geo-layers';
 import { getGamcTileUrl } from '../services/gamcApi.js';
-import { _TerrainExtension as TerrainExtension } from '@deck.gl/extensions';
+import { _TerrainExtension as TerrainExtension, CollisionFilterExtension } from '@deck.gl/extensions';
 import { rampColor, intensityRatio, EMPTY_COLOR } from './ramp.js';
 import { findMunicipalityIndex, zoomForBbox } from './geo.js';
 import { loadElevation, locateOnTerrain } from './dem.js';
@@ -371,7 +371,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
                 return item.name;
               },
               getSize: function labelSize(item) {
-                return item.big ? 15 : 13;
+                return item.big ? 15 : 12;
               },
               sizeUnits: 'pixels',
               getColor: [246, 244, 236, 240],
@@ -384,7 +384,12 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
               pickable: false,
               getTextAnchor: 'middle',
               getAlignmentBaseline: 'center',
-              extensions: draping
+              collisionEnabled: true,
+              collisionGroup: 'nombres',
+              getCollisionPriority: function priority(item) {
+                return item.big ? 10 : 1;
+              },
+              extensions: draping.concat([new CollisionFilterExtension()])
             })
           : null,
         ...(gamcLayers || []).map(function gamcLayer(name) {

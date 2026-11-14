@@ -1,27 +1,31 @@
 // =====================================================================
 // Dueño: P3 (Vista)
 // Portada con historia que se recorre con scroll (inspirada en los sitios de estudio de la referencia):
-// pantalla de entrada con el mapa 3D, una escena de identidad (Cochabamba / Quchapampa) con imagen a
-// pantalla completa, cuatro escenas de tipografía grande y un cierre. La cámara del mapa cambia con cada escena.
-// Las imágenes son ilustraciones generadas con IA y se rotulan en los créditos.
+// 0 pantalla de entrada con el mapa 3D · 1 identidad (Cochabamba / Quchapampa) · 2 galería en movimiento
+// · 3 dónde · 4 Tunari (la cámara vuela a la cordillera) · 5 cuándo (con imagen) · 6 cómo (con imagen)
+// · 7 quienes vigilan (foto a pantalla completa) · 8 cierre · pie de página. Las imágenes son ilustraciones generadas con IA y se rotulan.
 // =====================================================================
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { IconArrow, IconCalendar, IconFlame, IconInfo, IconPeak } from './Icons.jsx';
+import Gallery from './Gallery.jsx';
+import SiteFooter from './SiteFooter.jsx';
 
 const BASE = import.meta.env.BASE_URL || '/';
-const IMAGE_VALLEY = BASE + 'img/cochabamba_valle.webp';
-const IMAGE_CRISTO = BASE + 'img/cristo_concordia.webp';
+function imageUrl(name) {
+  return BASE + 'img/' + name + '.webp';
+}
 
 const MAP_SCENES = [
   { id: 'where', title: 'storyWhereTitle', text: 'storyWhereText', href: '#/atlas', cta: 'storyWhereCta', Icon: IconFlame },
   { id: 'tunari', title: 'storyTunariTitle', text: 'storyTunariText', href: '#/tunari', cta: 'heroTunari', Icon: IconPeak },
-  { id: 'when', title: 'storyWhenTitle', text: 'storyWhenText', href: '#/calendario', cta: 'heroCalendar', Icon: IconCalendar },
-  { id: 'how', title: 'storyHowTitle', text: 'storyHowText', href: '#/metodo', cta: 'heroMethod', Icon: IconInfo }
+  { id: 'when', title: 'storyWhenTitle', text: 'storyWhenText', href: '#/calendario', cta: 'heroCalendar', Icon: IconCalendar, image: 'valle_alto', caption: 'capValleAlto' },
+  { id: 'how', title: 'storyHowTitle', text: 'storyHowText', href: '#/metodo', cta: 'heroMethod', Icon: IconInfo, image: 'andes_satelite', caption: 'capSatelite' }
 ];
 
-// pasos: 0 portada · 1 identidad · 2 dónde · 3 Tunari · 4 cuándo · 5 cómo · 6 cierre
-export const STORY_STEPS = MAP_SCENES.length + 3;
+// pasos: 0 portada · 1 identidad · 2 galería · 3 dónde · 4 Tunari · 5 cuándo · 6 cómo · 7 quienes vigilan · 8 cierre
+export const STORY_STEPS = MAP_SCENES.length + 5;
+export const TUNARI_STEP = 4;
 
 const Hero = forwardRef(function Hero(props, ref) {
   const { t, onEnter, isReady, onStep, step } = props;
@@ -108,7 +112,7 @@ const Hero = forwardRef(function Hero(props, ref) {
         className="story__scene story__block story__identity story__photo"
         data-step="1"
         ref={register(1)}
-        style={{ '--photo': 'url(' + IMAGE_VALLEY + ')' }}
+        style={{ '--photo': 'url(' + imageUrl('cochabamba_valle') + ')' }}
         role="img"
         aria-label={t('imgValley')}
       >
@@ -120,23 +124,53 @@ const Hero = forwardRef(function Hero(props, ref) {
         <div className="story__textile" aria-hidden="true" />
       </div>
 
+      <div className="story__scene story__block story__gallery" data-step="2" ref={register(2)}>
+        <div className="story__inner story__inner--wide">
+          <h2 className="story__title">{t('galleryTitle')}</h2>
+          <p className="story__text">{t('galleryText')}</p>
+        </div>
+        <Gallery t={t} />
+      </div>
+
       {MAP_SCENES.map(function scene(item, i) {
+        const hasImage = !!item.image;
         return (
-          <div className="story__scene story__block" key={item.id} data-step={i + 2} ref={register(i + 2)}>
+          <div className={'story__scene story__block' + (hasImage ? ' story__split' : '')} key={item.id} data-step={i + 3} ref={register(i + 3)}>
             <div className="story__inner">
               <h2 className="story__title">{t(item.title)}</h2>
               <p className="story__text">{t(item.text)}</p>
               <a className="btn btn--secondary" href={item.href}><item.Icon /> {t(item.cta)}</a>
             </div>
+            {hasImage && (
+              <figure className="story__figure">
+                <img src={imageUrl(item.image)} alt={t('aiPrefix') + t(item.caption)} loading="lazy" decoding="async" width="960" height="540" />
+                <figcaption>{t(item.caption)}</figcaption>
+              </figure>
+            )}
           </div>
         );
       })}
 
       <div
+        className="story__scene story__block story__photo story__watch"
+        data-step={MAP_SCENES.length + 3}
+        ref={register(MAP_SCENES.length + 3)}
+        style={{ '--photo': 'url(' + imageUrl('bomberos_forestales') + ')' }}
+        role="img"
+        aria-label={t('aiPrefix') + t('capBomberos')}
+      >
+        <div className="story__inner">
+          <h2 className="story__title">{t('watchTitle')}</h2>
+          <p className="story__text">{t('watchText')}</p>
+        </div>
+        <div className="story__textile" aria-hidden="true" />
+      </div>
+
+      <div
         className="story__scene story__block story__end story__photo"
-        data-step={MAP_SCENES.length + 2}
-        ref={register(MAP_SCENES.length + 2)}
-        style={{ '--photo': 'url(' + IMAGE_CRISTO + ')' }}
+        data-step={MAP_SCENES.length + 4}
+        ref={register(MAP_SCENES.length + 4)}
+        style={{ '--photo': 'url(' + imageUrl('cristo_concordia') + ')' }}
         role="img"
         aria-label={t('imgCristo')}
       >
@@ -150,6 +184,8 @@ const Hero = forwardRef(function Hero(props, ref) {
         </div>
         <div className="story__textile" aria-hidden="true" />
       </div>
+
+      <SiteFooter t={t} />
 
       <ol className="story__dots" aria-label={t('storyScroll')}>
         {Array.from({ length: STORY_STEPS }).map(function dot(unused, i) {
