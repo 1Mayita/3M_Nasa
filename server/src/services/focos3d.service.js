@@ -8,6 +8,8 @@
 
 import { readMonthlyHotspots } from '../models/focos3d.model.js';
 import { readZones, readFuelProfiles } from '../models/zones.model.js';
+import { readMunicipalities } from '../models/municipios.model.js';
+import { prepareMunicipalities, findMunicipality } from './municipios.service.js';
 
 const MONTH_PATTERN = /^\d{4}-\d{2}$/;
 
@@ -145,6 +147,36 @@ export function buildHotspots3d(records, bbox, fromMonth, toMonth) {
   };
 }
 
+// ---------------------------------------------------------------------
+// Solo celdas dentro del departamento (zona "depto")
+// ---------------------------------------------------------------------
+
+// El recorte del Modelo es un RECTÁNGULO (lon -67.6 a -64.2, lat -18.6 a -15.6),
+// y ese rectángulo también toma pedazos de La Paz, Beni, Santa Cruz y otros vecinos.
+// Para la zona "depto" dejamos solo las celdas cuyo centro cae en alguno de los
+// 48 municipios de Cochabamba (los mismos polígonos de /api/municipios/mensual).
+let cachedPreparedMunicipalities = null;
+const isCellInsideDepartmentByKey = new Map();
+
+export async function filterRecordsInsideDepartment(records) {
+  if (cachedPreparedMunicipalities === null) {
+    const featureCollection = await readMunicipalities();
+    cachedPreparedMunicipalities = prepareMunicipalities(featureCollection);
+  }
+  const recordsInside = [];
+  for (const record of records) {
+    const cellKey = record[0] + '|' + record[1];
+    if (!isCellInsideDepartmentByKey.has(cellKey)) {
+      const municipality = findMunicipality(record[0], record[1], cachedPreparedMunicipalities);
+      isCellInsideDepartmentByKey.set(cellKey, municipality !== null);
+    }
+    if (isCellInsideDepartmentByKey.get(cellKey) === true) {
+      recordsInside.push(record);
+    }
+  }
+  return recordsInside;
+}
+
 export async function getHotspots3d(zoneId, rawFromMonth, rawToMonth) {
   const fromMonth = validateMonth(rawFromMonth, 'desde');
   const toMonth = validateMonth(rawToMonth, 'hasta');
@@ -152,7 +184,9 @@ export async function getHotspots3d(zoneId, rawFromMonth, rawToMonth) {
   const dataset = await readMonthlyHotspots();
   const fuelProfiles = await readFuelProfiles();
 
-  const result = buildHotspots3d(dataset.records, zone.properties.bbox, fromMonth, toMonth);
+  const isDepartment = zone.properties.id === 'depto';
+  const records = isDepartment ? await filterRecordsInsideDepartment(dataset.records) : dataset.records;
+  const result = buildHotspots3d(records, zone.properties.bbox, fromMonth, toMonth);
 
   const fuels = [];
   for (const fuelId of zone.properties.combustibles || []) {
