@@ -44,7 +44,7 @@ function downloadCsv(municipality, months, values) {
 }
 
 export default function Ficha(props) {
-  const { municipality, values, months, monthIdx, t, language, profile, isSample, onClose } = props;
+  const { municipality, values, months, monthIdx, rank, total: municipalityCount, levelRatio, oni, t, language, profile, isSample, onClose } = props;
   const panelRef = useRef(null);
   const figureRef = useRef(null);
 
@@ -124,6 +124,13 @@ export default function Ficha(props) {
         ? t('aboveMedian', { pct: reference.percent })
         : t('belowMedian', { pct: Math.abs(reference.percent) });
 
+  const ensoValue = oni ? oni[months[reference.index]] : undefined;
+  let ensoText = null;
+  if (ensoValue !== undefined) {
+    const phaseKey = ensoValue >= 0.5 ? 'ensoNino' : ensoValue <= -0.5 ? 'ensoNina' : 'ensoNeutral';
+    ensoText = t('ensoLine', { month: formatMonth(language, months[reference.index]), value: (ensoValue > 0 ? '+' : '') + ensoValue.toFixed(2), phase: t(phaseKey) });
+  }
+
   const isTioc = municipality.name.toLowerCase().indexOf('tioc') === 0;
 
   const comparisonBlock = (
@@ -181,6 +188,7 @@ export default function Ficha(props) {
     <section className="ficha__block ficha__context" key="nino" aria-labelledby="ficha-nino">
       <h3 id="ficha-nino">{t('elNinoTitle')}</h3>
       <p>{t('elNinoText')}</p>
+      {ensoText !== null && <p className="ficha__enso">{ensoText}</p>}
     </section>
   );
 
@@ -216,6 +224,10 @@ export default function Ficha(props) {
           <IconClose />
         </button>
       </header>
+      <div className="ficha__meter" aria-hidden="true">
+        <span style={{ width: Math.max(levelRatio * 100, 3) + '%', background: rampCss(intensityRatio(levelRatio, 1)) }} />
+      </div>
+      {rank !== null && <p className="ficha__muted ficha__rank">{t('rankLine', { rank: rank, total: municipalityCount })}</p>}
       {isSample && <p className="tag-sample">{t('sample')}</p>}
       {blocks}
       <p className="ficha__muted ficha__note">{t('sensorNote')}</p>

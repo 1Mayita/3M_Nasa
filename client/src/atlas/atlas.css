@@ -76,7 +76,8 @@
   scrollbar-color: var(--line) transparent;
 }
 
-.atlas button {
+/* reset con especificidad mínima para no pisar las clases propias */
+:where(.atlas) button {
   background: transparent;
   color: inherit;
   padding: 0;
@@ -191,6 +192,7 @@
   position: absolute;
   top: 70px;
   right: 24px;
+  max-width: min(560px, calc(100vw - 48px));
   margin: 0;
   padding: 6px 12px;
   border-radius: 8px;
@@ -663,7 +665,7 @@
     top: 14px;
     max-width: 92vw;
   }
-  .atlas__title p {
+  .atlas__title p:not(.atlas__name) {
     display: none;
   }
   .atlas__controls {

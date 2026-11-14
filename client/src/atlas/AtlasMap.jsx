@@ -30,7 +30,18 @@ const DEPARTMENT_VIEW = {
   minZoom: 6.2
 };
 
+const HERO_VIEW = {
+  longitude: -65.9,
+  latitude: -17.35,
+  zoom: 6.85,
+  pitch: 63,
+  bearing: -32,
+  maxPitch: 78,
+  minZoom: 6.2
+};
+
 const ROTATION_DEGREES_PER_SECOND = 2.2;
+const HERO_ROTATION_DEGREES_PER_SECOND = 3.4;
 const IDLE_RESUME_MILLISECONDS = 9000;
 const MAXIMUM_COLUMN_HEIGHT_METERS = 5200;
 
@@ -40,9 +51,9 @@ function prefersReducedMotion() {
 
 export default function AtlasMap(props) {
   const { collection, municipalities, values, maxValue, selectedIdx, hoverIdx, columns, columnMax, theme } = props;
-  const { onSelect, onHover, onTerrainReady, rotationEnabled } = props;
+  const { onSelect, onHover, onTerrainReady, rotationEnabled, entered, interactive } = props;
 
-  const [viewState, setViewState] = useState(DEPARTMENT_VIEW);
+  const [viewState, setViewState] = useState(HERO_VIEW);
   const [isIdle, setIsIdle] = useState(true);
   const [terrainReady, setTerrainReady] = useState(false);
   const idleTimerRef = useRef(null);
@@ -52,12 +63,16 @@ export default function AtlasMap(props) {
   useEffect(
     function flyToSelection() {
       if (selectedIdx === null) {
+        if (!entered) {
+          return;
+        }
         setViewState(function back(previous) {
           return Object.assign({}, previous, DEPARTMENT_VIEW, {
-            transitionDuration: reducedMotion ? 0 : 1600,
-            transitionInterpolator: new FlyToInterpolator({ speed: 1.2 })
+            transitionDuration: reducedMotion ? 0 : 2400,
+            transitionInterpolator: new FlyToInterpolator({ speed: 0.9 })
           });
         });
+        holdOrbit(3000);
         return;
       }
       const municipality = municipalities[selectedIdx];
@@ -78,13 +93,13 @@ export default function AtlasMap(props) {
       });
       setIsIdle(false);
     },
-    [selectedIdx, municipalities, reducedMotion]
+    [selectedIdx, municipalities, reducedMotion, entered]
   );
 
   // Órbita lenta mientras nadie interactúa
   useEffect(
     function orbit() {
-      if (!rotationEnabled || !isIdle || reducedMotion || selectedIdx !== null) {
+      if ((entered && !rotationEnabled) || !isIdle || reducedMotion || selectedIdx !== null) {
         return undefined;
       }
       let frameId = 0;
@@ -94,7 +109,7 @@ export default function AtlasMap(props) {
         lastTime = now;
         setViewState(function turn(previous) {
           return Object.assign({}, previous, {
-            bearing: previous.bearing + (ROTATION_DEGREES_PER_SECOND * elapsed) / 1000,
+            bearing: previous.bearing + ((entered ? ROTATION_DEGREES_PER_SECOND : HERO_ROTATION_DEGREES_PER_SECOND) * elapsed) / 1000,
             transitionDuration: 0
           });
         });
@@ -105,7 +120,7 @@ export default function AtlasMap(props) {
         cancelAnimationFrame(frameId);
       };
     },
-    [rotationEnabled, isIdle, reducedMotion, selectedIdx]
+    [rotationEnabled, isIdle, reducedMotion, selectedIdx, entered]
   );
 
   useEffect(function preloadElevation() {
@@ -118,6 +133,15 @@ export default function AtlasMap(props) {
       return findMunicipalityIndex(municipalities, coordinate[0], coordinate[1]);
     }
     return -1;
+  }
+
+  // Pausa la órbita mientras la cámara vuela, para no cortar el vuelo
+  function holdOrbit(milliseconds) {
+    setIsIdle(false);
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(function resume() {
+      setIsIdle(true);
+    }, milliseconds);
   }
 
   function handleInteraction(state) {
@@ -258,10 +282,16 @@ export default function AtlasMap(props) {
       }}
       onInteractionStateChange={handleInteraction}
       onHover={function hoverMap(info) {
+        if (!interactive) {
+          return;
+        }
         const idx = locate(info);
         onHover(idx >= 0 ? { idx: idx, x: info.x, y: info.y } : null);
       }}
       onClick={function clickMap(info) {
+        if (!interactive) {
+          return;
+        }
         const idx = locate(info);
         if (idx >= 0) {
           onSelect(idx);
