@@ -1,0 +1,21 @@
+{
+  "name": "firecal-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Controlador (API) del calendario de fuego armonizado MODIS+VIIRS",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  },
+  "optionalDependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

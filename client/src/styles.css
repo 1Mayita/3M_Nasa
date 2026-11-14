@@ -1,0 +1,51 @@
+/* Estilos de la Vista (dueño: P3) */
+:root { --ink: #1f1a17; --muted: #6b625c; --line: #e4ddd7; --accent: #cc4c02; --bg: #faf7f4; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.app { max-width: 1200px; margin: 0 auto; padding: 16px; }
+header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+header p { margin: 0; color: var(--muted); }
+.warn { color: #8c2d04 !important; font-weight: 600; margin-top: 6px !important; }
+.error { background: #fde8e4; color: #8c2d04; padding: 8px 12px; border-radius: 8px; }
+
+.top { display: grid; grid-template-columns: 300px 1fr; gap: 16px; margin: 16px 0; }
+.map { height: 460px; border-radius: 12px; border: 1px solid var(--line); }
+.controls { display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.controls label { display: flex; flex-direction: column; font-size: .85rem; color: var(--muted); gap: 4px; }
+.controls input, .controls select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); }
+.bbox { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.bbox button { grid-column: span 2; }
+.dates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.hint, .aoi { font-size: .85rem; margin: 0; color: var(--muted); }
+button { font: inherit; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 9px 12px; cursor: pointer; }
+button.secondary { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+button:disabled { opacity: .5; cursor: default; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; }
+.card small, .card span { color: var(--muted); font-size: .8rem; }
+.card b { font-size: 1.6rem; }
+.card.hot { border-color: #b2182b; } .card.hot b { color: #b2182b; }
+.card.cool { border-color: #2166ac; } .card.cool b { color: #2166ac; }
+
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+.panel h2 { font-size: 1.1rem; margin: 0 0 10px; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; }
+.toggle button { background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 0; padding: 6px 12px; }
+.toggle button:first-child { border-radius: 8px 0 0 8px; } .toggle button:last-child { border-radius: 0 8px 8px 0; }
+.toggle button[aria-pressed='true'] { background: var(--ink); color: #fff; }
+
+.calendar-wrap { overflow-x: auto; }
+.calendar { border-collapse: separate; border-spacing: 3px; width: 100%; font-size: .8rem; }
+.calendar th { font-weight: 500; color: var(--muted); padding: 0 4px; }
+.calendar td { height: 18px; border-radius: 3px; min-width: 34px; }
+.calendar td.out { background: transparent; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: .8rem; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 18px; height: 12px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+.legend small { width: 100%; }
+.yearchart { margin: 0; } .yearchart svg { width: 100%; height: auto; }
+.method p { color: var(--muted); font-size: .9rem; }
+footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 16px; }
+
+@media (max-width: 800px) { .top { grid-template-columns: 1fr; } .map { height: 340px; } }
+.controls label, .controls input, .controls select { min-width: 0; width: 100%; }
