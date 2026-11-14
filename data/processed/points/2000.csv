@@ -1,0 +1,6 @@
+sensor,platform,latitude,longitude,acq_date,acq_time,confidence,frp,daynight
+MODIS,Terra,-16.53,-65.4421,2000-11-19,1453,71,10.5,D
+MODIS,Terra,-17.3374,-64.6427,2000-11-19,1453,36,7.4,D
+MODIS,Terra,-17.3387,-64.6332,2000-11-19,1453,69,10.7,D
+MODIS,Terra,-17.711,-65.4878,2000-11-19,1453,72,10.9,D
+MODIS,Terra,-17.9178,-65.433,2000-12-23,1441,62,6.5,D

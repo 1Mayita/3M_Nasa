@@ -9,12 +9,21 @@ __pycache__/
 serviceAccount*.json
 .firebase/
 
-# datos pesados: solo se versiona data/sample
+# datos pesados: data/raw (descargas de FIRMS, ~1 GB) nunca se sube
 data/raw/*
-data/processed/*
-data/processed/
 !data/raw/.gitkeep
+
+# data/processed: solo se versiona lo que lee el servidor, ya recortado a Cochabamba (~15 MB).
+# Se regenera con model/harmonize.py, export_focos_mensuales.py y gamc_tag.py.
+data/processed/*
 !data/processed/.gitkeep
+!data/processed/k_factors.json
+!data/processed/metadata.json
+!data/processed/daily_cells.csv
+!data/processed/monthly_series.csv
+!data/processed/focos_mensuales.json
+!data/processed/gamc_tags.json
+!data/processed/points/
 
 # kit original (ya integrado)
 _kit/
