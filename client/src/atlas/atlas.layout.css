@@ -1,0 +1,345 @@
+/* =====================================================================
+   Dueño: P3 (Vista) — orden y respiro de la interfaz + historia de la portada con scroll
+   Inspirado en los sitios de estudio de la referencia: poco ruido, tipografía grande,
+   un solo gesto principal por pantalla y revelado progresivo del contenido.
+   Va al final: reordena lo anterior sin tocar su lógica.
+   ===================================================================== */
+
+/* ---------- portada con historia: contenedor con scroll ---------- */
+.hero {
+  display: block;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  pointer-events: none;
+  scroll-snap-type: y proximity;
+}
+.hero::-webkit-scrollbar {
+  display: none;
+}
+.hero__screen,
+.story__block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  padding: clamp(24px, 6vw, 96px);
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+.hero__screen {
+  padding-top: clamp(112px, 17vh, 176px);
+  padding-bottom: 96px;
+}
+.hero__content,
+.story__inner,
+.story__scroll,
+.story__dots {
+  pointer-events: auto;
+}
+.story__inner {
+  max-width: 580px;
+}
+
+/* escenas */
+.story__title {
+  margin: 0 0 22px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.4vw, 4.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.story__text {
+  max-width: 46ch;
+  margin: 0 0 30px;
+  font-size: var(--fs-lead);
+  line-height: 1.65;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.story__block .story__inner > * {
+  opacity: 0;
+  transform: translateY(32px);
+  filter: blur(8px);
+  transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out), filter 900ms var(--ease-out);
+}
+.story__block.is-in .story__inner > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.story__block.is-in .story__inner > :nth-child(2) {
+  transition-delay: 120ms;
+}
+.story__block.is-in .story__inner > :nth-child(3) {
+  transition-delay: 240ms;
+}
+.story__end .story__title {
+  font-size: clamp(2.8rem, 7vw, 6rem);
+}
+
+/* indicador de scroll y puntos de escena */
+.story__scroll {
+  position: absolute;
+  left: clamp(24px, 6vw, 96px);
+  bottom: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.story__scroll i {
+  display: block;
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(var(--accent), transparent);
+  transform-origin: top;
+  animation: scroll-hint 2.2s var(--ease-out) infinite;
+}
+@keyframes scroll-hint {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+.story__dots {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  z-index: 9;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateY(-50%);
+}
+.story__dots button {
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 220ms var(--ease-out), background 220ms var(--ease-out);
+}
+.story__dots button:hover {
+  background: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.story__dots button[aria-current='step'] {
+  background: var(--amber);
+  border-color: var(--amber);
+  transform: scale(1.5);
+}
+
+/* ---------- barra superior limpia: marca a la izquierda, navegación y ajustes a la derecha ---------- */
+.atlas__controls {
+  top: 18px;
+  right: 24px;
+  max-width: none;
+  gap: 12px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.atlas__title {
+  top: 24px;
+}
+@media (max-width: 1180px) {
+  .atlas__title p:not(.atlas__name) {
+    display: none;
+  }
+  .mainnav a {
+    padding: 7px 11px;
+    font-size: 0.88rem;
+  }
+  .atlas__name {
+    font-size: 1.3rem;
+  }
+}
+@media (max-width: 900px) {
+  .atlas__controls {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .mainnav {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .mainnav::-webkit-scrollbar {
+    display: none;
+  }
+  .mainnav a {
+    flex: none;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- riel izquierdo: perfil, ranking, búsqueda, capas ---------- */
+.rail {
+  top: 104px;
+  padding: 18px 16px 16px;
+  max-height: calc(100vh - 360px);
+}
+.profile {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.profile button {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.profile button:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.profile button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.rail h2 {
+  margin-top: 4px;
+}
+
+/* ---------- ficha y paneles: misma línea superior que el riel ---------- */
+@media (min-width: 821px) {
+  .ficha {
+    top: 104px;
+    padding: 24px 24px 26px;
+  }
+  .tunari__panel {
+    top: 104px;
+  }
+  .page__inner {
+    padding-top: 128px;
+  }
+}
+
+/* ---------- herramientas del mapa: centradas en el borde derecho, sin chocar con nada ---------- */
+.maptools {
+  top: 50%;
+  bottom: auto;
+  gap: 6px;
+  transform: translateY(-50%);
+}
+.tool {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+@media (min-width: 821px) {
+  .maptools {
+    bottom: auto;
+  }
+}
+
+/* ---------- línea de tiempo más liviana ---------- */
+.timeline__legend span {
+  display: none;
+}
+.timeline {
+  padding: 10px 16px;
+}
+
+/* ---------- pie ---------- */
+.atlas__credits a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* ---------- celular ---------- */
+@media (max-width: 820px) {
+  .hero {
+    pointer-events: auto;
+  }
+  .hero__screen,
+  .story__block {
+    align-items: flex-end;
+    padding: 24px 20px 84px;
+  }
+  .hero__screen {
+    padding-top: 96px;
+  }
+  .story__title {
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+  }
+  .story__dots {
+    display: none;
+  }
+  .maptools {
+    top: auto;
+    bottom: 262px;
+    transform: none;
+  }
+}
+
+/* ---------- movimiento reducido: todo visible, sin transiciones ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .story__block .story__inner > * {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .story__scroll i {
+    animation: none;
+  }
+  .hero {
+    scroll-snap-type: none;
+  }
+}
+
+/* el riel nunca llega a la leyenda, ni en pantallas bajas */
+@media (min-width: 821px) {
+  .rail {
+    max-height: max(220px, calc(100vh - 430px));
+  }
+}
+
+/* celular: marca arriba, navegación debajo */
+@media (max-width: 820px) {
+  .atlas__title {
+    top: 14px;
+    left: 14px;
+  }
+  .atlas__controls {
+    top: 52px;
+    left: 14px;
+    right: 14px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .rail {
+    top: auto;
+  }
+}

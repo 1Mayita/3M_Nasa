@@ -1,0 +1,378 @@
+/* =====================================================================
+   Dueño: P3 (Vista) — portada, noche/día, barras del ranking y banda de El Niño
+   ===================================================================== */
+
+/* Textura sutil sobre el velo: da cuerpo de papel/ceniza al atlas */
+.atlas__veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- portada ---------- */
+.hero {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: clamp(24px, 6vw, 96px);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 88%, transparent) 38%, transparent 72%);
+  pointer-events: none;
+}
+.hero__content {
+  max-width: min(680px, 100%);
+  pointer-events: auto;
+}
+.hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6.2vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.hero__subtitle {
+  margin: 18px 0 0;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--accent);
+  font-weight: 600;
+}
+.hero__lead {
+  margin: 14px 0 0;
+  max-width: 52ch;
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.hero__actions {
+  margin-top: 30px;
+}
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), opacity 200ms var(--ease-out);
+}
+.hero__cta svg {
+  width: 20px;
+  height: 20px;
+  color: var(--amber);
+}
+.hero__cta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -14px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+.hero__cta:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+.hero__cta:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.hero__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.hero__facts li {
+  position: relative;
+  padding-left: 16px;
+}
+.hero__facts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+.hero__honest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 0;
+  color: var(--ink-2);
+  font-size: 0.86rem;
+}
+.hero__honest svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.atlas__controls {
+  z-index: 8;
+}
+.atlas__notice {
+  z-index: 8;
+}
+.atlas__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 2.5vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.atlas__name svg {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  color: var(--amber);
+}
+.atlas__title p:not(.atlas__name) {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+
+/* ---------- interruptor noche / día ---------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  transition: border-color 200ms var(--ease-out), transform 120ms var(--ease-out), background 200ms var(--ease-out);
+}
+.theme-toggle svg {
+  color: var(--amber-soft);
+}
+.atlas[data-theme='light'] .theme-toggle svg {
+  color: #7a5a1c;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+/* ---------- día: atlas de papel verde pastel ---------- */
+.atlas[data-theme='light'] {
+  --surface: rgba(250, 249, 242, 0.94);
+  --surface-2: #dcebdf;
+}
+.atlas[data-theme='light'] .atlas__veil {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg) 94%, transparent) 0%, color-mix(in srgb, var(--bg) 40%, transparent) 20%, transparent 36%),
+    linear-gradient(0deg, color-mix(in srgb, var(--bg) 94%, transparent) 0%, transparent 28%);
+}
+.atlas[data-theme='light'] .atlas__veil::after {
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+}
+.atlas[data-theme='light'] .hero {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 97%, transparent) 0%, color-mix(in srgb, var(--bg) 90%, transparent) 40%, transparent 74%);
+}
+.atlas[data-theme='light'] .atlas__title p:not(.atlas__name),
+.atlas[data-theme='light'] .atlas__footer {
+  color: #2f4538;
+}
+
+/* ---------- barras de datos en el ranking ---------- */
+.rail__list button {
+  position: relative;
+  isolation: isolate;
+}
+.rail__list button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: calc(var(--bar, 0) * 100%);
+  min-width: 6%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--amber) 34%, transparent), color-mix(in srgb, var(--amber) 8%, transparent));
+  transition: width 500ms var(--ease-out);
+}
+
+/* ---------- ficha: medidor y fase ENSO ---------- */
+.ficha__meter {
+  height: 6px;
+  margin: 16px 0 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.ficha__meter span {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  transition: width 700ms var(--ease-out);
+}
+.ficha__rank {
+  margin-bottom: 4px !important;
+}
+.ficha__enso {
+  margin-top: 8px !important;
+  font-weight: 600;
+}
+
+/* ---------- línea de tiempo con banda El Niño ---------- */
+.timeline {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.timeline__track {
+  position: relative;
+  flex: 1;
+  min-width: 80px;
+  padding-bottom: 12px;
+}
+.timeline__track .timeline__range {
+  display: block;
+  width: 100%;
+}
+.timeline__enso {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 2px;
+  height: 6px;
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: 0.95;
+}
+.timeline__legend {
+  flex-basis: 100%;
+  margin: 0;
+  padding-left: 4px;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+}
+.timeline__legend .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin: 0 3px 0 8px;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+.timeline__legend .dot:first-child {
+  margin-left: 0;
+}
+.dot--nino {
+  background: rgba(91, 124, 153, 1);
+}
+.dot--nina {
+  background: rgba(150, 186, 184, 1);
+}
+
+/* en la portada el pie se retira para no competir con el título */
+.atlas[data-phase='hero'] .atlas__footer .atlas__credits {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .hero {
+    align-items: flex-end;
+    padding: 24px 18px 96px;
+    background: linear-gradient(0deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 82%, transparent) 55%, transparent 100%);
+  }
+  .hero__title {
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+  }
+  .hero__facts {
+    display: none;
+  }
+  .theme-toggle span {
+    display: none;
+  }
+  .theme-toggle {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+  .timeline__legend span {
+    display: none;
+  }
+}
+
+/* ---------- ajustes móviles (390 px) ---------- */
+@media (max-width: 820px) {
+  .segmented button {
+    white-space: nowrap;
+    padding: 6px 9px;
+    font-size: 0.8rem;
+  }
+  .atlas__name {
+    font-size: 1.25rem;
+  }
+  .timeline {
+    bottom: 74px;
+  }
+  .rail {
+    bottom: 218px;
+    max-height: 24vh;
+  }
+  .timeline__label {
+    min-width: 0;
+    font-size: 0.85rem;
+  }
+}
+
+/* tema claro: halo suave para que el título no se pierda sobre el relieve */
+.atlas[data-theme='light'] .atlas__title,
+.atlas[data-theme='light'] .atlas__footer {
+  text-shadow: 0 0 10px var(--bg), 0 0 3px var(--bg);
+}
+.atlas__map:focus-visible {
+  outline: 2px solid var(--amber-soft);
+  outline-offset: -4px;
+}
+
+/* ---------- correcciones tras la revisión independiente ---------- */
+/* La ficha se separa de los controles cuando estos se reparten en dos filas */
+@media (min-width: 821px) and (max-width: 1280px) {
+  .ficha {
+    top: 150px;
+  }
+}
+/* En celular la línea de tiempo siempre queda por encima y a la vista */
+@media (max-width: 820px) {
+  .timeline {
+    z-index: 7;
+  }
+  .ficha {
+    bottom: 190px;
+    max-height: 46vh;
+    border-radius: 20px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}

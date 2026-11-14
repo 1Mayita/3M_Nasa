@@ -1,0 +1,35 @@
+{
+  "descripcion": "Cifras oficiales de hectáreas quemadas (OTRA métrica: hectáreas, no focos). Solo para el panel de validación; nunca sumar con detecciones.",
+  "tunari_por_anio": [
+    { "anio": 2016, "hectareas": 4151, "fuente": "UGR Gobernación", "nota": "SERNAP reporta 3.061 ha" },
+    { "anio": 2018, "hectareas": 40, "fuente": "UGR Gobernación" },
+    { "anio": 2019, "hectareas": 1734, "fuente": "SERNAP" },
+    { "anio": 2020, "hectareas": 3962, "fuente": "UGR Gobernación", "nota": "SERNAP: 2.713 ha hasta septiembre" },
+    { "anio": 2022, "hectareas": 300, "fuente": "UGR Gobernación", "nota": "enero a noviembre, aproximado" },
+    { "anio": 2024, "hectareas": 1100, "fuente": "UGR Gobernación", "nota": "hasta octubre, aproximado" }
+  ],
+  "tunari_por_municipio_2015_2019": [
+    { "municipio": "Cochabamba (Cercado)", "hectareas": 2315 },
+    { "municipio": "Quillacollo", "hectareas": 2275 },
+    { "municipio": "Tiquipaya", "hectareas": 995 },
+    { "municipio": "Sacaba", "hectareas": 930 },
+    { "municipio": "Vinto", "hectareas": 373 },
+    { "municipio": "Sipe Sipe", "hectareas": 173 },
+    { "municipio": "Colomi", "hectareas": 60 }
+  ],
+  "fuente_municipios": "SERNAP, informe de gestión 2015-2019 (Los Tiempos, 04/01/2020)",
+  "fuente_municipios_2020": "SERNAP, jefe de Protección del Parque Tunari (Los Tiempos, 05/10/2020); total 2.713 ha en 47 incendios",
+  "tunari_por_municipio_2020_hasta_septiembre": [
+    { "municipio": "Sacaba", "hectareas": 1628 },
+    { "municipio": "Colomi", "hectareas": 779 },
+    { "municipio": "Tiquipaya", "hectareas": 179 },
+    { "municipio": "Cochabamba (Cercado)", "hectareas": 127 }
+  ],
+  "departamento": [
+    { "periodo": "2012-2023", "incendios": 1045, "hectareas": 91583, "fuente": "UGR Gobernación" },
+    { "anio": 2015, "hectareas": 30432, "fuente": "UGR Gobernación (Los Tiempos, 17/06/2024)", "nota": "peor año del departamento (El Niño). Otra nota de Los Tiempos (01/2017) da menos de 15.000 ha para 2015" },
+    { "anio": 2018, "hectareas": 838, "fuente": "UGR Gobernación (Los Tiempos, 17/06/2024)", "nota": "mejor año" },
+    { "anio": 2024, "hectareas": 5800, "fuente": "UGR Gobernación (Los Tiempos, 09/10/2024)", "nota": "hasta el 9 de octubre, aproximado" }
+  ],
+  "tunari_total_2012_2023_hectareas": 19696
+}

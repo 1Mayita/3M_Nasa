@@ -27,6 +27,6 @@ Para usar datos reales, ver `model/README.md`. Para el reparto de tareas y el fl
 Para trabajar sin el API: `cd client && VITE_USE_MOCKS=true npm run dev`.
 
 ## Equipo
-- P1, Modelo: _nombre_
-- P2, Controlador: _nombre_
-- P3, Vista: _nombre_
+- P1, Modelo: _maya_
+- P2, Controlador: _mayerli_
+- P3, Vista: _yanarico_
