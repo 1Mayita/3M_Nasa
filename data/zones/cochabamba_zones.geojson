@@ -1,0 +1,507 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "descripcion": "Zonas críticas de fuego del departamento de Cochabamba para el Calendario de Fuego Armonizado.",
+    "advertencia": "Los rectángulos son APROXIMADOS (hechos a mano para el hackathon). P1: reemplazar por la unión de límites municipales de GeoBolivia (HDX bol_adm_geobolivia_2019) cuando se pueda. La zona cercado-gamc usa la cobertura exacta de la API de la Alcaldía.",
+    "fuentes_referencia": [
+      "UGR Gobernación de Cochabamba",
+      "SERNAP",
+      "ABT",
+      "Los Tiempos",
+      "IRFA"
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "depto",
+        "nombre": "Departamento de Cochabamba (completo)",
+        "tipo": "departamental",
+        "municipios": [
+          "47 municipios"
+        ],
+        "combustibles": [
+          "pajonal",
+          "bosque_humedo",
+          "bosque_seco",
+          "matorral",
+          "eucalipto",
+          "pino",
+          "kewina",
+          "cultivo_barbecho"
+        ],
+        "contexto": "Vista general. Úsala para comparar zonas, no para sumar detecciones de sensores distintos.",
+        "referencia": "SIMB/ABT: Cochabamba es el 4.º departamento con más focos de calor del país (boletín ABT 10/08/2026).",
+        "bbox": [
+          -67.6,
+          -18.6,
+          -64.2,
+          -15.6
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -67.6,
+              -18.6
+            ],
+            [
+              -64.2,
+              -18.6
+            ],
+            [
+              -64.2,
+              -15.6
+            ],
+            [
+              -67.6,
+              -15.6
+            ],
+            [
+              -67.6,
+              -18.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tunari-sur",
+        "nombre": "Ladera sur del Parque Tunari (región metropolitana)",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Cochabamba (Cercado)",
+          "Sacaba",
+          "Quillacollo",
+          "Tiquipaya",
+          "Vinto",
+          "Sipe Sipe",
+          "Colcapirhua"
+        ],
+        "combustibles": [
+          "pajonal",
+          "eucalipto",
+          "pino",
+          "kewina",
+          "interfaz_urbana"
+        ],
+        "contexto": "Concentra cerca de la mitad de los incendios reportados del departamento. Fuegos pequeños (pocas a cientos de ha), muchos provocados (chaqueo, San Juan, loteamiento). Pino y eucalipto plantados entre 1962 y 1991 sobre la cota 2750.",
+        "referencia": "UGR Gobernación: 2012-2023, ~100 incendios/año en el departamento y la mitad en el Tunari; peores años 2016 y 2020.",
+        "bbox": [
+          -66.42,
+          -17.4,
+          -66.0,
+          -17.22
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.42,
+              -17.4
+            ],
+            [
+              -66.0,
+              -17.4
+            ],
+            [
+              -66.0,
+              -17.22
+            ],
+            [
+              -66.42,
+              -17.22
+            ],
+            [
+              -66.42,
+              -17.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cercado-gamc",
+        "nombre": "Municipio de Cercado — detalle con datos de la Alcaldía",
+        "tipo": "detalle_gamc",
+        "municipios": [
+          "Cochabamba (Cercado)"
+        ],
+        "combustibles": [
+          "pajonal",
+          "matorral",
+          "eucalipto",
+          "kewina",
+          "interfaz_urbana"
+        ],
+        "contexto": "Única zona con capas de la API GAMC: distritos, cota 2750 y periurbanos. Distritos al pie del Tunari: D1, D2 y D13 (comuna Tunari).",
+        "referencia": "SERNAP: Cercado fue el municipio con más hectáreas quemadas en el Tunari en 2015-2019 (2.315 ha).",
+        "bbox": [
+          -66.280703,
+          -17.53119,
+          -66.06952,
+          -17.257306
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.280703,
+              -17.53119
+            ],
+            [
+              -66.06952,
+              -17.53119
+            ],
+            [
+              -66.06952,
+              -17.257306
+            ],
+            [
+              -66.280703,
+              -17.257306
+            ],
+            [
+              -66.280703,
+              -17.53119
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tropico",
+        "nombre": "Trópico de Cochabamba",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Villa Tunari",
+          "Shinahota",
+          "Chimoré",
+          "Puerto Villarroel",
+          "Entre Ríos"
+        ],
+        "combustibles": [
+          "bosque_humedo",
+          "cultivo_barbecho",
+          "pastizal_tropical"
+        ],
+        "contexto": "Donde el satélite ve MÁS focos del departamento: chaqueo para habilitar cultivos y pasturas. Pocos se reportan como 'incendio' en la prensa, pero dominan el conteo satelital.",
+        "referencia": "Quemas registradas por la ABT ene-ago 2019 (Los Tiempos, 30/08/2019): Villa Tunari 533, Puerto Villarroel 65, Entre Ríos 27, Chimoré 26. Chimoré declaró desastre en oct-2023 (>4.000 ha).",
+        "bbox": [
+          -65.95,
+          -17.25,
+          -64.4,
+          -16.55
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -65.95,
+              -17.25
+            ],
+            [
+              -64.4,
+              -17.25
+            ],
+            [
+              -64.4,
+              -16.55
+            ],
+            [
+              -65.95,
+              -16.55
+            ],
+            [
+              -65.95,
+              -17.25
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tipnis-carrasco",
+        "nombre": "TIPNIS (parte Cochabamba) y Parque Carrasco",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Villa Tunari (norte)",
+          "Morochata (norte)"
+        ],
+        "combustibles": [
+          "bosque_humedo",
+          "cultivo_barbecho",
+          "pastizal_tropical"
+        ],
+        "contexto": "Áreas protegidas de bosque húmedo con presión de frontera agrícola. Rectángulo muy aproximado: reemplazar por el límite oficial del área protegida.",
+        "referencia": "IRFA: en un reporte de focos acumulados, TIPNIS 300, Carrasco 169 y Tunari 156 focos en Cochabamba.",
+        "bbox": [
+          -66.3,
+          -16.6,
+          -65.2,
+          -15.9
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.3,
+              -16.6
+            ],
+            [
+              -65.2,
+              -16.6
+            ],
+            [
+              -65.2,
+              -15.9
+            ],
+            [
+              -66.3,
+              -15.9
+            ],
+            [
+              -66.3,
+              -16.6
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "noroeste",
+        "nombre": "Vertiente noroeste: Cocapata, Morochata, Independencia",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Cocapata",
+          "Morochata",
+          "Independencia"
+        ],
+        "combustibles": [
+          "pajonal",
+          "bosque_humedo",
+          "matorral",
+          "cultivo_barbecho"
+        ],
+        "contexto": "Puna y yungas. Quemas de pastizal y chaqueo; incendios grandes en Independencia (2024).",
+        "referencia": "Quemas registradas por la ABT ene-ago 2019 (Los Tiempos, 30/08/2019): Cocapata 185, Morochata 38.",
+        "bbox": [
+          -67.2,
+          -17.45,
+          -66.35,
+          -16.45
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -67.2,
+              -17.45
+            ],
+            [
+              -66.35,
+              -17.45
+            ],
+            [
+              -66.35,
+              -16.45
+            ],
+            [
+              -67.2,
+              -16.45
+            ],
+            [
+              -67.2,
+              -17.45
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cabeceras",
+        "nombre": "Cabeceras de valle: Tiraque y Colomi",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Tiraque",
+          "Colomi",
+          "Sacaba (zona alta)"
+        ],
+        "combustibles": [
+          "pajonal",
+          "pino",
+          "eucalipto",
+          "cultivo_barbecho"
+        ],
+        "contexto": "Pajonal de altura con plantaciones de pino. Colomi tuvo 1.916 ha en un solo incendio (agosto 2017).",
+        "referencia": "Quemas registradas por la ABT ene-ago 2019 (Los Tiempos, 30/08/2019): Tiraque 183, Colomi 85, Sacaba 52.",
+        "bbox": [
+          -66.0,
+          -17.55,
+          -65.5,
+          -17.2
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.0,
+              -17.55
+            ],
+            [
+              -65.5,
+              -17.55
+            ],
+            [
+              -65.5,
+              -17.2
+            ],
+            [
+              -66.0,
+              -17.2
+            ],
+            [
+              -66.0,
+              -17.55
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sudeste",
+        "nombre": "Sudeste: Pocona, Totora, Vacas, Pojo",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Pocona",
+          "Totora",
+          "Vacas",
+          "Pojo"
+        ],
+        "combustibles": [
+          "bosque_seco",
+          "matorral",
+          "pajonal",
+          "cultivo_barbecho"
+        ],
+        "contexto": "Valles secos y bosque seco interandino. Chaqueos que se descontrolan: Pocona ~700 ha en julio 2024 (80 % pajonal).",
+        "referencia": "Quemas registradas por la ABT ene-ago 2019 (Los Tiempos, 30/08/2019): Pocona 75, Pojo 23, Totora 23.",
+        "bbox": [
+          -65.75,
+          -17.95,
+          -64.7,
+          -17.45
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -65.75,
+              -17.95
+            ],
+            [
+              -64.7,
+              -17.95
+            ],
+            [
+              -64.7,
+              -17.45
+            ],
+            [
+              -65.75,
+              -17.45
+            ],
+            [
+              -65.75,
+              -17.95
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "capinota",
+        "nombre": "Sur: Capinota y valle bajo",
+        "tipo": "zona_critica",
+        "municipios": [
+          "Capinota",
+          "Santiváñez",
+          "Sicaya"
+        ],
+        "combustibles": [
+          "bosque_seco",
+          "matorral",
+          "cultivo_barbecho"
+        ],
+        "contexto": "Valle seco con quemas agrícolas.",
+        "referencia": "Quemas registradas por la ABT ene-ago 2019 (Los Tiempos, 30/08/2019): Capinota 119.",
+        "bbox": [
+          -66.45,
+          -17.85,
+          -66.05,
+          -17.55
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -66.45,
+              -17.85
+            ],
+            [
+              -66.05,
+              -17.85
+            ],
+            [
+              -66.05,
+              -17.55
+            ],
+            [
+              -66.45,
+              -17.55
+            ],
+            [
+              -66.45,
+              -17.85
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
