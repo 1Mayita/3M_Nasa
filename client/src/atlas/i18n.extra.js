@@ -1,5 +1,16 @@
 // Textos nuevos (botones, barra del mapa, gráfico) en español e inglés.
 export const ES_EXTRA = {
+  storyScroll: 'Desplázate',
+  storyWhereTitle: '48 territorios, un solo valle.',
+  storyWhereText: 'Cochabamba tiene 47 municipios y un territorio indígena con límites propios, Raqaypampa. En el atlas cada uno se abre con un clic y cuenta su propia historia de focos de calor.',
+  storyWhereCta: 'Abrir el atlas',
+  storyTunariTitle: 'La montaña detrás de la ciudad.',
+  storyTunariText: 'El Parque Nacional Tunari lo comparten varios municipios. Pajonal, pino y eucalipto no arden igual, y esa diferencia importa para quien vigila.',
+  storyWhenTitle: 'Mes a mes, año tras año.',
+  storyWhenText: 'El calendario compara cada mes con su mediana histórica y marca las fases de El Niño y La Niña solo como contexto, nunca como explicación.',
+  storyHowTitle: 'Dos satélites, una sola serie.',
+  storyHowText: 'MODIS y VIIRS no ven el fuego igual. Los armonizamos sin sumarlos y decimos con claridad qué es un foco de calor y qué no es.',
+  storyEndTitle: 'Empieza por el mapa.',
   heroTunari: 'Ver el Tunari',
   heroCalendar: 'Ver el calendario',
   heroMethod: 'Cómo se armoniza',
@@ -18,6 +29,17 @@ export const ES_EXTRA = {
 };
 
 export const EN_EXTRA = {
+  storyScroll: 'Scroll',
+  storyWhereTitle: '48 territories, one valley.',
+  storyWhereText: 'Cochabamba has 47 municipalities and an Indigenous territory with its own boundaries, Raqaypampa. In the atlas each one opens with a click and tells its own story of hot spots.',
+  storyWhereCta: 'Open the atlas',
+  storyTunariTitle: 'The mountain behind the city.',
+  storyTunariText: 'Several municipalities share the Tunari National Park. Grassland, pine and eucalyptus do not burn alike, and that difference matters to those who watch over it.',
+  storyWhenTitle: 'Month by month, year after year.',
+  storyWhenText: 'The calendar compares each month with its historical median and marks El Niño and La Niña phases only as context, never as an explanation.',
+  storyHowTitle: 'Two satellites, one series.',
+  storyHowText: 'MODIS and VIIRS do not see fire the same way. We harmonize them without adding them together, and we state clearly what a hot spot is and what it is not.',
+  storyEndTitle: 'Start with the map.',
   heroTunari: 'See the Tunari',
   heroCalendar: 'See the calendar',
   heroMethod: 'How it is harmonized',

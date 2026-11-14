@@ -69,6 +69,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
   const [terrainLoaded, setTerrainLoaded] = useState(false);
   const idleTimerRef = useRef(null);
   const hasEnteredRef = useRef(false);
+  const wasFocusedRef = useRef(false);
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion());
 
   // el sistema puede cambiar la preferencia mientras la página está abierta
@@ -99,13 +100,15 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
             transitionInterpolator: new FlyToInterpolator({ speed: 1.0 })
           });
         });
+        wasFocusedRef.current = true;
         holdOrbit(2600);
         return;
       }
       if (selectedIdx === null) {
-        if (!entered && !hasEnteredRef.current) {
+        if (!entered && !hasEnteredRef.current && !wasFocusedRef.current) {
           return;
         }
+        wasFocusedRef.current = false;
         hasEnteredRef.current = hasEnteredRef.current || entered;
         const targetView = entered ? DEPARTMENT_VIEW : HERO_VIEW;
         setViewState(function back(previous) {
@@ -427,7 +430,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
           onSelect(idx);
         }
       }}
-      controller={{ inertia: 400, touchRotate: true }}
+      controller={{ inertia: 400, touchRotate: true, scrollZoom: !!entered }}
       layers={layers}
       useDevicePixels={Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 1.5)}
       getCursor={function cursor(state) {

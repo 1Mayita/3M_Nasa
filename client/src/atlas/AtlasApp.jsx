@@ -25,6 +25,7 @@ import './atlas.extra.css';
 import './atlas.pages.css';
 import './atlas.tunari.css';
 import './atlas.polish.css';
+import './atlas.layout.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
 const ROUTES = ['inicio', 'atlas', 'tunari', 'calendario', 'metodo'];
@@ -118,6 +119,7 @@ export default function AtlasApp() {
   const [toast, setToast] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFlat, setIsFlat] = useState(false);
+  const [storyStep, setStoryStep] = useState(0);
   const rootRef = useRef(null);
   const heroRef = useRef(null);
   const mapRef = useRef(null);
@@ -572,6 +574,25 @@ export default function AtlasApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
+  // En la portada la rueda del mouse recorre la historia aunque el cursor esté sobre el mapa
+  useEffect(function forwardWheelToStory() {
+    if (phase !== 'hero') {
+      return undefined;
+    }
+    function onWheel(event) {
+      const scroller = heroRef.current;
+      if (!scroller || scroller.contains(event.target)) {
+        return;
+      }
+      scroller.scrollTop += event.deltaY;
+      event.preventDefault();
+    }
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return function cleanup() {
+      window.removeEventListener('wheel', onWheel);
+    };
+  }, [phase]);
+
   // Escape cierra la ficha
   useEffect(function listenToEscape() {
     function onKey(event) {
@@ -706,7 +727,7 @@ export default function AtlasApp() {
             onSelect={handleSelect}
             onHover={handleHover}
             interactive={!inHero}
-            focusRegion={page === 'tunari' ? tunariRegion : null}
+            focusRegion={page === 'tunari' || (inHero && storyStep === 2) ? tunariRegion : null}
             active={mapActive}
             gamcLayers={gamcLayers}
             onTerrainReady={handleTerrainReady}
@@ -723,7 +744,7 @@ export default function AtlasApp() {
       {!isShown && errorMessage === null && inAtlas && <p className="atlas__status" role="status">{t('loading')}</p>}
       {errorMessage !== null && <p className="atlas__status is-error" role="alert">{t('loadError')}: {errorMessage}</p>}
 
-      {phase !== 'atlas' && <Hero ref={heroRef} t={t} onEnter={function enter() { goTo('atlas'); }} isReady={isShown} />}
+      {phase !== 'atlas' && <Hero ref={heroRef} t={t} onEnter={function enter() { goTo('atlas'); }} isReady={isShown} onStep={setStoryStep} step={storyStep} />}
 
       {phase !== 'hero' && (
         <header className="atlas__title">
@@ -742,17 +763,6 @@ export default function AtlasApp() {
             );
           })}
         </nav>
-        {!inHero && !onPage && (
-          <div className="segmented" role="group" aria-label={t('profile')}>
-            {PROFILES.map(function profileButton(id) {
-              return (
-                <button type="button" key={id} aria-pressed={profile === id} onClick={function pick() { setProfile(id); }}>
-                  {profileName(language, id)}
-                </button>
-              );
-            })}
-          </div>
-        )}
         <div className="segmented segmented--small" role="group" aria-label={t('language')}>
           {LANGUAGES.map(function languageButton(id) {
             return (
@@ -782,12 +792,20 @@ export default function AtlasApp() {
             <IconOrbit />
           </button>
         )}
-        {!inHero && !onPage && <a className="classic-link" href="#clasico">{t('classic')}</a>}
       </div>
       {language === 'qu' && <p className="atlas__notice" role="status">{t('quNotice')}</p>}
 
       {!inHero && !onPage && (
         <nav className="rail" aria-label={t('municipalities')}>
+          <div className="profile" role="group" aria-label={t('profile')}>
+            {PROFILES.map(function profileButton(id) {
+              return (
+                <button type="button" key={id} aria-pressed={profile === id} onClick={function pick() { setProfile(id); }}>
+                  {profileName(language, id)}
+                </button>
+              );
+            })}
+          </div>
           {profile === 'ciudadano' ? (
             <div className="rail__plain">
               <h2>{t('seasonTitle')}</h2>
@@ -992,7 +1010,7 @@ export default function AtlasApp() {
         <p>
           {isSample && <span className="tag-sample">{t('sample')}</span>} {t('honest')}
         </p>
-        <p className="atlas__credits">{t('credits')}</p>
+        <p className="atlas__credits">{t('credits')} · <a href="#clasico">{t('classic')}</a></p>
       </footer>
     </div>
   );
