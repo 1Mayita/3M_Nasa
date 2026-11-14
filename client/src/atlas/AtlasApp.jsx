@@ -34,6 +34,8 @@ import './atlas.gallery.css';
 import './atlas.places.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
+// escenas de la portada con foto a pantalla completa: el mapa queda tapado, así que se detiene su giro (ahorra GPU)
+const PHOTO_STEPS = [1, 2, 7, 8];
 const ROUTES = ['inicio', 'municipios', 'atlas', 'tunari', 'calendario', 'metodo'];
 const USING_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 const GAMC_LAYER_OPTIONS = [
@@ -757,7 +759,7 @@ export default function AtlasApp() {
             onHover={handleHover}
             interactive={!inHero}
             focusRegion={page === 'tunari' || (inHero && storyStep === TUNARI_STEP) ? tunariRegion : null}
-            active={mapActive}
+            active={mapActive && !(inHero && PHOTO_STEPS.indexOf(storyStep) >= 0)}
             gamcLayers={gamcLayers}
             onTerrainReady={handleTerrainReady}
           />

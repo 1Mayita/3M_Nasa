@@ -75,12 +75,76 @@ const CONTENT = {
   }
 };
 
+// ilustraciones propias de los 10 destacados (se usan solo si no hay foto libre)
+const ILLUSTRATION = {
+  '030101': 'm_cercado', '031001': 'm_sacaba', '030901': 'm_quillacollo', '030903': 'm_tiquipaya', '030905': 'm_colcapirhua',
+  '030904': 'm_vinto', '030902': 'm_sipesipe', '031401': 'm_punata', '031002': 'm_colomi', '031003': 'm_villatunari'
+};
+const PLACE_ID = {
+  cercado: '030101', sacaba: '031001', quillacollo: '030901', tiquipaya: '030903', colcapirhua: '030905',
+  vinto: '030904', sipesipe: '030902', punata: '031401', colomi: '031002', villatunari: '031003'
+};
+const LABELS = {
+  es: { all: 'Los 47 municipios', allLead: 'Toca uno para ver su foto, su provincia y sus datos.', province: 'Provincia', area: 'Superficie', anniversary: 'Aniversario', population: 'Población', capital: 'Capital', close: 'Cerrar', credit: 'Foto', source: 'Fuente', illus: 'Ilustración generada con IA', noPhoto: 'Sin foto libre disponible', all2: 'Todas', unit: 'unidades' },
+  en: { all: 'All 47 municipalities', allLead: 'Tap one to see its photo, province and facts.', province: 'Province', area: 'Area', anniversary: 'Anniversary', population: 'Population', capital: 'Capital', close: 'Close', credit: 'Photo', source: 'Source', illus: 'AI-generated illustration', noPhoto: 'No free photo available', all2: 'All', unit: 'units' }
+};
+
 export default function MunicipiosPage(props) {
   const { language, t } = props;
   const content = language === 'en' ? CONTENT.en : CONTENT.es;
+  const L = language === 'en' ? LABELS.en : LABELS.es;
   const pageRef = useRef(null);
   const sceneRefs = useRef([]);
   const [active, setActive] = useState(-1);
+  const [units, setUnits] = useState([]);
+  const [info, setInfo] = useState({});
+  const [province, setProvince] = useState('');
+  const [open, setOpen] = useState(null);
+
+  useEffect(function load() {
+    let alive = true;
+    fetch(BASE + 'data/municipios_cochabamba.geojson')
+      .then(function json(r) { return r.json(); })
+      .then(function set(g) {
+        if (alive) {
+          setUnits(g.features.map(function pick(f) { return f.properties; }));
+        }
+      })
+      .catch(function ignore() {});
+    fetch(BASE + 'data/municipios_info.json')
+      .then(function json(r) { return r.ok ? r.json() : {}; })
+      .then(function set(d) { if (alive) { setInfo(d || {}); } })
+      .catch(function ignore() {});
+    return function stop() { alive = false; };
+  }, []);
+
+  useEffect(function escClose() {
+    if (!open) {
+      return undefined;
+    }
+    function onKey(event) {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        setOpen(null);
+      }
+    }
+    window.addEventListener('keydown', onKey, true);
+    return function off() { window.removeEventListener('keydown', onKey, true); };
+  }, [open]);
+
+  function photoOf(id) {
+    const entry = info[id];
+    if (entry && entry.image) {
+      return { src: BASE + 'img/' + entry.image.replace(/^img\//, ''), real: true };
+    }
+    if (ILLUSTRATION[id]) {
+      return { src: BASE + 'img/' + ILLUSTRATION[id] + '.webp', real: false };
+    }
+    return null;
+  }
+  const provinces = Array.from(new Set(units.map(function p(u) { return u.provincia; })));
+  const shown = units.filter(function f(u) { return !province || u.provincia === province; });
+  const openUnit = units.find(function f(u) { return u.id === open; });
 
   useEffect(function focusTitle() {
     const heading = document.getElementById('municipios-title');
@@ -161,8 +225,8 @@ export default function MunicipiosPage(props) {
           >
             <img
               className="places__photo"
-              src={BASE + 'img/' + place.image + '.webp'}
-              alt={content.imageLabel + info[0] + ', ' + info[1]}
+              src={(photoOf(PLACE_ID[place.id]) || { src: BASE + 'img/' + place.image + '.webp' }).src}
+              alt={(photoOf(PLACE_ID[place.id]) && photoOf(PLACE_ID[place.id]).real ? '' : content.imageLabel) + info[0] + ', ' + info[1]}
               loading="lazy"
               decoding="async"
               width="1600"
@@ -178,6 +242,69 @@ export default function MunicipiosPage(props) {
           </article>
         );
       })}
+
+      <section className="places__all" aria-labelledby="places-all-title">
+        <h2 id="places-all-title">{L.all}</h2>
+        <p className="places__alllead">{L.allLead}</p>
+        <div className="places__filters" role="group" aria-label={L.province}>
+          <button type="button" aria-pressed={province === ''} onClick={function all() { setProvince(''); }}>{L.all2}</button>
+          {provinces.map(function chip(name) {
+            return (
+              <button type="button" key={name} aria-pressed={province === name} onClick={function pick() { setProvince(name); }}>{name}</button>
+            );
+          })}
+        </div>
+        <ul className="places__grid">
+          {shown.map(function card(unit) {
+            const photo = photoOf(unit.id);
+            const data = info[unit.id] || {};
+            return (
+              <li key={unit.id}>
+                <button type="button" className="places__tile" onClick={function show() { setOpen(unit.id); }}>
+                  <span className="places__tilephoto" style={photo ? { backgroundImage: 'url(' + photo.src + ')' } : undefined} aria-hidden="true" />
+                  <span className="places__tiletext">
+                    <strong>{unit.nombre}</strong>
+                    <small>{unit.provincia}{data.anniversary ? ' · ' + data.anniversary : ''}</small>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      {openUnit && (
+        <div className="places__modal" role="dialog" aria-modal="true" aria-label={openUnit.nombre} onClick={function away(e) { if (e.target === e.currentTarget) { setOpen(null); } }}>
+          <div className="places__sheet">
+            <button type="button" className="places__close" onClick={function close() { setOpen(null); }} autoFocus>{L.close}</button>
+            {photoOf(openUnit.id) ? (
+              <img src={photoOf(openUnit.id).src} alt={(photoOf(openUnit.id).real ? '' : L.illus + ': ') + openUnit.nombre} />
+            ) : (
+              <div className="places__nophoto">{L.noPhoto}</div>
+            )}
+            <div className="places__sheettext">
+              <h3>{openUnit.nombre}</h3>
+              <dl>
+                <div><dt>{L.province}</dt><dd>{openUnit.provincia}</dd></div>
+                <div><dt>{L.capital}</dt><dd>{openUnit.capital}</dd></div>
+                <div><dt>{L.area}</dt><dd>{Math.round(openUnit.km2).toLocaleString(language === 'en' ? 'en-US' : 'es-BO')} km²</dd></div>
+                {info[openUnit.id] && info[openUnit.id].anniversary && <div><dt>{L.anniversary}</dt><dd>{info[openUnit.id].anniversary}</dd></div>}
+                {info[openUnit.id] && info[openUnit.id].population && <div><dt>{L.population}</dt><dd>{Number(info[openUnit.id].population).toLocaleString(language === 'en' ? 'en-US' : 'es-BO')}{info[openUnit.id].populationYear ? ' (' + info[openUnit.id].populationYear + ')' : ''}</dd></div>}
+              </dl>
+              {info[openUnit.id] && info[openUnit.id].summary && <p>{info[openUnit.id].summary}</p>}
+              <p className="places__credit">
+                {info[openUnit.id] && info[openUnit.id].credit && (
+                  <span>{L.credit}: <a href={info[openUnit.id].credit.url} target="_blank" rel="noreferrer noopener">{info[openUnit.id].credit.author || 'Wikimedia Commons'}</a>, {info[openUnit.id].credit.license}. </span>
+                )}
+                {info[openUnit.id] && info[openUnit.id].sourceUrl && (
+                  <span>{L.source}: <a href={info[openUnit.id].sourceUrl} target="_blank" rel="noreferrer noopener">Wikipedia</a>.</span>
+                )}
+              </p>
+              <a className="btn btn--secondary" href="#/atlas"><IconFlame /> {content.toAtlas}</a>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="places__end places__scene" data-index={PLACES.length} ref={register(PLACES.length + 1)}>
         <h2>{content.endTitle}</h2>

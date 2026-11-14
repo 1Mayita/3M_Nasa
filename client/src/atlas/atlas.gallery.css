@@ -287,3 +287,15 @@
     transition: none;
   }
 }
+
+/* ---------- rendimiento: la cinta usa su propia capa y las fotos solo se animan cuando se ven ---------- */
+.gallery__track {
+  will-change: transform;
+}
+.story__block:not(.is-in) .story__figure img {
+  animation-play-state: paused;
+}
+.sitefooter {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 420px;
+}
