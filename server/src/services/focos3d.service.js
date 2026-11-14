@@ -11,7 +11,8 @@ import { readZones, readFuelProfiles } from '../models/zones.model.js';
 import { readMunicipalities } from '../models/municipios.model.js';
 import { prepareMunicipalities, findMunicipality } from './municipios.service.js';
 
-const MONTH_PATTERN = /^\d{4}-\d{2}$/;
+// Año de 4 dígitos y mes de 01 a 12 (rechaza, por ejemplo, 2020-13)
+const MONTH_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
 
 export class Focos3dServiceError extends Error {
   constructor(message, httpStatus) {
@@ -40,6 +41,32 @@ function validateMonth(monthText, parameterName) {
   return monthText;
 }
 
+/**
+ * Rectángulo [lonMin, latMin, lonMax, latMax] calculado desde el polígono (Polygon o MultiPolygon).
+ * Se usa si la zona no trae properties.bbox.
+ */
+export function computeBboxFromGeometry(geometry) {
+  let polygons = [];
+  if (geometry.type === 'Polygon') {
+    polygons = [geometry.coordinates];
+  } else if (geometry.type === 'MultiPolygon') {
+    polygons = geometry.coordinates;
+  }
+  let minimumLongitude = Infinity;
+  let minimumLatitude = Infinity;
+  let maximumLongitude = -Infinity;
+  let maximumLatitude = -Infinity;
+  for (const polygon of polygons) {
+    for (const point of polygon[0]) {
+      minimumLongitude = Math.min(minimumLongitude, point[0]);
+      minimumLatitude = Math.min(minimumLatitude, point[1]);
+      maximumLongitude = Math.max(maximumLongitude, point[0]);
+      maximumLatitude = Math.max(maximumLatitude, point[1]);
+    }
+  }
+  return [minimumLongitude, minimumLatitude, maximumLongitude, maximumLatitude];
+}
+
 async function findZone(zoneId) {
   const zones = await readZones();
   const zone = zones.features.find(function matchesId(feature) {
@@ -47,6 +74,9 @@ async function findZone(zoneId) {
   });
   if (zone === undefined) {
     throw new Focos3dServiceError('Zona no encontrada: ' + zoneId, 404);
+  }
+  if (!Array.isArray(zone.properties.bbox)) {
+    zone.properties.bbox = computeBboxFromGeometry(zone.geometry);
   }
   return zone;
 }
@@ -155,6 +185,44 @@ export function buildHotspots3d(records, bbox, fromMonth, toMonth) {
 // y ese rectángulo también toma pedazos de La Paz, Beni, Santa Cruz y otros vecinos.
 // Para la zona "depto" dejamos solo las celdas cuyo centro cae en alguno de los
 // 48 municipios de Cochabamba (los mismos polígonos de /api/municipios/mensual).
+// ---------------------------------------------------------------------
+// Filtro por la GEOMETRÍA real de la zona (no solo por su rectángulo)
+// ---------------------------------------------------------------------
+
+// Así /api/focos3d y /api/zonas/ahora cuentan lo mismo que el calendario,
+// que también usa el polígono de la zona. Sirve para Polygon y MultiPolygon.
+const preparedZoneById = new Map();
+const isCellInsideZoneByKey = new Map();
+
+function getPreparedZone(zoneFeature) {
+  const zoneId = zoneFeature.properties.id;
+  if (!preparedZoneById.has(zoneId)) {
+    const prepared = prepareMunicipalities({ type: 'FeatureCollection', features: [zoneFeature] });
+    preparedZoneById.set(zoneId, prepared);
+  }
+  return preparedZoneById.get(zoneId);
+}
+
+export function isRecordInsideZoneGeometry(record, zoneFeature) {
+  const cellKey = zoneFeature.properties.id + '|' + record[0] + '|' + record[1];
+  if (!isCellInsideZoneByKey.has(cellKey)) {
+    const preparedZone = getPreparedZone(zoneFeature);
+    const isInside = findMunicipality(record[0], record[1], preparedZone) !== null;
+    isCellInsideZoneByKey.set(cellKey, isInside);
+  }
+  return isCellInsideZoneByKey.get(cellKey);
+}
+
+export function filterRecordsInsideZoneGeometry(records, zoneFeature) {
+  const recordsInside = [];
+  for (const record of records) {
+    if (isRecordInsideZoneGeometry(record, zoneFeature)) {
+      recordsInside.push(record);
+    }
+  }
+  return recordsInside;
+}
+
 let cachedPreparedMunicipalities = null;
 const isCellInsideDepartmentByKey = new Map();
 
@@ -185,7 +253,12 @@ export async function getHotspots3d(zoneId, rawFromMonth, rawToMonth) {
   const fuelProfiles = await readFuelProfiles();
 
   const isDepartment = zone.properties.id === 'depto';
-  const records = isDepartment ? await filterRecordsInsideDepartment(dataset.records) : dataset.records;
+  let records = [];
+  if (isDepartment) {
+    records = await filterRecordsInsideDepartment(dataset.records);
+  } else {
+    records = filterRecordsInsideZoneGeometry(dataset.records, zone);
+  }
   const result = buildHotspots3d(records, zone.properties.bbox, fromMonth, toMonth);
 
   const fuels = [];
@@ -240,7 +313,16 @@ export function calculateMedian(values) {
 /**
  * Para cada zona: focos del mes elegido, mediana del mismo mes en años anteriores y anomalía (%).
  */
-export function buildZonesNow(records, zoneFeatures, targetMonth) {
+/**
+ * isInsideZone(record, feature) es opcional: por defecto usa el rectángulo (bbox) de la zona.
+ * El servicio le pasa el filtro por geometría real.
+ */
+export function buildZonesNow(records, zoneFeatures, targetMonth, isInsideZone) {
+  const checkInsideZone = typeof isInsideZone === 'function'
+    ? isInsideZone
+    : function isInsideZoneBbox(record, feature) {
+      return isInsideBbox(record[0], record[1], feature.properties.bbox);
+    };
   const targetYear = Number.parseInt(targetMonth.slice(0, 4), 10);
   const targetMonthNumber = targetMonth.slice(5, 7);
   let firstYearWithData = targetYear;
@@ -253,7 +335,6 @@ export function buildZonesNow(records, zoneFeatures, targetMonth) {
 
   const results = [];
   for (const feature of zoneFeatures) {
-    const bbox = feature.properties.bbox;
     const totalsByYear = {};
     for (let year = firstYearWithData; year <= targetYear; year = year + 1) {
       totalsByYear[year] = 0;
@@ -267,7 +348,7 @@ export function buildZonesNow(records, zoneFeatures, targetMonth) {
       if (year > targetYear) {
         continue;
       }
-      if (!isInsideBbox(record[0], record[1], bbox)) {
+      if (!checkInsideZone(record, feature)) {
         continue;
       }
       totalsByYear[year] = totalsByYear[year] + record[3];
@@ -315,12 +396,17 @@ export async function getZonesNow(rawMonth) {
   const criticalZones = zones.features.filter(function isNotDepartment(feature) {
     return feature.properties.tipo !== 'departamental';
   });
+  for (const feature of criticalZones) {
+    if (!Array.isArray(feature.properties.bbox)) {
+      feature.properties.bbox = computeBboxFromGeometry(feature.geometry);
+    }
+  }
 
   return {
     month: targetMonth,
     unit: dataset.metadata.unidad || 'detecciones (equivalente VIIRS S-NPP)',
     isSample: dataset.metadata.sintetico === true,
     note: 'Comparación con la mediana del mismo mes en años anteriores. No es una predicción.',
-    zones: buildZonesNow(dataset.records, criticalZones, targetMonth)
+    zones: buildZonesNow(dataset.records, criticalZones, targetMonth, isRecordInsideZoneGeometry)
   };
 }
