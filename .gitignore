@@ -12,5 +12,9 @@ serviceAccount*.json
 # datos pesados: solo se versiona data/sample
 data/raw/*
 data/processed/*
+data/processed/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+
+# kit original (ya integrado)
+_kit/
