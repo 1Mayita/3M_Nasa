@@ -299,7 +299,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
       const terrainLayer = new TerrainLayer({
           id: 'relieve',
           minZoom: 0,
-          maxZoom: 12,
+          maxZoom: 11,
           elevationDecoder: TERRARIUM_DECODER,
           elevationData: ELEVATION_TILES_URL,
           texture: SATELLITE_TILES_URL,
@@ -478,7 +478,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
       }}
       controller={{ inertia: 400, touchRotate: true, scrollZoom: !!entered }}
       layers={layers}
-      useDevicePixels={Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 1.5)}
+      useDevicePixels={1}
       getCursor={function cursor(state) {
         return hoverIdx !== null && hoverIdx !== undefined ? 'pointer' : state.isDragging ? 'grabbing' : 'grab';
       }}
