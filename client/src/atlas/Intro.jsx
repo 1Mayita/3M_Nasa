@@ -428,7 +428,6 @@ export default function Intro({ t, onDone }) {
         <div className="intro__actions">
           <button type="button" className="intro__enter"><span className="intro__enter-label">{t('introEnter')}</span></button>
         </div>
-        <p className="intro__credit">{t('introCredit')}</p>
         <button type="button" className="intro__skip">{t('introSkip')}</button>
         <p className="intro__live intro__sr" role="status" aria-live="polite" />
       </div>
