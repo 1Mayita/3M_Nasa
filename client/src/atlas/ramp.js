@@ -9,6 +9,8 @@ const STOPS = [
 ];
 
 export const EMPTY_COLOR = [22, 38, 30];
+// Municipios sin focos o sin dato: gris salvia claro, legible sobre el terreno oscuro
+export const NO_DATA_COLOR = [150, 168, 156];
 
 export function rampColor(ratio) {
   const t = Math.min(Math.max(ratio, 0), 1);

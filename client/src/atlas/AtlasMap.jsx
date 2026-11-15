@@ -13,7 +13,7 @@ import { GeoJsonLayer, ColumnLayer, BitmapLayer, TextLayer } from '@deck.gl/laye
 import { TerrainLayer, TileLayer } from '@deck.gl/geo-layers';
 import { getGamcTileUrl } from '../services/gamcApi.js';
 import { _TerrainExtension as TerrainExtension, CollisionFilterExtension } from '@deck.gl/extensions';
-import { rampColor, intensityRatio, EMPTY_COLOR } from './ramp.js';
+import { rampColor, intensityRatio, NO_DATA_COLOR } from './ramp.js';
 import { findMunicipalityIndex, zoomForBbox } from './geo.js';
 import { loadElevation, locateOnTerrain } from './dem.js';
 
@@ -30,6 +30,25 @@ const DEPARTMENT_VIEW = {
   maxPitch: 78,
   minZoom: 6.2
 };
+
+// Encuadre del departamento completo (lon -67.0..-64.2, lat -18.7..-15.8) según el tamaño de la ventana,
+// dejando libre el riel izquierdo en escritorio.
+function departmentView() {
+  if (typeof window === 'undefined') {
+    return DEPARTMENT_VIEW;
+  }
+  const wide = window.innerWidth > 820;
+  const railPx = wide ? 360 : 0;
+  const freeWidth = Math.max(window.innerWidth - railPx, 280) * 0.9;
+  const freeHeight = Math.max(window.innerHeight - (wide ? 300 : 260), 280) * 0.95;
+  // deck.gl: el mundo mide 512 * 2^zoom px; el departamento ocupa ~4.2 x 2.2 (con inclinación) * 2^zoom
+  const zoom = Math.min(Math.max(Math.log2(Math.min(freeWidth / 4.8, freeHeight / 2.4)), 6.6), 8.6);
+  const degreesPerPixel = 360 / (512 * Math.pow(2, zoom));
+  return Object.assign({}, DEPARTMENT_VIEW, {
+    zoom: zoom,
+    longitude: DEPARTMENT_VIEW.longitude - (railPx / 2) * degreesPerPixel
+  });
+}
 
 const HERO_VIEW = {
   longitude: -65.9,
@@ -110,7 +129,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
         }
         wasFocusedRef.current = false;
         hasEnteredRef.current = hasEnteredRef.current || entered;
-        const targetView = entered ? DEPARTMENT_VIEW : HERO_VIEW;
+        const targetView = entered ? departmentView() : HERO_VIEW;
         setViewState(function back(previous) {
           return Object.assign({}, previous, targetView, {
             transitionDuration: reducedMotion ? 0 : 2400,
@@ -184,7 +203,7 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
       reset: function reset() {
         holdOrbit(3000);
         setViewState(function change(previous) {
-          return Object.assign({}, previous, focusRegion ? {} : DEPARTMENT_VIEW, {
+          return Object.assign({}, previous, focusRegion ? {} : departmentView(), {
             transitionDuration: reducedMotion ? 0 : 1600,
             transitionInterpolator: new FlyToInterpolator({ speed: 1.2 })
           });
@@ -269,13 +288,16 @@ const AtlasMap = forwardRef(function AtlasMap(props, ref) {
     function computeFillColors() {
       return values.map(function colorFor(value, i) {
         const dimmed = focusRegion && focusRegion.indices.indexOf(i) < 0;
-        if (value <= 0) {
+        if (!(value > 0)) {
+          // sin focos o sin dato: tono neutro claro, distinto del terreno y de la rampa
           if (focusRegion && !dimmed) {
-            return [79, 127, 99, 120];
+            return NO_DATA_COLOR.concat([190]);
           }
-          return EMPTY_COLOR.concat([dimmed ? 50 : 120]);
+          return NO_DATA_COLOR.concat([dimmed ? 70 : 165]);
         }
-        return rampColor(intensityRatio(value, maxValue)).concat([dimmed ? 55 : 185]);
+        // los valores bajos arrancan sobre el eucalipto, no sobre el pino casi negro
+        const ratio = 0.16 + 0.84 * intensityRatio(value, maxValue);
+        return rampColor(ratio).concat([dimmed ? 70 : 215]);
       });
     },
     [values, maxValue, focusRegion]
