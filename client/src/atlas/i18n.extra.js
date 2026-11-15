@@ -29,7 +29,7 @@ export const ES_EXTRA = {
   footerExplore: 'Explorar',
   footerSources: 'Fuentes y créditos',
   footerMade: 'Hecho en Cochabamba para el NASA Space Apps Challenge 2026.',
-  credits: 'Focos: NASA FIRMS · Relieve: AWS Terrain Tiles · Imagen satelital: Esri, Maxar, Earthstar Geographics · Límites: Lab TecnoSocial 2024 (CC BY 4.0) · Fotografías: ilustraciones generadas con IA',
+  credits: 'Focos: NASA FIRMS · Relieve: AWS Terrain Tiles · Imagen satelital: Esri, Maxar, Earthstar Geographics · Límites: Lab TecnoSocial 2024 (CC BY 4.0)',
   identityName: 'Cochabamba',
   identityQu: 'Quchapampa',
   identityText: 'Un valle entre montañas, con el Tunari de telón de fondo. Aquí el fuego no es una imagen lejana: se vigila, se mide y se cuenta.',
@@ -122,7 +122,7 @@ export const ES_EXTRA = {
   footerSrcTerrain: 'Relieve: AWS Terrain Tiles',
   footerSrcImagery: 'Imagen satelital: Esri, Maxar, Earthstar Geographics',
   footerSrcBounds: 'Límites: Lab TecnoSocial 2024 (CC BY 4.0)',
-  footerAiNote: 'Las fotografías del sitio son ilustraciones generadas con IA.'
+  footerAiNote: 'Imágenes: fotografías con licencia libre (Wikimedia Commons) e ilustraciones generadas con IA.'
 };
 
 export const EN_EXTRA = {
@@ -155,7 +155,7 @@ export const EN_EXTRA = {
   footerExplore: 'Explore',
   footerSources: 'Sources and credits',
   footerMade: 'Made in Cochabamba for the NASA Space Apps Challenge 2026.',
-  credits: 'Hot spots: NASA FIRMS · Terrain: AWS Terrain Tiles · Satellite imagery: Esri, Maxar, Earthstar Geographics · Boundaries: Lab TecnoSocial 2024 (CC BY 4.0) · Photographs: AI-generated illustrations',
+  credits: 'Hot spots: NASA FIRMS · Terrain: AWS Terrain Tiles · Satellite imagery: Esri, Maxar, Earthstar Geographics · Boundaries: Lab TecnoSocial 2024 (CC BY 4.0)',
   identityName: 'Cochabamba',
   identityQu: 'Quchapampa',
   identityText: 'A valley between mountains, with the Tunari as its backdrop. Here fire is not a distant image: it is watched, measured and told.',
@@ -248,5 +248,5 @@ export const EN_EXTRA = {
   footerSrcTerrain: 'Terrain: AWS Terrain Tiles',
   footerSrcImagery: 'Satellite imagery: Esri, Maxar, Earthstar Geographics',
   footerSrcBounds: 'Boundaries: Lab TecnoSocial 2024 (CC BY 4.0)',
-  footerAiNote: 'The photographs on this site are AI-generated illustrations.'
+  footerAiNote: 'Images: openly licensed photographs (Wikimedia Commons) and AI-generated illustrations.'
 };
