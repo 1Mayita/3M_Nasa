@@ -136,7 +136,7 @@ export default function MunicipiosPage(props) {
   function photoOf(id) {
     const entry = info[id];
     if (entry && entry.image) {
-      return { src: BASE + 'img/' + entry.image.replace(/^img\//, ''), real: true };
+      return { src: BASE + 'img/' + entry.image.replace(/^img\//, ''), real: !(entry.credit && entry.credit.license === 'IA') };
     }
     if (ILLUSTRATION[id]) {
       return { src: BASE + 'img/' + ILLUSTRATION[id] + '.webp', real: false };
@@ -298,7 +298,10 @@ export default function MunicipiosPage(props) {
               </dl>
               {info[openUnit.id] && info[openUnit.id].summary && <p>{info[openUnit.id].summary}</p>}
               <p className="places__credit">
-                {info[openUnit.id] && info[openUnit.id].credit && (
+                {info[openUnit.id] && info[openUnit.id].credit && info[openUnit.id].credit.license === 'IA' && (
+                  <span>{L.illus}. </span>
+                )}
+                {info[openUnit.id] && info[openUnit.id].credit && info[openUnit.id].credit.license !== 'IA' && info[openUnit.id].credit.url && (
                   <span>{L.credit}: <a href={info[openUnit.id].credit.url} target="_blank" rel="noreferrer noopener">{info[openUnit.id].credit.author || 'Wikimedia Commons'}</a>, {info[openUnit.id].credit.license}. </span>
                 )}
                 {info[openUnit.id] && info[openUnit.id].sourceUrl && (

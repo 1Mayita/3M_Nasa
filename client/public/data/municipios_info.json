@@ -201,8 +201,13 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Arque (Cochabamba), con capital en Villa de Arque y unos 516 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Arque_(Bolivia)",
-  "image": null,
-  "credit": null
+  "image": "mun/030601.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
  },
  "030602": {
   "name": "Tacopaya",
@@ -211,8 +216,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Arque (Cochabamba), con capital en Tacopaya y unos 583 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Tacopaya",
-  "image": null,
-  "credit": null
+  "image": "mun/030602.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
  },
  "030701": {
   "name": "Capinota",
@@ -671,8 +681,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Bolívar (Cochabamba), con capital en Bolivar y unos 680 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Bol%C3%ADvar_(Cochabamba)",
-  "image": null,
-  "credit": null
+  "image": "mun/031501.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
  },
  "031601": {
   "name": "Tiraque",
@@ -696,7 +711,12 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Tiraque (Cochabamba), con capital en Shinahota y unos 732 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Shinahota",
-  "image": null,
-  "credit": null
+  "image": "mun/031602.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
  }
 }
