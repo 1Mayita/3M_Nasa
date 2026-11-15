@@ -320,28 +320,48 @@
 }
 
 /* ---------- imprimir la ficha ---------- */
-@media print {
-  body * {
-    visibility: hidden !important;
+/* ---------- botones de exportar: estados ---------- */
+.button-ghost:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.button-ghost svg {
+  flex: none;
+}
+.button-ghost:disabled,
+.button-ghost[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: transparent;
+  color: inherit;
+  transform: none;
+}
+
+/* estado de la exportación (error): solo se ve cuando hay algo que decir */
+.export-status {
+  flex-basis: 100%;
+  min-height: 0;
+  color: var(--amber-soft, #e07a2f);
+  font-size: 0.85rem;
+}
+.export-status:empty {
+  display: none;
+}
+.button-ghost[aria-busy='true'] {
+  cursor: progress;
+  opacity: 0.8;
+}
+.button-ghost[aria-busy='true'] svg {
+  animation: export-pulse 1s ease-in-out infinite;
+}
+@keyframes export-pulse {
+  50% {
+    opacity: 0.35;
   }
-  .ficha,
-  .ficha * {
-    visibility: visible !important;
-  }
-  .ficha {
-    position: absolute !important;
-    inset: 0 auto auto 0 !important;
-    width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-    background: #fff !important;
-    color: #111 !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-  }
-  .ficha button {
-    display: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-ghost[aria-busy='true'] svg {
+    animation: none;
   }
 }
 

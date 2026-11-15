@@ -1,0 +1,722 @@
+{
+ "030101": {
+  "name": "Cochabamba",
+  "anniversary": "15 de agosto de 1571",
+  "population": 661484,
+  "populationYear": 2024,
+  "summary": "Municipio de la provincia Cercado (Cochabamba), con capital en Cochabamba y unos 285 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Cochabamba",
+  "image": "mun/030101.jpg",
+  "credit": {
+   "title": "Cristo de La Concordia de Cochabamba-Bolivia.jpg",
+   "author": "Devy Shakty",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Cristo_de_La_Concordia_de_Cochabamba-Bolivia.jpg"
+  }
+ },
+ "030201": {
+  "name": "Aiquile",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Campero (Cochabamba), con capital en Aiquile y unos 2.662 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Aiquile",
+  "image": "mun/030201.jpg",
+  "credit": {
+   "title": "Presentación de la Orquesta de Charangos de Cochabamba en el Festival del Charango Aiquile 2025.jpg",
+   "author": "Alesarcastic",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Presentaci%C3%B3n_de_la_Orquesta_de_Charangos_de_Cochabamba_en_el_Festival_del_Charango_Aiquile_2025.jpg"
+  }
+ },
+ "030202": {
+  "name": "Pasorapa",
+  "anniversary": null,
+  "population": 6853,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Campero (Cochabamba), con capital en Pasorapa y unos 2.365 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Pasorapa",
+  "image": "mun/030202.jpg",
+  "credit": {
+   "title": "Uchuku de Pasorapa con cebolla verde.jpg",
+   "author": "Búho Turquesa",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Uchuku_de_Pasorapa_con_cebolla_verde.jpg"
+  }
+ },
+ "030203": {
+  "name": "Omereque",
+  "anniversary": null,
+  "population": 5643,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Campero (Cochabamba), con capital en Omereque y unos 762 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Omereque",
+  "image": "mun/030203.jpg",
+  "credit": {
+   "title": "Ruta Nacional 5 en el municipio de Omereque",
+   "author": "Josefito123",
+   "license": "CC0",
+   "url": "https://commons.wikimedia.org/wiki/File:Ruta_Nacional_5_20240708_082847.jpg"
+  }
+ },
+ "030301": {
+  "name": "Ayopaya",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Ayopaya (Cochabamba), con capital en Villa de Independencia y unos 1.488 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Independencia_(Bolivia)",
+  "image": "mun/030301.jpg",
+  "credit": {
+   "title": "Comunidad Sanipaya.jpg",
+   "author": "Gagsg",
+   "license": "CC BY 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Comunidad_Sanipaya.jpg"
+  }
+ },
+ "030302": {
+  "name": "Morochata",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Ayopaya (Cochabamba), con capital en Morochata y unos 732 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Morochata",
+  "image": "mun/030302.jpg",
+  "credit": {
+   "title": "Camino Quiracollo Morochata 20240707 105905.jpg",
+   "author": "Josefito123",
+   "license": "CC0",
+   "url": "https://commons.wikimedia.org/wiki/File:Camino_Quiracollo_Morochata_20240707_105905.jpg"
+  }
+ },
+ "030303": {
+  "name": "Cocapata",
+  "anniversary": "6 de febrero de 2009",
+  "population": 18076,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Ayopaya (Cochabamba), con capital en Cocapata y unos 7.067 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Cocapata",
+  "image": "mun/030303.jpg",
+  "credit": {
+   "title": "Alcaldía de Independencia (capital de la provincia Ayopaya, a la que pertenece Cocapata)",
+   "author": "Llaqwa",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Independencia_-_Rathaus.jpg"
+  }
+ },
+ "030401": {
+  "name": "Tarata",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Tarata y unos 336 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tarata_(Bolivia)",
+  "image": "mun/030401.jpg",
+  "credit": {
+   "title": "Templo San Pedro De Tarata Cochabamba ÓRGANO.jpg",
+   "author": "MariaCristinaLavayenSoria",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Templo_San_Pedro_De_Tarata_Cochabamba_%C3%93RGANO.jpg"
+  }
+ },
+ "030402": {
+  "name": "Anzaldo",
+  "anniversary": null,
+  "population": 9126,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Villa de Anzaldo y unos 665 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Anzaldo",
+  "image": "mun/030402.jpg",
+  "credit": {
+   "title": "Penca y tuna en Anzaldo, 2008",
+   "author": "Ramiro Lizárraga Terrazas",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Penca_y_Tuna_en_Anzaldo,_2008.jpg"
+  }
+ },
+ "030403": {
+  "name": "Arbieto",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Arbieto y unos 147 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Arbieto",
+  "image": "mun/030403.jpg",
+  "credit": {
+   "title": "Laguna La Angostura entre los municipios de Tolata y Arbieto, Cochabamba - Bolivia en el año 2018.jpg",
+   "author": "Yazzmale",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Laguna_La_Angostura_entre_los_municipios_de_Tolata_y_Arbieto,_Cochabamba_-_Bolivia_en_el_a%C3%B1o_2018.jpg"
+  }
+ },
+ "030404": {
+  "name": "Sacabamba",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Sacabamba y unos 195 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Sacabamba",
+  "image": "mun/030404.jpg",
+  "credit": {
+   "title": "Río Sacabamba",
+   "author": "Fernando Just",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:R%C3%8DO_SACABAMBA.jpg"
+  }
+ },
+ "030501": {
+  "name": "Arani",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Arani (Cochabamba), con capital en Arani y unos 205 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Arani",
+  "image": "mun/030501.jpg",
+  "credit": {
+   "title": "Arani, Cochabamba.jpg",
+   "author": "MollySVH",
+   "license": "CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Arani,_Cochabamba.jpg"
+  }
+ },
+ "030502": {
+  "name": "Vacas",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Arani (Cochabamba), con capital en Vacas y unos 346 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Vacas_(Bolivia)",
+  "image": "mun/030502.jpg",
+  "credit": {
+   "title": "Laguna Asiruqucha, Vacas",
+   "author": "Wilmer",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vacas,_Asiruqucha.JPG"
+  }
+ },
+ "030601": {
+  "name": "Arque",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Arque (Cochabamba), con capital en Villa de Arque y unos 516 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Arque_(Bolivia)",
+  "image": "mun/030601.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
+ },
+ "030602": {
+  "name": "Tacopaya",
+  "anniversary": "30 de septiembre de 1941",
+  "population": 10253,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Arque (Cochabamba), con capital en Tacopaya y unos 583 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tacopaya",
+  "image": "mun/030602.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
+ },
+ "030701": {
+  "name": "Capinota",
+  "anniversary": null,
+  "population": 19477,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Capinota (Cochabamba), con capital en Capinota y unos 565 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Villa_Capinota",
+  "image": "mun/030701.jpg",
+  "credit": {
+   "title": "IGLESIA SAN PABLO CAPINOTA-07.jpg",
+   "author": "Daniel tribeno",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:IGLESIA_SAN_PABLO_CAPINOTA-07.jpg"
+  }
+ },
+ "030702": {
+  "name": "Santiváñez",
+  "anniversary": null,
+  "population": 6527,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Capinota (Cochabamba), con capital en Villa Santivañez y unos 298 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Santiv%C3%A1%C3%B1ez",
+  "image": "mun/030702.jpg",
+  "credit": {
+   "title": "Cochabamba - Casona Santivañez - 20190928155033.jpg",
+   "author": "Lord Tuatara",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Cochabamba_-_Casona_Santiva%C3%B1ez_-_20190928155033.jpg"
+  }
+ },
+ "030703": {
+  "name": "Sicaya",
+  "anniversary": "31 de agosto de 1984",
+  "population": 3740,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Capinota (Cochabamba), con capital en Sicaya y unos 115 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Sicaya_(Bolivia)",
+  "image": "mun/030703.jpg",
+  "credit": {
+   "title": "Castillo frente a la Iglesia de Sicaya en el marco de la Octava del Apostol Santiago.jpg",
+   "author": "Abraham Candela Rodriguez",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Castillo_frente_a_la_Iglesia_de_Sicaya_en_el_marco_de_la_Octava_del_Apostol_Santiago.jpg"
+  }
+ },
+ "030801": {
+  "name": "Cliza",
+  "anniversary": "24 de noviembre de 1914",
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Germán Jordán (Cochabamba), con capital en Cliza y unos 55 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Cliza",
+  "image": "mun/030801.jpg",
+  "credit": {
+   "title": "Mercado Central de Cliza - Cochabamba - Bolivia 09 - Pichon.jpg",
+   "author": "Mauri777AE",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Mercado_Central_de_Cliza_-_Cochabamba_-_Bolivia_09_-_Pichon.jpg"
+  }
+ },
+ "030802": {
+  "name": "Toco",
+  "anniversary": "3 de abril de 1956",
+  "population": 7057,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Germán Jordán (Cochabamba), con capital en Toco y unos 62 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Toco_(Bolivia)",
+  "image": "mun/030802.jpg",
+  "credit": {
+   "title": "Casas antiguas de Toco.jpg",
+   "author": "NAntequera",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Casas_antiguas_de_Toco.jpg"
+  }
+ },
+ "030803": {
+  "name": "Tolata",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Germán Jordán (Cochabamba), con capital en Tolata y unos 71 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tolata",
+  "image": "mun/030803.jpg",
+  "credit": {
+   "title": "Laguna La Angostura entre los municipios de Tolata y Arbieto, Cochabamba - Bolivia en el año 2018.jpg",
+   "author": "Yazzmale",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Laguna_La_Angostura_entre_los_municipios_de_Tolata_y_Arbieto,_Cochabamba_-_Bolivia_en_el_a%C3%B1o_2018.jpg"
+  }
+ },
+ "030901": {
+  "name": "Quillacollo",
+  "anniversary": "14 de septiembre de 1905",
+  "population": 165830,
+  "populationYear": 2024,
+  "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Quillacollo y unos 563 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Quillacollo",
+  "image": "mun/030901.jpg",
+  "credit": {
+   "title": "Parroquia San Idelfonso de Quillacollo¬ Cochabamba Bolivia¬ septiembre 2019 (24).jpg",
+   "author": "Jhonn William Guillen Prado",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Parroquia_San_Idelfonso_de_Quillacollo%C2%AC_Cochabamba_Bolivia%C2%AC_septiembre_2019_(24).jpg"
+  }
+ },
+ "030902": {
+  "name": "Sipesipe",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Sipesipe y unos 501 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Sipe_Sipe",
+  "image": "mun/030902.jpg",
+  "credit": {
+   "title": "Amanecer de Sipe Sipe",
+   "author": "Kevinleañoumss.practica I-B",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Amanecer_de_Sipe_Sipe.JPG"
+  }
+ },
+ "030903": {
+  "name": "Tiquipaya",
+  "anniversary": "23 de septiembre de 1957",
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Tiquipaya y unos 315 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tiquipaya",
+  "image": "mun/030903.jpg",
+  "credit": {
+   "title": "Iglesia san miguel tiquipaya 29.jpg",
+   "author": "AldoNuñezC.",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Iglesia_san_miguel_tiquipaya_29.jpg"
+  }
+ },
+ "030904": {
+  "name": "Vinto",
+  "anniversary": null,
+  "population": 51968,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Vinto y unos 213 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Vinto",
+  "image": "mun/030904.jpg",
+  "credit": {
+   "title": "Vinto Station Green Line Mi Tren - Oct. 29, 2023.jpg",
+   "author": "Ande Vega",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vinto_Station_Green_Line_Mi_Tren_-_Oct._29,_2023.jpg"
+  }
+ },
+ "030905": {
+  "name": "Colcapirhua",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Colcapirhua y unos 29 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Colcapirhua",
+  "image": "mun/030905.jpg",
+  "credit": {
+   "title": "Tren Metropolitano Cochabamba - Estación Colcapirhua.jpg",
+   "author": "RonnySb",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Tren_Metropolitano_Cochabamba_-_Estaci%C3%B3n_Colcapirhua.jpg"
+  }
+ },
+ "031001": {
+  "name": "Sacaba",
+  "anniversary": "29 de junio de 1761",
+  "population": 219092,
+  "populationYear": 2024,
+  "summary": "Municipio de la provincia Chapare (Cochabamba), con capital en Sacaba y unos 745 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Sacaba",
+  "image": "mun/031001.jpg",
+  "credit": {
+   "title": "Sacaba Cochabamba.jpg",
+   "author": "Marisol Sole Cáceres",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Sacaba_Cochabamba.jpg"
+  }
+ },
+ "031002": {
+  "name": "Colomi",
+  "anniversary": "13 de noviembre de 1945",
+  "population": 20728,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Chapare (Cochabamba), con capital en Colomi y unos 512 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Colomi",
+  "image": "mun/031002.jpg",
+  "credit": {
+   "title": "Colomi corani (2).jpg",
+   "author": "\"alexanderarnezz\"",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Colomi_corani_(2).jpg"
+  }
+ },
+ "031003": {
+  "name": "Villa Tunari",
+  "anniversary": null,
+  "population": 71386,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Chapare (Cochabamba), con capital en Villa Tunari y unos 11.092 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Villa_Tunari",
+  "image": "mun/031003.jpg",
+  "credit": {
+   "title": "Río Espíritu Santo (Villa Tunari).jpg",
+   "author": "Grullab",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:R%C3%ADo_Esp%C3%ADritu_Santo_(Villa_Tunari).jpg"
+  }
+ },
+ "031101": {
+  "name": "Tapacarí",
+  "anniversary": null,
+  "population": 24625,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Tapacarí (Cochabamba), con capital en Tapacarí y unos 1.557 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tapacar%C3%AD",
+  "image": "mun/031101.jpg",
+  "credit": {
+   "title": "Colorido y música en Tapacari.jpg",
+   "author": "Jhumeluvi",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Colorido_y_m%C3%BAsica_en_Tapacari.jpg"
+  }
+ },
+ "031201": {
+  "name": "Totora",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Totora y unos 2.120 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Totora_(Cochabamba)",
+  "image": "mun/031201.jpg",
+  "credit": {
+   "title": "Vista de calles, negocios y letreros del municipio de Totora, Cochabamba, Bolivia 05.jpg",
+   "author": "Chiyara",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vista_de_calles,_negocios_y_letreros_del_municipio_de_Totora,_Cochabamba,_Bolivia_05.jpg"
+  }
+ },
+ "031202": {
+  "name": "Pojo",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Pojo y unos 2.388 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Pojo_(municipio)",
+  "image": "mun/031202.jpg",
+  "credit": {
+   "title": "Hemerocallis Pojo 2020-07-30 2154.jpg",
+   "author": "Salicyna",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Hemerocallis_Pojo_2020-07-30_2154.jpg"
+  }
+ },
+ "031203": {
+  "name": "Pocona",
+  "anniversary": null,
+  "population": 10750,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Pocona y unos 903 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Pocona",
+  "image": "mun/031203.jpg",
+  "credit": {
+   "title": "Iglesia de chimboata pocona CBBA hgkyguio.jpg",
+   "author": "Condori larico rocio",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Iglesia_de_chimboata_pocona_CBBA_hgkyguio.jpg"
+  }
+ },
+ "031204": {
+  "name": "Chimoré",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Chimoré y unos 2.767 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Chimor%C3%A9",
+  "image": "mun/031204.jpg",
+  "credit": {
+   "title": "Masiva Concentración Chimore.jpg",
+   "author": "Future Village",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Masiva_Concentraci%C3%B3n_Chimore.jpg"
+  }
+ },
+ "031205": {
+  "name": "Puerto Villarroel",
+  "anniversary": "14 de abril de 1980",
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Puerto Villarroel y unos 1.964 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Puerto_Villarroel",
+  "image": "mun/031205.jpg",
+  "credit": {
+   "title": "Ivirgarzama, Bolívia´s Puerto Villarroel county.jpg",
+   "author": "Coordenação-Geral de Observação da Terra/INPE",
+   "license": "CC BY-SA 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Ivirgarzama,_Bol%C3%ADvia%C2%B4s_Puerto_Villarroel_county.jpg"
+  }
+ },
+ "031206": {
+  "name": "Entre Ríos",
+  "anniversary": "25 de septiembre de 2000",
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Entre Ríos y unos 2.181 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Entre_R%C3%ADos_(Cochabamba)",
+  "image": "mun/031206.jpg",
+  "credit": {
+   "title": "Bulo Bulo (municipio de Entre Ríos, Carrasco)",
+   "author": "Gustavo Ayllón A.",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Bulo_Bulo_-_panoramio.jpg"
+  }
+ },
+ "031301": {
+  "name": "Mizque",
+  "anniversary": "19 de septiembre de 1603",
+  "population": 26900,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Mizque (Cochabamba), con capital en Mizque y unos 1.307 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Mizque",
+  "image": "mun/031301.jpg",
+  "credit": {
+   "title": "Terremoto de Mizque en 1998, Cochabamba- Bolivia 16.jpg",
+   "author": "ArchivoAntonioAbal",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Terremoto_de_Mizque_en_1998,_Cochabamba-_Bolivia_16.jpg"
+  }
+ },
+ "031302": {
+  "name": "Vila Vila",
+  "anniversary": null,
+  "population": 5459,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Mizque (Cochabamba), con capital en Vila Vila y unos 594 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Vila_Vila",
+  "image": "mun/031302.jpg",
+  "credit": {
+   "title": "Vila Vilà 84+.jpg",
+   "author": "Xavier Badia Castellà",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vila_Vil%C3%A0_84%2B.jpg"
+  }
+ },
+ "031303": {
+  "name": "Alalay",
+  "anniversary": "21 de febrero de 1989",
+  "population": 3447,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Mizque (Cochabamba), con capital en Alalay y unos 416 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Alalay",
+  "image": "mun/031303.jpg",
+  "credit": {
+   "title": "Laguna Alalay Cochabamba Bolivia.jpg",
+   "author": "Natalia Rivera from Bogota, Colombia",
+   "license": "CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Laguna_Alalay_Cochabamba_Bolivia.jpg"
+  }
+ },
+ "031304": {
+  "name": "TIOC-Raqaypampa",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Autonomía indígena de la provincia Mizque (Cochabamba), con capital en Raqaypampa y unos 565 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Raqaypampa",
+  "image": "mun/031304.jpg",
+  "credit": {
+   "title": "Autonomía indígena en Raqaypampa.jpg",
+   "author": "Conaioc Bolivia",
+   "license": "CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Autonom%C3%ADa_ind%C3%ADgena_en_Raqaypampa.jpg"
+  }
+ },
+ "031401": {
+  "name": "Punata",
+  "anniversary": "15 de febrero de 1781",
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa Punata y unos 85 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Punata",
+  "image": "mun/031401.jpg",
+  "credit": {
+   "title": "Mercado Punata - Cochabamba Bolivia - Mercado Central de Punata 24.jpg",
+   "author": "Mauri777AE",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Mercado_Punata_-_Cochabamba_Bolivia_-_Mercado_Central_de_Punata_24.jpg"
+  }
+ },
+ "031402": {
+  "name": "Villa Rivero",
+  "anniversary": "12 de octubre de 1915",
+  "population": 8135,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa Rivero y unos 99 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Villa_Rivero",
+  "image": "mun/031402.jpg",
+  "credit": {
+   "title": "Comparsa de mujeres en el carnaval en Villa Rivero.jpg",
+   "author": "Elero19",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Comparsa_de_mujeres_en_el_carnaval_en_Villa_Rivero.jpg"
+  }
+ },
+ "031403": {
+  "name": "San Benito",
+  "anniversary": null,
+  "population": 13562,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa José Quintín Mendoza y unos 140 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/San_Benito_(Bolivia)",
+  "image": "mun/031403.jpg",
+  "credit": {
+   "title": "El Templo y la Plaza Principal de San Benito",
+   "author": "Franz lozada",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:El_Templo_y_la_Plaza_Principal_de_San_Benito.jpg"
+  }
+ },
+ "031404": {
+  "name": "Tacachi",
+  "anniversary": "4 de febrero de 1983",
+  "population": 1303,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Tacachi y unos 20 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tacachi",
+  "image": "mun/031404.jpg",
+  "credit": {
+   "title": "Playa Mayor de Ganado, Punata (provincia Punata, a la que pertenece Tacachi)",
+   "author": "Franz lozada",
+   "license": "CC BY 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Playa_Mayor_de_Ganado_(Ciudad_de_Punata,_Bolivia).jpg"
+  }
+ },
+ "031405": {
+  "name": "Villa Gualberto Villarroel",
+  "anniversary": "11 de diciembre de 1986",
+  "population": 2768,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa Gualberto Villarroel y unos 72 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Cuchumuela",
+  "image": "mun/031405.jpg",
+  "credit": {
+   "title": "Templo del Niño de Sikimira (Cuchumuela, capital del municipio)",
+   "author": "Jose Breidy Gonzales Claros",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Templo_del_ni%C3%B1o_de_Sikimira.jpg"
+  }
+ },
+ "031501": {
+  "name": "Bolívar",
+  "anniversary": null,
+  "population": 7279,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Bolívar (Cochabamba), con capital en Bolivar y unos 680 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Bol%C3%ADvar_(Cochabamba)",
+  "image": "mun/031501.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
+ },
+ "031601": {
+  "name": "Tiraque",
+  "anniversary": "15 de octubre de 1986",
+  "population": 21231,
+  "populationYear": 2012,
+  "summary": "Municipio de la provincia Tiraque (Cochabamba), con capital en Tiraque y unos 1.975 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Tiraque",
+  "image": "mun/031601.jpg",
+  "credit": {
+   "title": "Vista panoramica de Tiraque.jpg",
+   "author": "NAntequera",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vista_panoramica_de_Tiraque.jpg"
+  }
+ },
+ "031602": {
+  "name": "Shinahota",
+  "anniversary": null,
+  "population": null,
+  "populationYear": null,
+  "summary": "Municipio de la provincia Tiraque (Cochabamba), con capital en Shinahota y unos 732 km² según la capa cartográfica.",
+  "sourceUrl": "https://es.wikipedia.org/wiki/Shinahota",
+  "image": "mun/031602.jpg",
+  "credit": {
+   "title": "Ilustración generada con IA",
+   "author": "IA",
+   "license": "IA",
+   "url": null
+  }
+ }
+}

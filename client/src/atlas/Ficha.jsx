@@ -9,7 +9,8 @@ import gsap from 'gsap';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianForSameMonth, sumSeries } from './geo.js';
 import { rampCss, intensityRatio } from './ramp.js';
-import { IconClose, IconDownload, IconPrint } from './Icons.jsx';
+import { IconClose } from './Icons.jsx';
+import ExportButtons from './ExportButtons.jsx';
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -27,20 +28,6 @@ function buildCalendar(months, values) {
     rowByYear[year].cells[Number.parseInt(month.slice(5, 7), 10) - 1] = { month: month, value: values[i] };
   });
   return years;
-}
-
-function downloadCsv(municipality, months, values, isSample, harmonized) {
-  const rows = ['mes,' + (harmonized ? 'detecciones_equivalente_viirs' : 'detecciones') + ',muestra_sintetica'];
-  months.forEach(function addRow(month, i) {
-    rows.push(month + ',' + Math.round(values[i] * 10) / 10 + ',' + (isSample ? 'si' : 'no'));
-  });
-  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = (isSample ? 'MUESTRA_' : '') + 'focos_' + municipality.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.csv';
-  link.click();
-  URL.revokeObjectURL(url);
 }
 
 function YearBars(props) {
@@ -264,12 +251,13 @@ export default function Ficha(props) {
       {blocks}
       {harmonized && <p className="ficha__muted ficha__note">{t('sensorNote')}</p>}
       <div className="ficha__actions">
-        <button type="button" className="button-ghost" onClick={function download() { downloadCsv(municipality, months, values, isSample, harmonized); }}>
-          <IconDownload /> {t('download')}
-        </button>
-        <button type="button" className="button-ghost" onClick={function print() { window.print(); }}>
-          <IconPrint /> {t('printSheet')}
-        </button>
+        <ExportButtons
+          kind="ficha"
+          t={t}
+          getInput={function input() {
+            return { municipality: municipality, months: months, values: values, monthIdx: monthIdx, rank: rank, count: municipalityCount, oni: oni, isSample: isSample, harmonized: harmonized, language: language };
+          }}
+        />
       </div>
     </aside>
   );

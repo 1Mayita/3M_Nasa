@@ -414,3 +414,67 @@
     max-height: 260px;
   }
 }
+
+/* ---------- botón para desplegar los 47 municipios ---------- */
+.places__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin-bottom: 24px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 999px;
+  background: #d7ecd9;
+  color: #10241a;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.7);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+}
+.places__toggle:hover {
+  transform: translateY(-2px);
+}
+.places__toggle:active {
+  transform: scale(0.97);
+}
+.places__toggle:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 3px;
+}
+.places__toggle i {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 260ms var(--ease-out);
+}
+.places__toggle[aria-expanded='true'] i {
+  transform: rotate(225deg);
+}
+.places__grid:not([hidden]) {
+  animation: places-unfold 520ms var(--ease-out);
+}
+@keyframes places-unfold {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+.places__sheet {
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9);
+  animation: places-unfold 420ms var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .places__grid:not([hidden]),
+  .places__sheet {
+    animation: none;
+  }
+}
+.places__filters[hidden],
+.places__grid[hidden] {
+  display: none;
+}

@@ -37,6 +37,28 @@ export async function fetchHotspots3d(zoneId, fromMonth, toMonth) {
   return getJson('/api/focos3d?' + query.toString());
 }
 
+// Conteo por municipio y mes (el servidor agrupa). Con mocks devuelve null: el atlas arma el mock.
+export async function fetchMunicipiosMensual(fromMonth, toMonth, timeoutMs) {
+  if (USE_MOCKS) {
+    return null;
+  }
+  const query = new URLSearchParams();
+  if (fromMonth) {
+    query.set('desde', fromMonth);
+  }
+  if (toMonth) {
+    query.set('hasta', toMonth);
+  }
+  return Promise.race([
+    getJson('/api/municipios/mensual?' + query.toString()),
+    new Promise(function timeout(resolve, reject) {
+      setTimeout(function expire() {
+        reject(new Error('sin respuesta del servidor'));
+      }, timeoutMs || 15000);
+    })
+  ]);
+}
+
 export async function fetchZonesNow(month) {
   if (USE_MOCKS) {
     return mockZonesNow;

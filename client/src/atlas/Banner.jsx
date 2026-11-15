@@ -6,6 +6,7 @@
 // =====================================================================
 
 import { useEffect, useRef } from 'react';
+import Textile from './Textile.jsx';
 
 export default function Banner(props) {
   const { image, children, label } = props;
@@ -42,7 +43,7 @@ export default function Banner(props) {
       </div>
       <div className="banner__shade" aria-hidden="true" />
       <div className="banner__content">{children}</div>
-      <div className="banner__textile" aria-hidden="true" />
+      <Textile className="banner__textile" />
     </header>
   );
 }

@@ -47,7 +47,6 @@ export const QU = {
   belowMedian: '{pct} % medianamanta pisi',
   atMedian: 'Medianahina',
   calMedian: 'Killapa medianan',
-  download: 'CSV uraykachiy',
   citizenTitle: 'Q’usñita otaq ninata rikuspa',
   clickHint: 'Huk municipiota ñit’iy',
   navHome: 'Qallariy',
@@ -73,7 +72,6 @@ export const QU = {
   linkCopied: 'Enlace copiasqa',
   fullscreen: 'Hunt’a pantalla',
   exitFullscreen: 'Hunt’a pantallamanta lluqsiy',
-  printSheet: 'Fichata imprimiy',
   chartTitle: 'Watamanta q’uñi focokuna',
   chartHelp: 'Sapa barra wata killakunata huñun.'
 };

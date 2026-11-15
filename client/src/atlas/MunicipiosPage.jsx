@@ -85,8 +85,8 @@ const PLACE_ID = {
   vinto: '030904', sipesipe: '030902', punata: '031401', colomi: '031002', villatunari: '031003'
 };
 const LABELS = {
-  es: { all: 'Los 47 municipios', allLead: 'Toca uno para ver su foto, su provincia y sus datos.', province: 'Provincia', area: 'Superficie', anniversary: 'Aniversario', population: 'Población', capital: 'Capital', close: 'Cerrar', credit: 'Foto', source: 'Fuente', illus: 'Ilustración generada con IA', noPhoto: 'Sin foto libre disponible', all2: 'Todas', unit: 'unidades' },
-  en: { all: 'All 47 municipalities', allLead: 'Tap one to see its photo, province and facts.', province: 'Province', area: 'Area', anniversary: 'Anniversary', population: 'Population', capital: 'Capital', close: 'Close', credit: 'Photo', source: 'Source', illus: 'AI-generated illustration', noPhoto: 'No free photo available', all2: 'All', unit: 'units' }
+  es: { show: 'Desplegar los 47 municipios', hide: 'Ocultar municipios', all: 'Los 47 municipios', allLead: 'Toca uno para ver su foto, su provincia y sus datos.', province: 'Provincia', area: 'Superficie', anniversary: 'Aniversario', population: 'Población', capital: 'Capital', close: 'Cerrar', credit: 'Foto', source: 'Fuente', illus: 'Ilustración generada con IA', noPhoto: 'Sin foto libre disponible', all2: 'Todas', unit: 'unidades' },
+  en: { show: 'Show all 47 municipalities', hide: 'Hide municipalities', all: 'All 47 municipalities', allLead: 'Tap one to see its photo, province and facts.', province: 'Province', area: 'Area', anniversary: 'Anniversary', population: 'Population', capital: 'Capital', close: 'Close', credit: 'Photo', source: 'Source', illus: 'AI-generated illustration', noPhoto: 'No free photo available', all2: 'All', unit: 'units' }
 };
 
 export default function MunicipiosPage(props) {
@@ -100,6 +100,7 @@ export default function MunicipiosPage(props) {
   const [info, setInfo] = useState({});
   const [province, setProvince] = useState('');
   const [open, setOpen] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(function load() {
     let alive = true;
@@ -135,7 +136,7 @@ export default function MunicipiosPage(props) {
   function photoOf(id) {
     const entry = info[id];
     if (entry && entry.image) {
-      return { src: BASE + 'img/' + entry.image.replace(/^img\//, ''), real: true };
+      return { src: BASE + 'img/' + entry.image.replace(/^img\//, ''), real: !(entry.credit && entry.credit.license === 'IA') };
     }
     if (ILLUSTRATION[id]) {
       return { src: BASE + 'img/' + ILLUSTRATION[id] + '.webp', real: false };
@@ -246,7 +247,11 @@ export default function MunicipiosPage(props) {
       <section className="places__all" aria-labelledby="places-all-title">
         <h2 id="places-all-title">{L.all}</h2>
         <p className="places__alllead">{L.allLead}</p>
-        <div className="places__filters" role="group" aria-label={L.province}>
+        <button type="button" className="places__toggle" aria-expanded={expanded} aria-controls="places-grid" onClick={function flip() { setExpanded(!expanded); }}>
+          <span>{expanded ? L.hide : L.show}</span>
+          <i aria-hidden="true" />
+        </button>
+        <div className="places__filters" role="group" aria-label={L.province} hidden={!expanded}>
           <button type="button" aria-pressed={province === ''} onClick={function all() { setProvince(''); }}>{L.all2}</button>
           {provinces.map(function chip(name) {
             return (
@@ -254,8 +259,8 @@ export default function MunicipiosPage(props) {
             );
           })}
         </div>
-        <ul className="places__grid">
-          {shown.map(function card(unit) {
+        <ul className="places__grid" id="places-grid" hidden={!expanded}>
+          {expanded && shown.map(function card(unit) {
             const photo = photoOf(unit.id);
             const data = info[unit.id] || {};
             return (
@@ -293,7 +298,10 @@ export default function MunicipiosPage(props) {
               </dl>
               {info[openUnit.id] && info[openUnit.id].summary && <p>{info[openUnit.id].summary}</p>}
               <p className="places__credit">
-                {info[openUnit.id] && info[openUnit.id].credit && (
+                {info[openUnit.id] && info[openUnit.id].credit && info[openUnit.id].credit.license === 'IA' && (
+                  <span>{L.illus}. </span>
+                )}
+                {info[openUnit.id] && info[openUnit.id].credit && info[openUnit.id].credit.license !== 'IA' && info[openUnit.id].credit.url && (
                   <span>{L.credit}: <a href={info[openUnit.id].credit.url} target="_blank" rel="noreferrer noopener">{info[openUnit.id].credit.author || 'Wikimedia Commons'}</a>, {info[openUnit.id].credit.license}. </span>
                 )}
                 {info[openUnit.id] && info[openUnit.id].sourceUrl && (

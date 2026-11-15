@@ -116,6 +116,57 @@ export function aggregateByMunicipality(data, municipalities) {
   return { series: series, cellToMunicipality: cellToMunicipality };
 }
 
+// ¿Es válida la respuesta de /api/municipios/mensual?
+export function isValidMunicipiosMensual(payload) {
+  if (!payload || !Array.isArray(payload.months) || !Array.isArray(payload.municipios) || payload.months.length === 0) {
+    return false;
+  }
+  return payload.municipios.length > 0 && payload.municipios.every(function check(item) {
+    return item && Array.isArray(item.serie) && item.serie.length === payload.months.length;
+  });
+}
+
+// Series por municipio (mismo orden que el geojson) alineadas a los meses del atlas
+export function seriesFromMunicipiosMensual(payload, municipalities, months) {
+  const monthIndex = {};
+  payload.months.forEach(function index(month, i) {
+    monthIndex[month] = i;
+  });
+  const byId = {};
+  payload.municipios.forEach(function add(item) {
+    byId[item.id] = item;
+  });
+  const series = municipalities.map(function build(municipality) {
+    const result = new Float32Array(months.length);
+    const item = byId[municipality.id];
+    if (item) {
+      months.forEach(function copy(month, i) {
+        const source = monthIndex[month];
+        if (source !== undefined) {
+          result[i] = Number(item.serie[source]) || 0;
+        }
+      });
+    }
+    return result;
+  });
+  return { series: series, cellToMunicipality: {} };
+}
+
+// Mock con la forma de /api/municipios/mensual, calculado desde la muestra sintética
+export function buildMockMunicipiosMensual(data, municipalities) {
+  const aggregated = aggregateByMunicipality(data, municipalities);
+  return {
+    unit: data.unit,
+    harmonized: true,
+    isSample: true,
+    months: data.months.slice(),
+    municipios: municipalities.map(function toItem(municipality, i) {
+      const serie = Array.from(aggregated.series[i]);
+      return { id: municipality.id, nombre: municipality.name, provincia: municipality.province, total: sumSeries(serie), serie: serie };
+    })
+  };
+}
+
 export function sumSeries(values) {
   let total = 0;
   for (let i = 0; i < values.length; i = i + 1) {

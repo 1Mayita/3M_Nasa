@@ -1,6 +1,7 @@
 // App Express (dueño: P2)
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import api from './routes/api.routes.js';
 import gamcRoutes from './routes/gamc.routes.js';
 import zonesRoutes from './routes/zones.routes.js';
@@ -11,6 +12,8 @@ import { env } from './config/env.js';
 export function createApp() {
   const app = express();
   app.use(cors({ origin: env.corsOrigin }));
+  // Comprime las respuestas (gzip): /api/focos3d baja de ~886 KB a una fracción
+  app.use(compression());
   app.use(express.json({ limit: '1mb' }));
   app.use('/api/gamc', gamcRoutes);
   app.use('/api/zones', zonesRoutes);

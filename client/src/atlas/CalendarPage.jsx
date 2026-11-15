@@ -13,7 +13,7 @@ const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/valle_alto.webp';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianOf } from './geo.js';
 import { rampColor, intensityRatio } from './ramp.js';
-import { IconDownload } from './Icons.jsx';
+import ExportButtons from './ExportButtons.jsx';
 
 const ANOMALY_CLASSES = [
   { max: -50, color: [63, 107, 88], key: 'calClassLowest' },
@@ -54,15 +54,6 @@ function ensoOf(oni, month) {
     return null;
   }
   return oni[month] >= 0.5 ? 'nino' : oni[month] <= -0.5 ? 'nina' : 'neutral';
-}
-
-function toCsv(scopeName, months, values, medians, isSample) {
-  const rows = ['ambito,mes,detecciones_equivalente_viirs,mediana_del_mes,muestra_sintetica'];
-  months.forEach(function addRow(month, i) {
-    const calendarMonth = Number.parseInt(month.slice(5, 7), 10) - 1;
-    rows.push('"' + scopeName + '",' + month + ',' + Math.round(values[i] * 10) / 10 + ',' + Math.round(medians[calendarMonth] * 10) / 10 + ',' + (isSample ? 'si' : 'no'));
-  });
-  return rows.join('\n');
 }
 
 export default function CalendarPage(props) {
@@ -188,16 +179,6 @@ export default function CalendarPage(props) {
     };
   }, []);
 
-  function download() {
-    const blob = new Blob([toCsv(scopeName, months, series, medians, isSample)], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = (isSample ? 'MUESTRA_' : '') + 'calendario_focos.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
   function showTip(event, cell, color) {
     const calendarMonth = Number.parseInt(cell.month.slice(5, 7), 10) - 1;
     const median = medians[calendarMonth];
@@ -229,7 +210,13 @@ export default function CalendarPage(props) {
               <button type="button" aria-pressed={mode === 'count'} onClick={function pick() { setMode('count'); }}>{t('calCount')}</button>
               <button type="button" aria-pressed={mode === 'anomaly'} onClick={function pick() { setMode('anomaly'); }}>{t('calAnomaly')}</button>
             </div>
-            <button type="button" className="button-ghost" onClick={download}><IconDownload /> {t('download')}</button>
+            <ExportButtons
+              kind="calendar"
+              t={t}
+              getInput={function input() {
+                return { scopeName: scopeName, months: months, series: series, oni: oni, isSample: isSample, language: language };
+              }}
+            />
             {isSample && <span className="tag-sample">{t('sample')}</span>}
           </div>
         </header>
