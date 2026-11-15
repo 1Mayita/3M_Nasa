@@ -1,5 +1,12 @@
 // Textos nuevos (botones, barra del mapa, gráfico) en español e inglés.
 export const ES_EXTRA = {
+  introLabel: 'Pantalla de bienvenida',
+  introWelcome: 'Bienvenido a Cochabamba',
+  introQuechua: 'Allin hamuy Quchapampaman',
+  introSubtitle: 'Observatorio de focos de calor',
+  introEnter: 'Presiona Enter para entrar',
+  introSkip: 'Saltar',
+  introCredit: 'Imágenes: fotografías con licencia libre (Wikimedia Commons) e ilustraciones generadas con IA',
   navPlaces: 'Municipios',
   heroPlaces: 'Conoce los municipios',
   watchTitle: 'Detrás de cada foco hay quien vigila.',
@@ -118,6 +125,13 @@ export const ES_EXTRA = {
 };
 
 export const EN_EXTRA = {
+  introLabel: 'Welcome screen',
+  introWelcome: 'Welcome to Cochabamba',
+  introQuechua: 'Allin hamuy Quchapampaman',
+  introSubtitle: 'Heat-spot observatory',
+  introEnter: 'Press Enter to enter',
+  introSkip: 'Skip',
+  introCredit: 'Images: openly licensed photographs (Wikimedia Commons) and AI-generated illustrations',
   navPlaces: 'Places',
   heroPlaces: 'Explore the municipalities',
   watchTitle: 'Behind every hot spot, someone is watching.',

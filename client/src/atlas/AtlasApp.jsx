@@ -16,6 +16,7 @@ const CalendarPage = lazy(() => import('./CalendarPage.jsx'));
 const MethodPage = lazy(() => import('./MethodPage.jsx'));
 const MunicipiosPage = lazy(() => import('./MunicipiosPage.jsx'));
 const TunariPage = lazy(() => import('./TunariPage.jsx'));
+const Intro = lazy(() => import('./Intro.jsx'));
 import { getGamcLegendImageUrl } from '../services/gamcApi.js';
 import { fetchHotspots3d, fetchMunicipiosMensual } from '../components/vista3d/focos3dApi.js';
 import { buildMockHotspots3d } from '../components/vista3d/focos3d.mock.js';
@@ -32,6 +33,7 @@ import './atlas.layout.css';
 import './atlas.identity.css';
 import './atlas.gallery.css';
 import './atlas.places.css';
+import './atlas.intro.css';
 
 const PROFILES = ['bombero', 'gestor', 'ciudadano'];
 // escenas de la portada con foto a pantalla completa: el mapa queda tapado, así que se detiene su giro (ahorra GPU)
@@ -69,6 +71,19 @@ function writeStored(key, value) {
 function parseRoute() {
   const name = window.location.hash.replace('#/', '').replace('#', '');
   return ROUTES.indexOf(name) >= 0 ? name : 'inicio';
+}
+
+// La bienvenida solo aparece en la raíz del sitio y una vez por sesión (Intro.jsx guarda la marca)
+function shouldShowIntro() {
+  const hash = window.location.hash;
+  if (hash !== '' && hash !== '#' && hash !== '#/' && hash !== '#/inicio') {
+    return false;
+  }
+  try {
+    return window.sessionStorage.getItem('atlas.intro') !== '1';
+  } catch (error) {
+    return true;
+  }
 }
 
 function prefersReducedMotion() {
@@ -110,6 +125,7 @@ export default function AtlasApp() {
   const [phase, setPhase] = useState(initialRoute === 'inicio' ? 'hero' : 'atlas');
   const [page, setPage] = useState(initialRoute === 'calendario' || initialRoute === 'metodo' || initialRoute === 'tunari' || initialRoute === 'municipios' ? initialRoute : null);
   const [curtainLabel, setCurtainLabel] = useState('');
+  const [introOpen, setIntroOpen] = useState(shouldShowIntro);
   const [geo, setGeo] = useState(null);
   const [data, setData] = useState(null);
   const [oni, setOni] = useState(null);
@@ -1042,6 +1058,12 @@ export default function AtlasApp() {
         />
       )}
       </Suspense>
+
+      {introOpen && (
+        <Suspense fallback={<div className="intro-boot" aria-hidden="true" />}>
+          <Intro t={t} onDone={function closeIntro() { setIntroOpen(false); }} />
+        </Suspense>
+      )}
 
       <div className="curtain" ref={curtainRef} aria-hidden="true">
         <p className="curtain__label"><IconFlame /> {curtainLabel}</p>
