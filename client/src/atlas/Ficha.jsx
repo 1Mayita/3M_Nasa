@@ -9,8 +9,8 @@ import gsap from 'gsap';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianForSameMonth, sumSeries } from './geo.js';
 import { rampCss, intensityRatio } from './ramp.js';
-import { IconClose, IconDownload, IconPrint, IconSheet } from './Icons.jsx';
-import { downloadCsv, downloadXlsx, printView } from './exportData.js';
+import { IconClose } from './Icons.jsx';
+import ExportButtons from './ExportButtons.jsx';
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,37 +28,6 @@ function buildCalendar(months, values) {
     rowByYear[year].cells[Number.parseInt(month.slice(5, 7), 10) - 1] = { month: month, value: values[i] };
   });
   return years;
-}
-
-// Datos de la ficha para CSV, Excel e impresión: una fila por mes
-function buildExport(municipality, months, values, isSample, harmonized, t, language) {
-  const yes = t('exYes');
-  const no = t('exNo');
-  const name = municipality.name.replace('TIOC-', '');
-  return {
-    fileBase: 'focos_' + municipality.name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
-    sheetName: t('exSheetData'),
-    notesName: t('exSheetNotes'),
-    title: t('printTitle') + ' · ' + name,
-    language: language,
-    isSample: isSample,
-    sampleText: 'MUESTRA SINTÉTICA / SYNTHETIC SAMPLE · ' + t('sampleLong'),
-    headers: [
-      { label: t('exMonth'), width: 12, type: 'text' },
-      { label: harmonized ? t('exDetectionsViirs') : t('exDetections'), width: 22, type: 'dec' },
-      { label: t('exSampleCol'), width: 18, type: 'text' }
-    ],
-    rows: months.map(function row(month, i) {
-      return [month, values[i], isSample ? yes : no];
-    }),
-    notes: [
-      [t('exScope'), name + ' · ' + t('province') + ' ' + municipality.province],
-      [t('exSource'), t('exSourceText')],
-      [t('exWarning'), t('exWarningText')],
-      [t('exUnit'), t('exUnitText')],
-      [t('exGenerated'), new Date().toLocaleDateString(language === 'en' ? 'en' : 'es')]
-    ]
-  };
 }
 
 function YearBars(props) {
@@ -262,7 +231,6 @@ export default function Ficha(props) {
 
   return (
     <aside className="ficha" ref={panelRef} aria-label={municipality.name}>
-      <p className="print-only print-kicker">{t('printTitle')}</p>
       <header className="ficha__header">
         <div>
           <h2 ref={headingRef} tabIndex={-1}>{municipality.name.replace('TIOC-', '')}</h2>
@@ -283,20 +251,13 @@ export default function Ficha(props) {
       {blocks}
       {harmonized && <p className="ficha__muted ficha__note">{t('sensorNote')}</p>}
       <div className="ficha__actions">
-        <button type="button" className="button-ghost" onClick={function csv() { downloadCsv(buildExport(municipality, months, values, isSample, harmonized, t, language)); }}>
-          <IconDownload /> {t('download')}
-        </button>
-        <button type="button" className="button-ghost" onClick={function excel() { downloadXlsx(buildExport(municipality, months, values, isSample, harmonized, t, language)); }}>
-          <IconSheet /> {t('downloadExcel')}
-        </button>
-        <button type="button" className="button-ghost" onClick={function print() { printView('is-printing-ficha'); }}>
-          <IconPrint /> {t('printPdf')}
-        </button>
-      </div>
-      <div className="print-only print-foot">
-        <p>{t('printSource')}</p>
-        <p>{t('printMethod')}</p>
-        <p>{t('printGenerated', { date: new Date().toLocaleDateString(language === 'en' ? 'en' : 'es') })}</p>
+        <ExportButtons
+          kind="ficha"
+          t={t}
+          getInput={function input() {
+            return { municipality: municipality, months: months, values: values, monthIdx: monthIdx, rank: rank, count: municipalityCount, oni: oni, isSample: isSample, harmonized: harmonized, language: language };
+          }}
+        />
       </div>
     </aside>
   );

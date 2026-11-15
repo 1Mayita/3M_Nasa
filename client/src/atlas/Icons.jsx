@@ -10,9 +10,6 @@ export function IconPause() {
 export function IconClose() {
   return (<svg {...BASE}><path d="M6 6l12 12M18 6L6 18" /></svg>);
 }
-export function IconDownload() {
-  return (<svg {...BASE}><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>);
-}
 export function IconSheet() {
   return (<svg {...BASE}><rect x="4" y="4.5" width="16" height="15" rx="2" /><path d="M4 10h16M4 14.5h16M10 10v9.5" /></svg>);
 }
@@ -59,8 +56,8 @@ export function IconTilt() {
 export function IconShare() {
   return (<svg {...BASE}><path d="M10 14l4-4M8.5 15.5l-1.5 1.5a3 3 0 0 1-4.2-4.2L5 10.6M15.5 8.5l1.5-1.5a3 3 0 0 1 4.2 4.2L19 13.4" /></svg>);
 }
-export function IconPrint() {
-  return (<svg {...BASE}><path d="M7 9V4.5h10V9M7 17H5a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 5 9h14a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 19 17h-2" /><rect x="7" y="14" width="10" height="6" rx="1" /></svg>);
+export function IconPdf() {
+  return (<svg {...BASE}><path d="M14 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z" /><path d="M14 3.5V8h4.5M12 11.5v5m0 0l-2-2m2 2l2-2" /></svg>);
 }
 export function IconExpand() {
   return (<svg {...BASE}><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>);

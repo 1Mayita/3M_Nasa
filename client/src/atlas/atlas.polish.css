@@ -337,228 +337,31 @@
   transform: none;
 }
 
-/* bloques que solo existen al imprimir */
-.print-only {
+/* estado de la exportación (error): solo se ve cuando hay algo que decir */
+.export-status {
+  flex-basis: 100%;
+  min-height: 0;
+  color: var(--amber-soft, #e07a2f);
+  font-size: 0.85rem;
+}
+.export-status:empty {
   display: none;
 }
-
-/* ---------- impresión / PDF: hoja A4 limpia (ficha y calendario) ---------- */
-@page {
-  size: A4;
-  margin: 14mm 14mm 16mm;
+.button-ghost[aria-busy='true'] {
+  cursor: progress;
+  opacity: 0.8;
 }
-@media print {
-  html,
-  body,
-  #root {
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
+.button-ghost[aria-busy='true'] svg {
+  animation: export-pulse 1s ease-in-out infinite;
+}
+@keyframes export-pulse {
+  50% {
+    opacity: 0.35;
   }
-  body.is-printing-ficha .atlas,
-  body.is-printing-cal .atlas {
-    position: static !important;
-    inset: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
-    color: #111 !important;
-    font-size: 10.5pt;
-    line-height: 1.5;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    --ink: #111;
-    --ink-2: #3d3d3d;
-    --line: #c9c9c9;
-    --accent: #1f3d2b;
-    --accent-ink: #fff;
-    --surface: #fff;
-    --surface-solid: #fff;
-    --surface-2: #f1f1ee;
-    --amber-soft: #a8531a;
-  }
-  body.is-printing-ficha .atlas > *:not(.ficha),
-  body.is-printing-cal .atlas > *:not(.page) {
-    display: none !important;
-  }
-
-  .print-only {
-    display: block;
-  }
-  .print-kicker {
-    margin: 0 0 4mm;
-    color: #3d3d3d;
-    font-size: 8.5pt;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .print-foot {
-    margin-top: 5mm;
-    padding-top: 3mm;
-    border-top: 1px solid #999;
-    break-inside: avoid;
-    color: #3d3d3d;
-    font-size: 8.5pt;
-    line-height: 1.45;
-  }
-  .print-foot p {
-    margin: 0 0 1.5mm;
-  }
-  .print-only .tag-sample {
-    display: inline-block;
-    margin: 2mm 0 0;
-    padding: 1mm 3mm;
-    border: 1.5px solid #a8531a;
-    color: #7a3500;
-    font-weight: 700;
-  }
-
-  /* ficha */
-  body.is-printing-ficha .ficha {
-    position: static !important;
-    display: block;
-    width: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    padding: 0 !important;
-    transform: none !important;
-    opacity: 1 !important;
-    background: #fff !important;
-    color: #111 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-  }
-  body.is-printing-ficha .ficha button,
-  body.is-printing-ficha .ficha__actions {
-    display: none !important;
-  }
-  body.is-printing-ficha .ficha h2 {
-    font-size: 24pt;
-  }
-  body.is-printing-ficha .ficha__block {
-    break-inside: avoid;
-    margin-top: 5mm;
-    padding-top: 4mm;
-    transform: none !important;
-    opacity: 1 !important;
-  }
-  body.is-printing-ficha .ficha__block,
-  body.is-printing-ficha .cal__cell,
-  body.is-printing-ficha .yearbars__bar {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  body.is-printing-ficha .cal__cell {
-    transform: none !important;
-    opacity: 1 !important;
-  }
-  body.is-printing-ficha .ficha__meter {
-    border: 1px solid #999;
-  }
-
-  /* calendario */
-  body.is-printing-cal .page {
-    position: static !important;
-    overflow: visible !important;
-    background: #fff !important;
-    background-image: none !important;
-    color: #111 !important;
-  }
-  body.is-printing-cal .page > .banner,
-  body.is-printing-cal .page > .sitefooter,
-  body.is-printing-cal .page__inner > .page__head,
-  body.is-printing-cal .cal-tip {
-    display: none !important;
-  }
-  body.is-printing-cal .page__inner {
-    width: 100% !important;
-    padding: 0 !important;
-  }
-  body.is-printing-cal .print-head h1 {
-    margin: 0;
-    color: #111;
-    font-size: 22pt;
-    line-height: 1.1;
-  }
-  body.is-printing-cal .print-scope {
-    margin: 1.5mm 0 0;
-    font-size: 12pt;
-    font-weight: 700;
-  }
-  body.is-printing-cal .calwrap {
-    display: block;
-    margin-top: 4mm;
-  }
-  body.is-printing-cal .calgrid {
-    overflow: visible;
-    padding: 0;
-    gap: 2px;
-    break-inside: avoid;
-  }
-  body.is-printing-cal .calgrid__head,
-  body.is-printing-cal .calgrid__row {
-    min-width: 0 !important;
-    gap: 2px;
-    break-inside: avoid;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  body.is-printing-cal .calgrid__head span,
-  body.is-printing-cal .calgrid__year {
-    color: #111;
-    font-size: 8.5pt;
-  }
-  body.is-printing-cal .calcell {
-    height: 7mm;
-    border-radius: 2px;
-    font-size: 8pt;
-    transform: none !important;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18) !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  body.is-printing-cal .calcell.is-zero {
-    background: #f4f4f1;
-  }
-  body.is-printing-cal .calcell.is-none {
-    opacity: 1;
-    background: #fff;
-    box-shadow: none !important;
-  }
-  body.is-printing-cal .calside {
-    position: static;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4mm;
-    margin-top: 4mm;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  body.is-printing-cal .calside > * {
-    break-inside: avoid;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  body.is-printing-cal .calside h2 {
-    font-size: 12pt;
-  }
-  body.is-printing-cal .calside p,
-  body.is-printing-cal .calside__enso p {
-    color: #111;
-    font-size: 9.5pt;
-  }
-  body.is-printing-cal .calside__enso {
-    padding: 3mm;
-    background: #f1f1ee;
-    border-color: #999;
-  }
-  body.is-printing-cal .calclasses i,
-  body.is-printing-cal .page .dot {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-ghost[aria-busy='true'] svg {
+    animation: none;
   }
 }
 

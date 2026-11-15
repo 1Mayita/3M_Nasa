@@ -1,55 +1,22 @@
 // =====================================================================
 // Dueño: P3 (Vista)
-// Exportación de datos sin librerías: CSV que abre bien en Excel (BOM UTF-8 y separador según idioma)
-// y libro .xlsx mínimo (zip sin comprimir + XML) con hoja de datos y hoja de notas.
-// Spec: { fileBase, sheetName, notesName, title, headers: [{ label, width, type: 'text'|'int'|'dec' }],
-//         rows: [[...]], notes: [[etiqueta, texto]], isSample, sampleText, language }
+// Libro .xlsx hecho a mano, sin librerías: zip sin comprimir + XML (Resumen, Datos, Notas) con
+// estilos reales (fuentes, rellenos, bordes, formatos numéricos), encabezado fijo, autofiltro
+// y relleno por valor con la rampa verde→ámbar del atlas. Se carga solo al pulsar el botón.
 // =====================================================================
 
+import { rampColor, intensityRatio } from './ramp.js';
+import { triggerDownload } from './download.js';
+
 const encoder = new TextEncoder();
+const GREEN = 'FF10241A';
+const AMBER_BG = 'FFFFE9C2';
+const AMBER_INK = 'FF7A3500';
+const BORDER = 'FFD3DED6';
+const BAND_SOFT = 'FFF2F6F3';
+const BAND_MEDIAN = 'FFE4EDE7';
 
-function triggerDownload(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(function release() { URL.revokeObjectURL(url); }, 4000);
-}
-
-function fileName(spec, extension) {
-  return (spec.isSample ? 'MUESTRA_SINTETICA_' : '') + spec.fileBase + '.' + extension;
-}
-
-// ---------- CSV ----------
-// En español Excel usa ';' como separador y ',' como decimal; en inglés ',' y '.'
-export function buildCsv(spec) {
-  const spanish = spec.language !== 'en';
-  const separator = spanish ? ';' : ',';
-  function cell(value, type) {
-    if (typeof value === 'number') {
-      const text = type === 'int' ? String(Math.round(value)) : String(Math.round(value * 10) / 10);
-      return spanish ? text.replace('.', ',') : text;
-    }
-    const text = String(value);
-    return text.indexOf(separator) >= 0 || text.indexOf('"') >= 0 || text.indexOf('\n') >= 0 ? '"' + text.replace(/"/g, '""') + '"' : text;
-  }
-  const lines = [];
-  // sin filas previas: la primera fila es el encabezado; la muestra se marca en el nombre y en una columna
-  lines.push(spec.headers.map(function head(h) { return cell(h.label, 'text'); }).join(separator));
-  spec.rows.forEach(function addRow(row) {
-    lines.push(row.map(function mapCell(value, i) { return cell(value, spec.headers[i].type); }).join(separator));
-  });
-  return '﻿' + lines.join('\r\n') + '\r\n';
-}
-
-export function downloadCsv(spec) {
-  triggerDownload(new Blob([buildCsv(spec)], { type: 'text/csv;charset=utf-8' }), fileName(spec, 'csv'));
-}
-
-// ---------- XLSX ----------
+// ---------- zip "stored": válido para Excel y LibreOffice ----------
 const CRC_TABLE = (function makeTable() {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n = n + 1) {
@@ -70,7 +37,6 @@ function crc32(bytes) {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
-// Zip con método "stored" (sin compresión): válido para Excel y LibreOffice
 function buildZip(files) {
   const now = new Date();
   const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
@@ -134,119 +100,343 @@ function xml(text) {
 }
 
 function columnName(index) {
-  return String.fromCharCode(65 + index);
-}
-
-// estilos: 0 normal · 1 encabezado · 2 aviso de muestra · 3 decimal · 4 entero · 5 texto con ajuste · 6 etiqueta en negrita · 7 título
-const STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-  '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
-  '<numFmts count="1"><numFmt numFmtId="164" formatCode="0.0"/></numFmts>' +
-  '<fonts count="5">' +
-  '<font><sz val="11"/><name val="Calibri"/></font>' +
-  '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>' +
-  '<font><b/><sz val="12"/><color rgb="FF9C2A00"/><name val="Calibri"/></font>' +
-  '<font><b/><sz val="11"/><name val="Calibri"/></font>' +
-  '<font><b/><sz val="14"/><name val="Calibri"/></font>' +
-  '</fonts>' +
-  '<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' +
-  '<fill><patternFill patternType="solid"><fgColor rgb="FF1F3D2B"/><bgColor indexed="64"/></patternFill></fill>' +
-  '<fill><patternFill patternType="solid"><fgColor rgb="FFFFD9A0"/><bgColor indexed="64"/></patternFill></fill></fills>' +
-  '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
-  '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
-  '<cellXfs count="8">' +
-  '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
-  '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>' +
-  '<xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
-  '<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>' +
-  '<xf numFmtId="1" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>' +
-  '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
-  '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
-  '<xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
-  '</cellXfs>' +
-  '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
-  '</styleSheet>';
-
-function textCell(ref, text, style) {
-  return '<c r="' + ref + '" t="inlineStr" s="' + style + '"><is><t xml:space="preserve">' + xml(text) + '</t></is></c>';
-}
-
-function numberCell(ref, value, style) {
-  return '<c r="' + ref + '" s="' + style + '"><v>' + (Number.isFinite(value) ? value : 0) + '</v></c>';
-}
-
-function sheetXml(cols, rowsXml, freezeRow) {
-  const pane = freezeRow > 0
-    ? '<sheetViews><sheetView workbookViewId="0"><pane ySplit="' + freezeRow + '" topLeftCell="A' + (freezeRow + 1) + '" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'
-    : '<sheetViews><sheetView workbookViewId="0"/></sheetViews>';
-  const widths = '<cols>' + cols.map(function col(width, i) {
-    return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + width + '" customWidth="1"/>';
-  }).join('') + '</cols>';
-  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
-    pane + '<sheetFormatPr defaultRowHeight="15"/>' + widths + '<sheetData>' + rowsXml.join('') + '</sheetData></worksheet>';
-}
-
-export function buildXlsx(spec) {
-  const dataRows = [];
-  let rowNumber = 1;
-  if (spec.isSample) {
-    dataRows.push('<row r="' + rowNumber + '" ht="22" customHeight="1">' + textCell('A' + rowNumber, spec.sampleText, 2) + '</row>');
-    rowNumber += 1;
+  let name = '';
+  let n = index + 1;
+  while (n > 0) {
+    const rest = (n - 1) % 26;
+    name = String.fromCharCode(65 + rest) + name;
+    n = Math.floor((n - 1) / 26);
   }
-  const headerRow = rowNumber;
-  dataRows.push('<row r="' + rowNumber + '" ht="32" customHeight="1">' + spec.headers.map(function head(h, i) {
-    return textCell(columnName(i) + rowNumber, h.label, 1);
-  }).join('') + '</row>');
-  rowNumber += 1;
-  spec.rows.forEach(function addRow(row) {
-    dataRows.push('<row r="' + rowNumber + '">' + row.map(function mapCell(value, i) {
-      const ref = columnName(i) + rowNumber;
-      const type = spec.headers[i].type;
-      if (typeof value === 'number') {
-        return numberCell(ref, type === 'int' ? Math.round(value) : Math.round(value * 10) / 10, type === 'int' ? 4 : 3);
+  return name;
+}
+
+function hexOf(color) {
+  return 'FF' + color.map(function pad(v) { return v.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+}
+
+// ---------- registro de estilos: cada combinación recibe un índice de cellXfs ----------
+function makeStyles() {
+  const fonts = [];
+  const fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>'];
+  const borders = [];
+  const formats = [];
+  const xfs = [];
+  const cache = {};
+  function indexOf(list, item) {
+    let i = list.indexOf(item);
+    if (i < 0) {
+      list.push(item);
+      i = list.length - 1;
+    }
+    return i;
+  }
+  function formatId(code) {
+    if (!code || code === 'General') {
+      return 0;
+    }
+    if (code === '#,##0') {
+      return 3;
+    }
+    return 164 + indexOf(formats, code);
+  }
+  function side(name) {
+    return '<' + name + ' style="thin"><color rgb="' + BORDER + '"/></' + name + '>';
+  }
+  function style(o) {
+    const key = JSON.stringify(o);
+    if (cache[key] !== undefined) {
+      return cache[key];
+    }
+    const font = '<font>' + (o.bold ? '<b/>' : '') + (o.italic ? '<i/>' : '') + '<sz val="' + (o.size || 11) + '"/><color rgb="' + (o.color || 'FF1A2A20') + '"/><name val="Calibri"/><family val="2"/></font>';
+    const fill = o.fill ? '<fill><patternFill patternType="solid"><fgColor rgb="' + o.fill + '"/><bgColor indexed="64"/></patternFill></fill>' : fills[0];
+    const border = o.border
+      ? '<border>' + side('left') + side('right') + side('top') + side('bottom') + '<diagonal/></border>'
+      : o.rule
+        ? '<border><left/><right/><top/><bottom style="medium"><color rgb="' + o.rule + '"/></bottom><diagonal/></border>'
+        : '<border><left/><right/><top/><bottom/><diagonal/></border>';
+    const f = indexOf(fonts, font);
+    const fl = indexOf(fills, fill);
+    const b = indexOf(borders, border);
+    const n = formatId(o.format);
+    const alignment = '<alignment' + (o.h ? ' horizontal="' + o.h + '"' : '') + ' vertical="' + (o.v || 'center') + '"' + (o.wrap ? ' wrapText="1"' : '') + (o.indent ? ' indent="' + o.indent + '"' : '') + '/>';
+    xfs.push('<xf numFmtId="' + n + '" fontId="' + f + '" fillId="' + fl + '" borderId="' + b + '" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">' + alignment + '</xf>');
+    cache[key] = xfs.length - 1;
+    return cache[key];
+  }
+  function toXml() {
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      (formats.length > 0 ? '<numFmts count="' + formats.length + '">' + formats.map(function fmt(code, i) { return '<numFmt numFmtId="' + (164 + i) + '" formatCode="' + xml(code) + '"/>'; }).join('') + '</numFmts>' : '') +
+      '<fonts count="' + fonts.length + '">' + fonts.join('') + '</fonts>' +
+      '<fills count="' + fills.length + '">' + fills.join('') + '</fills>' +
+      '<borders count="' + borders.length + '">' + borders.join('') + '</borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="' + xfs.length + '">' + xfs.join('') + '</cellXfs>' +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      '</styleSheet>';
+  }
+  style({}); // índice 0: estilo por defecto
+  return { style: style, toXml: toXml };
+}
+
+// ---------- hoja: filas, celdas, combinaciones ----------
+function makeSheet() {
+  const rows = [];
+  const merges = [];
+  function row(r, height) {
+    const entry = { r: r, height: height || 0, cells: [] };
+    rows.push(entry);
+    return {
+      text: function text(c, value, s) {
+        entry.cells.push('<c r="' + columnName(c) + r + '" s="' + s + '" t="inlineStr"><is><t xml:space="preserve">' + xml(value) + '</t></is></c>');
+      },
+      number: function number(c, value, s) {
+        entry.cells.push('<c r="' + columnName(c) + r + '" s="' + s + '"><v>' + (Number.isFinite(value) ? value : 0) + '</v></c>');
+      },
+      blank: function blank(c, s) {
+        entry.cells.push('<c r="' + columnName(c) + r + '" s="' + s + '"/>');
       }
-      return textCell(ref, value, 0);
-    }).join('') + '</row>');
-    rowNumber += 1;
-  });
-  const notesRows = [];
-  notesRows.push('<row r="1" ht="24" customHeight="1">' + textCell('A1', spec.title, 7) + '</row>');
-  if (spec.isSample) {
-    notesRows.push('<row r="2" ht="22" customHeight="1">' + textCell('A2', spec.sampleText, 2) + '</row>');
+    };
   }
-  const notesStart = spec.isSample ? 4 : 3;
-  spec.notes.forEach(function addNote(note, i) {
-    const r = notesStart + i;
-    notesRows.push('<row r="' + r + '">' + textCell('A' + r, note[0], 6) + textCell('B' + r, note[1], 5) + '</row>');
+  function merge(r1, c1, r2, c2) {
+    merges.push(columnName(c1) + r1 + ':' + columnName(c2) + r2);
+  }
+  function toXml(opts) {
+    const cols = '<cols>' + opts.widths.map(function col(width, i) {
+      return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + width + '" customWidth="1"/>';
+    }).join('') + '</cols>';
+    const sheetData = rows.map(function line(entry) {
+      return '<row r="' + entry.r + '"' + (entry.height ? ' ht="' + entry.height + '" customHeight="1"' : '') + '>' + entry.cells.join('') + '</row>';
+    }).join('');
+    const lastRow = rows.length > 0 ? rows[rows.length - 1].r : 1;
+    let view = '<sheetView workbookViewId="0"' + (opts.grid === false ? ' showGridLines="0"' : '') + (opts.selected ? ' tabSelected="1"' : '') + '>';
+    if (opts.freeze) {
+      view += '<pane xSplit="' + opts.freeze.cols + '" ySplit="' + opts.freeze.rows + '" topLeftCell="' + columnName(opts.freeze.cols) + (opts.freeze.rows + 1) + '" activePane="bottomRight" state="frozen"/>' +
+        '<selection pane="topRight"/><selection pane="bottomLeft"/><selection pane="bottomRight" activeCell="' + columnName(opts.freeze.cols) + (opts.freeze.rows + 1) + '" sqref="' + columnName(opts.freeze.cols) + (opts.freeze.rows + 1) + '"/>';
+    }
+    view += '</sheetView>';
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<sheetPr><tabColor rgb="' + (opts.tab || GREEN) + '"/><pageSetUpPr fitToPage="1"/></sheetPr>' +
+      '<dimension ref="A1:' + columnName(opts.widths.length - 1) + lastRow + '"/>' +
+      '<sheetViews>' + view + '</sheetViews>' +
+      '<sheetFormatPr defaultRowHeight="15"/>' + cols +
+      '<sheetData>' + sheetData + '</sheetData>' +
+      (opts.filter ? '<autoFilter ref="' + opts.filter + '"/>' : '') +
+      (merges.length > 0 ? '<mergeCells count="' + merges.length + '">' + merges.map(function m(ref) { return '<mergeCell ref="' + ref + '"/>'; }).join('') + '</mergeCells>' : '') +
+      '<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>' +
+      '<pageSetup paperSize="9" orientation="' + (opts.landscape ? 'landscape' : 'portrait') + '" fitToWidth="1" fitToHeight="0"/>' +
+      '</worksheet>';
+  }
+  return { row: row, merge: merge, toXml: toXml };
+}
+
+function wrapHeight(text, charsPerLine, base) {
+  const lines = Math.max(1, Math.ceil(String(text).length / charsPerLine));
+  return Math.max(base, 15 * lines + 4);
+}
+
+function inkFor(color) {
+  return (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) < 150 ? 'FFFFFFFF' : 'FF16251C';
+}
+
+export function buildXlsx(report) {
+  const t = report.t;
+  const styles = makeStyles();
+  const S = styles.style;
+  const valueFormat = report.matrix.allInt ? '#,##0' : '#,##0.0';
+  const monthCount = 12;
+
+  // ----- Resumen -----
+  const summary = makeSheet();
+  const cols = 6;
+  const band = { fill: GREEN, color: 'FFFFFFFF' };
+  let r = 1;
+  const titleRow = summary.row(r, 36);
+  titleRow.text(0, report.title, S({ bold: true, size: 18, fill: GREEN, color: 'FFFFFFFF', indent: 1 }));
+  for (let c = 1; c < cols; c = c + 1) { titleRow.blank(c, S(band)); }
+  summary.merge(r, 0, r, cols - 1);
+  r += 1;
+  const subRow = summary.row(r, 24);
+  subRow.text(0, report.subtitle, S({ bold: true, size: 13, fill: GREEN, color: 'FFD6E6DA', indent: 1 }));
+  for (let c = 1; c < cols; c = c + 1) { subRow.blank(c, S(band)); }
+  summary.merge(r, 0, r, cols - 1);
+  r += 1;
+  const infoRow = summary.row(r, 22);
+  infoRow.text(0, t('exScope') + ': ' + report.scope + '   ·   ' + t('rpPeriod') + ': ' + report.period + '   ·   ' + t('exGenerated') + ': ' + report.generated, S({ size: 10, fill: GREEN, color: 'FFBFD8C4', indent: 1 }));
+  for (let c = 1; c < cols; c = c + 1) { infoRow.blank(c, S(band)); }
+  summary.merge(r, 0, r, cols - 1);
+  r += 2;
+  const warnStyle = S({ bold: true, size: 11, fill: AMBER_BG, color: AMBER_INK, border: true, wrap: true, indent: 1 });
+  if (report.isSample) {
+    const warn = summary.row(r, 34);
+    warn.text(0, report.sampleBanner + ' · ' + t('sampleLong'), warnStyle);
+    for (let c = 1; c < cols; c = c + 1) { warn.blank(c, warnStyle); }
+    summary.merge(r, 0, r, cols - 1);
+    r += 2;
+  }
+  function heading(text) {
+    const h = summary.row(r, 24);
+    h.text(0, text, S({ bold: true, size: 13, color: GREEN, rule: GREEN }));
+    for (let c = 1; c < cols; c = c + 1) { h.blank(c, S({ rule: GREEN })); }
+    r += 1;
+  }
+  const labelStyle = S({ bold: true, fill: BAND_SOFT, border: true, indent: 1 });
+  const valueStyle = S({ bold: true, size: 13, color: GREEN, border: true, h: 'left', indent: 1 });
+  const noteStyle = S({ color: 'FF4A5A50', border: true, wrap: true, indent: 1 });
+  function labelled(label, value, note) {
+    const line = summary.row(r, note ? wrapHeight(note, 48, 24) : 24);
+    line.text(0, label, labelStyle);
+    line.text(1, value, valueStyle);
+    if (note) {
+      line.text(2, note, noteStyle);
+    } else {
+      line.blank(2, noteStyle);
+    }
+    for (let c = 3; c < cols; c = c + 1) { line.blank(c, noteStyle); }
+    summary.merge(r, 2, r, cols - 1);
+    r += 1;
+  }
+  if (report.meta.length > 0) {
+    heading(report.subtitle);
+    report.meta.forEach(function add(entry) { labelled(entry[0], String(entry[1])); });
+    r += 1;
+  }
+  heading(t('rpKeyFigures'));
+  report.facts.forEach(function add(fact) { labelled(fact.label, fact.value, fact.note); });
+  r += 1;
+  if (report.highlights.length > 0) {
+    heading(t('rpHighlights'));
+    report.highlights.forEach(function group(block) {
+      block.items.forEach(function item(text, i) { labelled(i === 0 ? block.title : '', text); });
+    });
+    r += 1;
+  }
+  if (report.enso.line) {
+    heading(t('elNinoTitle'));
+    const ensoRow = summary.row(r, 22);
+    const ensoStyle = S({ border: true, indent: 1 });
+    ensoRow.text(0, report.enso.line, ensoStyle);
+    for (let c = 1; c < cols; c = c + 1) { ensoRow.blank(c, ensoStyle); }
+    summary.merge(r, 0, r, cols - 1);
+    r += 1;
+    const caveat = summary.row(r, 22);
+    caveat.text(0, t('rpEnsoNote'), S({ italic: true, color: 'FF4A5A50', indent: 1 }));
+    r += 1;
+  }
+
+  // ----- Datos -----
+  const data = makeSheet();
+  const dataCols = monthCount + 2;
+  let d = 1;
+  const dataTitle = data.row(d, 28);
+  dataTitle.text(0, t('rpTableYears') + ' · ' + report.scope, S({ bold: true, size: 14, color: GREEN }));
+  d += 1;
+  if (report.isSample) {
+    const warn = data.row(d, 24);
+    warn.text(0, report.sampleBanner, S({ bold: true, fill: AMBER_BG, color: AMBER_INK, border: true, indent: 1 }));
+    for (let c = 1; c < dataCols; c = c + 1) { warn.blank(c, S({ fill: AMBER_BG, border: true })); }
+    data.merge(d, 0, d, dataCols - 1);
+    d += 1;
+  }
+  const headerRowNumber = d;
+  const headStyle = S({ bold: true, color: 'FFFFFFFF', fill: GREEN, border: true, h: 'center', wrap: true });
+  const head = data.row(d, 28);
+  head.text(0, t('exYear'), headStyle);
+  report.monthLabels.forEach(function label(name, i) { head.text(1 + i, name, headStyle); });
+  head.text(dataCols - 1, t('rpTotal'), headStyle);
+  d += 1;
+  const zeroStyle = S({ fill: 'FFF4F4F1', color: 'FF8A978E', border: true, h: 'center', format: valueFormat });
+  const emptyStyle = S({ border: true });
+  report.matrix.rows.forEach(function addYear(yearRow, i) {
+    const fill = i % 2 === 0 ? 'FFFFFFFF' : BAND_SOFT;
+    const line = data.row(d);
+    line.text(0, yearRow.year, S({ bold: true, fill: fill, border: true, h: 'center' }));
+    yearRow.cells.forEach(function cell(value, m) {
+      if (value === null) {
+        line.blank(1 + m, emptyStyle);
+      } else if (value <= 0) {
+        line.number(1 + m, 0, zeroStyle);
+      } else {
+        const bucket = Math.round(intensityRatio(value, report.matrix.max) * 20) / 20;
+        const color = rampColor(bucket);
+        line.number(1 + m, value, S({ fill: hexOf(color), color: inkFor(color), border: true, h: 'center', format: valueFormat }));
+      }
+    });
+    line.number(dataCols - 1, yearRow.total, S({ bold: true, fill: fill, border: true, h: 'right', format: valueFormat }));
+    d += 1;
   });
-  const dataName = (spec.isSample ? 'MUESTRA - ' : '') + spec.sheetName;
+  const lastYearRow = d - 1;
+  const medianStyle = S({ bold: true, fill: BAND_MEDIAN, border: true, h: 'center', format: '#,##0.0' });
+  const medianLine = data.row(d);
+  medianLine.text(0, t('calMedian'), S({ bold: true, fill: BAND_MEDIAN, border: true, h: 'center', wrap: true }));
+  report.matrix.medians.forEach(function median(value, m) {
+    if (value === null) {
+      medianLine.blank(1 + m, medianStyle);
+    } else {
+      medianLine.number(1 + m, value, medianStyle);
+    }
+  });
+  medianLine.blank(dataCols - 1, medianStyle);
+  d += 2;
+  const legend = data.row(d, 20);
+  legend.text(0, t('printLegend'), S({ bold: true, h: 'center' }));
+  legend.text(1, t('rpLess'), S({ size: 9, color: 'FF4A5A50', h: 'right' }));
+  for (let k = 0; k < 10; k = k + 1) {
+    legend.blank(2 + k, S({ fill: hexOf(rampColor(k / 9)), border: true }));
+  }
+  legend.text(12, t('rpMore'), S({ size: 9, color: 'FF4A5A50', h: 'left' }));
+
+  // ----- Notas -----
+  const notes = makeSheet();
+  let n = 1;
+  const notesTitle = notes.row(n, 32);
+  notesTitle.text(0, report.title + ' · ' + t('exSheetNotes'), S({ bold: true, size: 16, fill: GREEN, color: 'FFFFFFFF', indent: 1 }));
+  notesTitle.blank(1, S(band));
+  notes.merge(n, 0, n, 1);
+  n += 2;
+  if (report.isSample) {
+    const warn = notes.row(n, 34);
+    warn.text(0, report.sampleBanner + ' · ' + t('sampleLong'), warnStyle);
+    warn.blank(1, warnStyle);
+    notes.merge(n, 0, n, 1);
+    n += 2;
+  }
+  report.notes.forEach(function addNote(note, i) {
+    const fill = i % 2 === 0 ? 'FFFFFFFF' : BAND_SOFT;
+    const line = notes.row(n, wrapHeight(note[1], 95, 22));
+    line.text(0, note[0], S({ bold: true, fill: fill, border: true, wrap: true, v: 'top', indent: 1 }));
+    line.text(1, note[1], S({ fill: fill, border: true, wrap: true, v: 'top', indent: 1 }));
+    n += 1;
+  });
+
+  const sheetNames = [t('exSheetSummary'), t('exSheetData'), t('exSheetNotes')];
+  const dataRef = 'A' + headerRowNumber + ':' + columnName(dataCols - 1) + lastYearRow;
+  const filterName = '\'' + xml(sheetNames[1]) + '\'!$A$' + headerRowNumber + ':$' + columnName(dataCols - 1) + '$' + lastYearRow;
+  const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+  const relType = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
   const files = [
-    { name: '[Content_Types].xml', content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
-    { name: '_rels/.rels', content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
-    { name: 'xl/workbook.xml', content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xml(dataName.slice(0, 31)) + '" sheetId="1" r:id="rId1"/><sheet name="' + xml(spec.notesName.slice(0, 31)) + '" sheetId="2" r:id="rId2"/></sheets></workbook>' },
-    { name: 'xl/_rels/workbook.xml.rels', content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
-    { name: 'xl/styles.xml', content: STYLES },
-    { name: 'xl/worksheets/sheet1.xml', content: sheetXml(spec.headers.map(function w(h) { return h.width; }), dataRows, headerRow) },
-    { name: 'xl/worksheets/sheet2.xml', content: sheetXml([26, 100], notesRows, 0) }
+    { name: '[Content_Types].xml', content: contentTypes },
+    { name: '_rels/.rels', content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + relType + 'officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+    {
+      name: 'xl/workbook.xml',
+      content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>' +
+        sheetNames.map(function sheet(name, i) { return '<sheet name="' + xml(name.slice(0, 31)) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join('') +
+        '</sheets><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="1" hidden="1">' + filterName + '</definedName></definedNames></workbook>'
+    },
+    {
+      name: 'xl/_rels/workbook.xml.rels',
+      content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + relType + 'worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="' + relType + 'worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="' + relType + 'worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="' + relType + 'styles" Target="styles.xml"/></Relationships>'
+    },
+    { name: 'xl/styles.xml', content: styles.toXml() },
+    { name: 'xl/worksheets/sheet1.xml', content: summary.toXml({ widths: [30, 30, 16, 16, 16, 16], grid: false, selected: true }) },
+    { name: 'xl/worksheets/sheet2.xml', content: data.toXml({ widths: [11].concat(new Array(monthCount).fill(9.5), [13]), freeze: { cols: 1, rows: headerRowNumber }, filter: dataRef, landscape: true, tab: 'FFE07A2F' }) },
+    { name: 'xl/worksheets/sheet3.xml', content: notes.toXml({ widths: [26, 100], grid: false, tab: 'FF4F7F63' }) }
   ];
   return buildZip(files);
 }
 
-export function downloadXlsx(spec) {
-  triggerDownload(buildXlsx(spec), fileName(spec, 'xlsx'));
-}
-
-// Abre el diálogo de impresión con una clase en <body> que activa la hoja A4 de cada vista
-export function printView(className) {
-  const body = document.body;
-  function clean() {
-    body.classList.remove(className);
-    window.removeEventListener('afterprint', clean);
-  }
-  body.classList.add(className);
-  window.addEventListener('afterprint', clean);
-  // Deja que el navegador aplique la clase antes de maquetar la página
-  requestAnimationFrame(function later() {
-    window.print();
-  });
+export function downloadXlsx(report) {
+  const name = (report.isSample ? 'MUESTRA_' : '') + 'datos_' + report.fileScope + '_' + report.isoDate + '.xlsx';
+  triggerDownload(buildXlsx(report), name);
 }

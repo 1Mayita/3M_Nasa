@@ -13,8 +13,7 @@ const BANNER_IMAGE = (import.meta.env.BASE_URL || '/') + 'img/valle_alto.webp';
 import { MONTH_NAMES, formatMonth } from './i18n.js';
 import { medianOf } from './geo.js';
 import { rampColor, intensityRatio } from './ramp.js';
-import { IconDownload, IconPrint, IconSheet } from './Icons.jsx';
-import { downloadCsv, downloadXlsx, printView } from './exportData.js';
+import ExportButtons from './ExportButtons.jsx';
 
 const ANOMALY_CLASSES = [
   { max: -50, color: [63, 107, 88], key: 'calClassLowest' },
@@ -55,36 +54,6 @@ function ensoOf(oni, month) {
     return null;
   }
   return oni[month] >= 0.5 ? 'nino' : oni[month] <= -0.5 ? 'nina' : 'neutral';
-}
-
-function buildExport(scopeName, months, values, medians, isSample, t, language) {
-  return {
-    fileBase: 'calendario_focos_' + scopeName.toLowerCase().normalize('NFD').replace(/[^\x20-\x7e]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''),
-    sheetName: t('exSheetData'),
-    notesName: t('exSheetNotes'),
-    title: t('printTitle') + ' · ' + scopeName,
-    language: language,
-    isSample: isSample,
-    sampleText: 'MUESTRA SINTÉTICA / SYNTHETIC SAMPLE · ' + t('sampleLong'),
-    headers: [
-      { label: t('calScope'), width: 26, type: 'text' },
-      { label: t('exMonth'), width: 12, type: 'text' },
-      { label: t('exDetectionsViirs'), width: 28, type: 'dec' },
-      { label: t('exMedian'), width: 20, type: 'dec' },
-      { label: t('exSampleCol'), width: 18, type: 'text' }
-    ],
-    rows: months.map(function row(month, i) {
-      return [scopeName, month, values[i], medians[Number.parseInt(month.slice(5, 7), 10) - 1], isSample ? t('exYes') : t('exNo')];
-    }),
-    notes: [
-      [t('exScope'), scopeName],
-      [t('exSource'), t('exSourceText')],
-      [t('exWarning'), t('exWarningText')],
-      [t('exUnit'), t('exUnitText')],
-      [t('exMedian'), t('printMethod')],
-      [t('exGenerated'), new Date().toLocaleDateString(language === 'en' ? 'en' : 'es')]
-    ]
-  };
 }
 
 export default function CalendarPage(props) {
@@ -210,10 +179,6 @@ export default function CalendarPage(props) {
     };
   }, []);
 
-  function exportSpec() {
-    return buildExport(scopeName, months, series, medians, isSample, t, language);
-  }
-
   function showTip(event, cell, color) {
     const calendarMonth = Number.parseInt(cell.month.slice(5, 7), 10) - 1;
     const median = medians[calendarMonth];
@@ -230,12 +195,6 @@ export default function CalendarPage(props) {
         </div>
       </Banner>
       <div className="page__inner page__inner--banner">
-        <div className="print-only print-head">
-          <p className="print-kicker">{t('printTitle')}</p>
-          <h1>{t('calTitle')}</h1>
-          <p className="print-scope">{scopeName} · {mode === 'count' ? t('calCount') : t('calAnomaly')}</p>
-          {isSample && <p className="tag-sample">{t('sample')} · {t('sampleLong')}</p>}
-        </div>
         <header className="page__head">
           <div className="page__tools">
             <label className="field">
@@ -251,9 +210,13 @@ export default function CalendarPage(props) {
               <button type="button" aria-pressed={mode === 'count'} onClick={function pick() { setMode('count'); }}>{t('calCount')}</button>
               <button type="button" aria-pressed={mode === 'anomaly'} onClick={function pick() { setMode('anomaly'); }}>{t('calAnomaly')}</button>
             </div>
-            <button type="button" className="button-ghost" onClick={function csv() { downloadCsv(exportSpec()); }}><IconDownload /> {t('download')}</button>
-            <button type="button" className="button-ghost" onClick={function excel() { downloadXlsx(exportSpec()); }}><IconSheet /> {t('downloadExcel')}</button>
-            <button type="button" className="button-ghost" onClick={function print() { printView('is-printing-cal'); }}><IconPrint /> {t('printPdf')}</button>
+            <ExportButtons
+              kind="calendar"
+              t={t}
+              getInput={function input() {
+                return { scopeName: scopeName, months: months, series: series, oni: oni, isSample: isSample, language: language };
+              }}
+            />
             {isSample && <span className="tag-sample">{t('sample')}</span>}
           </div>
         </header>
@@ -343,12 +306,6 @@ export default function CalendarPage(props) {
               <p className="muted">{t('calEnsoNote')}</p>
             </section>
           </aside>
-        </div>
-        <div className="print-only print-foot">
-          <p>{t('printSource')}</p>
-          <p>{t('printMethod')}</p>
-          <p>{mode === 'count' ? t('printLegendCount') : ''}</p>
-          <p>{t('printGenerated', { date: new Date().toLocaleDateString(language === 'en' ? 'en' : 'es') })}</p>
         </div>
       </div>
 
