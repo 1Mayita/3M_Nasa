@@ -19,23 +19,59 @@
   opacity: 0.85;
 }
 
-/* ---------- textil andino original (solo CSS, sin imagen) ---------- */
+/* ---------- textil andino: franja que corre a la izquierda en bucle ----------
+   La cinta (.textile__belt) mide el ancho de la franja más un mosaico (1182px) y se mueve solo con
+   transform: translate3d, exactamente un mosaico por ciclo, así el bucle no se nota y no se repinta.
+   El mosaico (textil_andino_loop.webp) está cosido para que sus bordes encajen. */
 .story__textile,
-.banner__textile {
+.banner__textile,
+.sitefooter__textile {
+  --tile: 1182px;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
   z-index: 3;
-  height: 36px;
+  overflow: hidden;
+  contain: paint;
   background-color: #1f3d2b;
-  background-image: url('/img/textil_andino.webp');
-  background-size: cover;
-  background-position: center 8%;
+}
+.story__textile,
+.banner__textile {
+  bottom: 0;
+  height: 36px;
   box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
 }
 .banner__textile {
   height: 22px;
+}
+.textile__belt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% + var(--tile));
+  height: 100%;
+  background: url('/img/textil_andino_loop.webp') repeat-x 0 -4px / var(--tile) 64px;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  animation: textile-slide 40s linear infinite;
+  animation-play-state: paused;
+}
+.is-live > .textile__belt {
+  animation-play-state: running;
+}
+.is-tab-hidden .textile__belt {
+  animation-play-state: paused;
+}
+@keyframes textile-slide {
+  to {
+    transform: translate3d(calc(var(--tile) * -1), 0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .textile__belt {
+    animation: none;
+    will-change: auto;
+  }
 }
 
 /* ---------- escenas con imagen a pantalla completa ---------- */

@@ -13,6 +13,9 @@ export function IconClose() {
 export function IconDownload() {
   return (<svg {...BASE}><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14" /></svg>);
 }
+export function IconSheet() {
+  return (<svg {...BASE}><rect x="4" y="4.5" width="16" height="15" rx="2" /><path d="M4 10h16M4 14.5h16M10 10v9.5" /></svg>);
+}
 export function IconOrbit() {
   return (<svg {...BASE}><path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20.5 4.5v4h-4" /></svg>);
 }

@@ -140,9 +140,10 @@
 .sitefooter {
   position: relative;
   overflow: hidden;
-  padding: 120px clamp(24px, 6vw, 96px) 28px;
+  padding: 104px clamp(24px, 6vw, 96px) 28px;
   background: #0e1a14;
   color: #f1f7f2;
+  text-align: left;
   pointer-events: auto;
 }
 .sitefooter__photo {
@@ -155,88 +156,121 @@
 .sitefooter__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(14, 26, 20, 0.95) 0%, rgba(14, 26, 20, 0.78) 55%, rgba(14, 26, 20, 0.55) 100%);
+  background: linear-gradient(0deg, rgba(14, 26, 20, 0.95) 0%, rgba(14, 26, 20, 0.82) 55%, rgba(14, 26, 20, 0.6) 100%);
 }
 .sitefooter__textile {
-  position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
   height: 30px;
-  background-color: #1f3d2b;
-  background-image: url('/img/textil_andino.webp');
-  background-size: cover;
-  background-position: center 8%;
 }
 .sitefooter__inner {
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: 1.4fr 0.7fr 1.2fr;
-  gap: clamp(28px, 5vw, 72px);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(28px, 4.5vw, 64px);
+  align-items: start;
   max-width: 1240px;
   margin: 0 auto;
 }
+.sitefooter__inner > * {
+  min-width: 0;
+}
 .sitefooter__name {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  line-height: 1.1;
+  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+  line-height: 1.15;
+  text-wrap: balance;
 }
 .sitefooter__name svg {
   flex: none;
   width: 1em;
   height: 1em;
+  margin-top: 0.08em;
   color: var(--amber);
 }
-.sitefooter p {
+.sitefooter__name span {
+  min-width: 0;
+}
+.sitefooter__tagline {
+  max-width: 34ch;
+  margin: 0 0 10px;
+  color: rgba(241, 247, 242, 0.9);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.sitefooter__honest {
+  max-width: 40ch;
   margin: 0;
-  max-width: 52ch;
-  color: rgba(241, 247, 242, 0.82);
-  font-size: 0.95rem;
-  line-height: 1.65;
+  color: rgba(241, 247, 242, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.55;
 }
 .sitefooter h2 {
-  margin: 0 0 12px;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.1rem;
+  margin: 0 0 14px;
+  color: rgba(241, 247, 242, 0.68);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 .sitefooter ul {
   display: grid;
-  gap: 8px;
+  gap: 2px 28px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.sitefooter a {
+.sitefooter__links ul {
+  grid-template-columns: repeat(2, minmax(0, max-content));
+}
+.sitefooter__links li a {
+  display: inline-block;
+  padding: 5px 0;
   color: #f1f7f2;
   text-decoration: none;
   font-weight: 600;
   background-image: linear-gradient(var(--amber), var(--amber));
   background-size: 0 2px;
-  background-position: 0 100%;
+  background-position: 0 calc(100% - 3px);
   background-repeat: no-repeat;
   transition: background-size 260ms var(--ease-out);
 }
-.sitefooter a:hover {
+.sitefooter__links li a:hover {
   background-size: 100% 2px;
 }
-.sitefooter__data p {
-  font-size: 0.82rem;
+.sitefooter a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
-.sitefooter__made {
+.sitefooter__data li {
+  padding: 3px 0;
+  color: rgba(241, 247, 242, 0.8);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.sitefooter__bottom {
   position: relative;
   z-index: 3;
-  max-width: 1240px !important;
-  margin: 44px auto 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 32px;
+  max-width: 1240px;
+  margin: 44px auto 0;
   padding-top: 18px;
   border-top: 1px solid rgba(241, 247, 242, 0.18);
-  font-size: 0.85rem !important;
+}
+.sitefooter__bottom p {
+  margin: 0;
+  color: rgba(241, 247, 242, 0.78);
+  font-size: 0.85rem;
+  line-height: 1.55;
 }
 
 /* ---------- Tunari: el pie no queda tapado por el panel ---------- */
@@ -260,8 +294,16 @@
     max-width: none;
     flex: none;
   }
+  .sitefooter {
+    padding-top: 88px;
+  }
   .sitefooter__inner {
     grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .sitefooter__bottom {
+    flex-direction: column;
+    margin-top: 32px;
   }
   .gallery__card {
     width: 72vw;

@@ -5,6 +5,7 @@
 // =====================================================================
 
 import { IconFlame } from './Icons.jsx';
+import Textile from './Textile.jsx';
 
 const BASE = import.meta.env.BASE_URL || '/';
 
@@ -15,6 +16,8 @@ const LINKS = [
   { href: '#/calendario', key: 'navCalendar' },
   { href: '#/metodo', key: 'navMethod' }
 ];
+
+const SOURCES = ['footerSrcFirms', 'footerSrcTerrain', 'footerSrcImagery', 'footerSrcBounds'];
 
 export default function SiteFooter(props) {
   const { t } = props;
@@ -27,11 +30,12 @@ export default function SiteFooter(props) {
         aria-label={t('aiPrefix') + t('capNoche')}
       />
       <div className="sitefooter__shade" aria-hidden="true" />
-      <div className="sitefooter__textile" aria-hidden="true" />
+      <Textile className="sitefooter__textile" />
       <div className="sitefooter__inner">
         <div className="sitefooter__brand">
-          <p className="sitefooter__name"><IconFlame /> {t('title')}</p>
-          <p>{t('footerBlurb')}</p>
+          <p className="sitefooter__name"><IconFlame /><span>{t('title')}</span></p>
+          <p className="sitefooter__tagline">{t('footerTagline')}</p>
+          <p className="sitefooter__honest">{t('honest')}</p>
         </div>
         <nav className="sitefooter__links" aria-label={t('footerExplore')}>
           <h2>{t('footerExplore')}</h2>
@@ -43,10 +47,17 @@ export default function SiteFooter(props) {
         </nav>
         <div className="sitefooter__data">
           <h2>{t('footerSources')}</h2>
-          <p>{t('credits')}</p>
+          <ul>
+            {SOURCES.map(function source(key) {
+              return <li key={key}>{t(key)}</li>;
+            })}
+          </ul>
         </div>
       </div>
-      <p className="sitefooter__made">{t('footerMade')}</p>
+      <div className="sitefooter__bottom">
+        <p>{t('footerMade')}</p>
+        <p>{t('footerAiNote')}</p>
+      </div>
     </footer>
   );
 }

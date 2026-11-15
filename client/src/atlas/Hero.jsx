@@ -10,6 +10,7 @@ import { forwardRef, useEffect, useRef } from 'react';
 import { IconArrow, IconCalendar, IconFlame, IconInfo, IconPeak } from './Icons.jsx';
 import Gallery from './Gallery.jsx';
 import SiteFooter from './SiteFooter.jsx';
+import Textile from './Textile.jsx';
 
 const BASE = import.meta.env.BASE_URL || '/';
 function imageUrl(name) {
@@ -121,7 +122,7 @@ const Hero = forwardRef(function Hero(props, ref) {
           <p className="story__qu" lang="qu">{t('identityQu')}</p>
           <p className="story__text">{t('identityText')}</p>
         </div>
-        <div className="story__textile" aria-hidden="true" />
+        <Textile className="story__textile" />
       </div>
 
       <div className="story__scene story__block story__gallery" data-step="2" ref={register(2)}>
@@ -164,7 +165,7 @@ const Hero = forwardRef(function Hero(props, ref) {
           <h2 className="story__title">{t('watchTitle')}</h2>
           <p className="story__text">{t('watchText')}</p>
         </div>
-        <div className="story__textile" aria-hidden="true" />
+        <Textile className="story__textile" />
       </div>
 
       <div
@@ -183,7 +184,7 @@ const Hero = forwardRef(function Hero(props, ref) {
             <IconArrow />
           </button>
         </div>
-        <div className="story__textile" aria-hidden="true" />
+        <Textile className="story__textile" />
       </div>
 
       <SiteFooter t={t} />
