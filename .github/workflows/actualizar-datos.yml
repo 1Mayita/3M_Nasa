@@ -1,0 +1,83 @@
+# Dueño: P3 (Vista), con los comandos de P1 (model/update_data.py)
+# Actualización diaria de los datos de focos de calor (NASA FIRMS). NO es tiempo real: corre una vez al día.
+#
+# Qué hace: baja datos nuevos, los armoniza y valida (model/update_data.py), corre las pruebas del servidor y,
+# solo si todo sale bien, guarda los datos nuevos en main. Railway se redespliega solo al detectar el push.
+# Si algo falla, no se commitea nada y los datos buenos quedan como estaban.
+#
+# REQUISITOS (una sola vez):
+#  1) Secreto del repositorio FIRMS_MAP_KEY (Settings > Secrets and variables > Actions). Nunca por chat.
+#  2) Este archivo debe estar en la rama main: GitHub solo ejecuta las tareas programadas desde la rama por defecto.
+#  3) Settings > Actions > General > Workflow permissions: "Read and write permissions".
+# Para probarlo a mano: pestaña Actions > "Actualizar datos de focos" > Run workflow.
+name: Actualizar datos de focos
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # 12:00 UTC = 08:00 en Bolivia (FIRMS publica con unas horas de atraso)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-datos
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Descargar el repositorio (main)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: model/requirements.txt
+
+      - name: Instalar dependencias del modelo
+        run: pip install -r model/requirements.txt
+
+      # Años cerrados (~650 MB) que no cambian: se guardan para no bajarlos cada día
+      - name: Caché de años cerrados (data/raw/country)
+        uses: actions/cache@v4
+        with:
+          path: data/raw/country
+          key: firms-country-v1
+
+      - name: Bajar, armonizar y validar (model/update_data.py)
+        working-directory: model
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: python update_data.py
+
+      - name: Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Pruebas del servidor con los datos nuevos
+        run: |
+          npm ci --prefix server
+          npm test --prefix server
+
+      - name: Guardar los datos nuevos en main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/processed
+          if git diff --cached --quiet; then
+            echo "Sin cambios en los datos: no se hace commit."
+            exit 0
+          fi
+          git commit -m "datos: actualizacion automatica $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push origin HEAD:main

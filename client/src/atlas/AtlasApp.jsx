@@ -165,6 +165,41 @@ export default function AtlasApp() {
     document.documentElement.lang = language === 'qu' ? 'es' : language;
   }, [language, profile, theme]);
 
+  // Si la pestaña estuvo abierta mucho rato, vuelve a pedir los datos al regresar a ella (por si hay datos nuevos)
+  const lastLoadRef = useRef(Date.now());
+  useEffect(function refreshOnReturn() {
+    if (USING_MOCKS) {
+      return undefined;
+    }
+    let busy = false;
+    function onVisible() {
+      if (document.visibilityState !== 'visible' || busy || Date.now() - lastLoadRef.current < 30 * 60 * 1000) {
+        return;
+      }
+      busy = true;
+      Promise.all([fetchHotspots3d('depto'), fetchMunicipiosMensual('', '', 15000).catch(function none() { return null; })])
+        .then(function apply(results) {
+          const fresh = results[0];
+          if (!fresh || !Array.isArray(fresh.months) || fresh.months.length === 0) {
+            return;
+          }
+          lastLoadRef.current = Date.now();
+          setIsFallback(false);
+          setData(fresh);
+          setMonthIdx(function clamp(previous) { return Math.min(previous, fresh.months.length - 1); });
+          if (isValidMunicipiosMensual(results[1])) {
+            setMuniMensual(results[1]);
+          }
+        })
+        .catch(function keepCurrent() {
+          // si falla, se conservan los datos que ya se muestran
+        })
+        .then(function done() { busy = false; });
+    }
+    document.addEventListener('visibilitychange', onVisible);
+    return function stop() { document.removeEventListener('visibilitychange', onVisible); };
+  }, []);
+
   // Carga de municipios, focos y contexto El Niño
   useEffect(function load() {
     let cancelled = false;
@@ -226,6 +261,7 @@ export default function AtlasApp() {
       })
       .then(function save(result) {
         if (!cancelled) {
+          lastLoadRef.current = Date.now();
           setData(result);
           setMonthIdx(Math.max(result.months.length - 1, 0));
         }
@@ -763,6 +799,19 @@ export default function AtlasApp() {
     setIsPlaying(!isPlaying);
   }
 
+  // 'Datos hasta': último mes de los datos que muestra el atlas (p. ej. «noviembre de 2026»)
+  let dataUntil = '';
+  if (data && Array.isArray(data.months) && data.months.length > 0) {
+    const match = /^(\d{4})-(\d{2})/.exec(String(data.months[data.months.length - 1]));
+    if (match) {
+      try {
+        dataUntil = new Intl.DateTimeFormat(language === 'en' ? 'en' : 'es', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+          .format(new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1)));
+      } catch (e) {
+        dataUntil = match[1] + '-' + match[2];
+      }
+    }
+  }
   const inHero = phase === 'hero';
   const inAtlas = phase === 'atlas';
   const onPage = page !== null;
@@ -1091,7 +1140,7 @@ export default function AtlasApp() {
 
       <footer className="atlas__footer">
         <p>
-          {isSample && <span className="tag-sample">{t('sample')}</span>} {t('honest')}
+          {isSample && <span className="tag-sample">{t('sample')}</span>} {t('honest')}{dataUntil && !isSample ? ' · ' + t('dataUntil') + ' ' + dataUntil : ''}
         </p>
         <p className="atlas__credits">{t('credits')} · <a href="#clasico">{t('classic')}</a></p>
       </footer>

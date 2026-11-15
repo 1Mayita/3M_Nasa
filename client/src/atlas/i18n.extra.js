@@ -1,5 +1,6 @@
 // Textos nuevos (botones, barra del mapa, gráfico) en español e inglés.
 export const ES_EXTRA = {
+  dataUntil: 'Datos hasta',
   introLabel: 'Pantalla de bienvenida',
   introWelcome: 'Bienvenido a Cochabamba',
   introQuechua: 'Allin hamuy Quchapampaman',
@@ -125,6 +126,7 @@ export const ES_EXTRA = {
 };
 
 export const EN_EXTRA = {
+  dataUntil: 'Data up to',
   introLabel: 'Welcome screen',
   introWelcome: 'Welcome to Cochabamba',
   introQuechua: 'Allin hamuy Quchapampaman',
