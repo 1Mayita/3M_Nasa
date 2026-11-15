@@ -92,3 +92,21 @@ test('zona depto: solo celdas dentro de los 48 municipios de Cochabamba', async 
   const allCellKeys = new Set(dataset.records.map(function (record) { return record[0] + '|' + record[1]; }));
   assert.ok(result.cells.length < allCellKeys.size);
 });
+
+test('mes inválido 2020-13 se rechaza', async function () {
+  await assert.rejects(getHotspots3d('depto', '2020-13'), Focos3dServiceError);
+  await assert.rejects(getZonesNow('2020-00'), Focos3dServiceError);
+});
+
+test('filtro por geometría: un triángulo deja fuera la esquina de su rectángulo', async function () {
+  const { filterRecordsInsideZoneGeometry } = await import('../src/services/focos3d.service.js');
+  const triangleZone = {
+    type: 'Feature',
+    properties: { id: 'triangulo-prueba', nombre: 'Triángulo', bbox: [0, 0, 2, 2] },
+    geometry: { type: 'Polygon', coordinates: [[[0, 0], [2, 0], [0, 2], [0, 0]]] }
+  };
+  const testRecords = [[0.5, 0.5, '2020-01', 1], [1.8, 1.8, '2020-01', 1]];
+  const inside = filterRecordsInsideZoneGeometry(testRecords, triangleZone);
+  assert.equal(inside.length, 1);
+  assert.equal(inside[0][0], 0.5);
+});

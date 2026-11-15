@@ -12,7 +12,8 @@ import { readMunicipalities } from '../models/municipios.model.js';
 import { listMonthsBetween } from './focos3d.service.js';
 import { pointInPolygon } from './aoi.service.js';
 
-const MONTH_PATTERN = /^\d{4}-\d{2}$/;
+// Año de 4 dígitos y mes de 01 a 12 (rechaza, por ejemplo, 2020-13)
+const MONTH_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
 
 export class MunicipiosServiceError extends Error {
   constructor(message, httpStatus) {

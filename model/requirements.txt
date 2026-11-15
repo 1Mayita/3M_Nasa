@@ -1,3 +1,4 @@
 pandas>=2.0
 numpy>=1.24
+shapely>=2.0          # solo para build_zones.py
 firebase-admin>=6.0   # solo para upload_firestore.py
