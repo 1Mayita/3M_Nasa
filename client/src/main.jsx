@@ -41,11 +41,43 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   } catch (e) {
     // sin service worker la app funciona igual
   }
-  // Si se corta el internet con la página abierta, se muestra la página del astronauta
-  // (el service worker la sirve desde su caché) y al volver la conexión regresa a donde estaba.
-  window.addEventListener('offline', function goOffline() {
-    if (navigator.serviceWorker.controller) {
-      window.location.assign('/offline.html?volver=' + encodeURIComponent(window.location.hash || ''));
+}
+
+// Aviso instantáneo sin conexión: la pantalla del astronauta (offline.html) se descarga al abrir la web
+// y, en cuanto se corta el internet, se pone encima de todo sin cambiar de página. Al volver la conexión se quita sola.
+if (import.meta.env.PROD) {
+  let offlineHtml = null;
+  fetch('/offline.html', { cache: 'no-cache' })
+    .then(function read(response) { return response.ok ? response.text() : null; })
+    .then(function keep(text) { offlineHtml = text; if (!navigator.onLine) { showOffline(); } })
+    .catch(function ignore() {});
+
+  const showOffline = function showOffline() {
+    if (!offlineHtml || document.getElementById('offline-overlay')) {
+      return;
     }
-  });
+    const frame = document.createElement('iframe');
+    frame.id = 'offline-overlay';
+    frame.title = 'Sin conexión';
+    frame.setAttribute('srcdoc', offlineHtml);
+    frame.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483647;background:#0b1530';
+    document.body.appendChild(frame);
+    frame.focus();
+  };
+  const hideOffline = function hideOffline() {
+    const frame = document.getElementById('offline-overlay');
+    if (frame) {
+      frame.remove();
+    }
+  };
+  window.addEventListener('offline', showOffline);
+  window.addEventListener('online', hideOffline);
+  // Respaldo por si el navegador no avisa: revisa el estado cada 2 s
+  window.setInterval(function check() {
+    if (!navigator.onLine) {
+      showOffline();
+    } else {
+      hideOffline();
+    }
+  }, 2000);
 }
