@@ -17,9 +17,9 @@ const MethodPage = lazy(() => import('./MethodPage.jsx'));
 const MunicipiosPage = lazy(() => import('./MunicipiosPage.jsx'));
 const TunariPage = lazy(() => import('./TunariPage.jsx'));
 import { getGamcLegendImageUrl } from '../services/gamcApi.js';
-import { fetchHotspots3d } from '../components/vista3d/focos3dApi.js';
+import { fetchHotspots3d, fetchMunicipiosMensual } from '../components/vista3d/focos3dApi.js';
 import { buildMockHotspots3d } from '../components/vista3d/focos3d.mock.js';
-import { aggregateByMunicipality, buildMunicipalityIndex, medianOf, sumSeries } from './geo.js';
+import { aggregateByMunicipality, buildMockMunicipiosMensual, buildMunicipalityIndex, isValidMunicipiosMensual, medianOf, seriesFromMunicipiosMensual, sumSeries } from './geo.js';
 import { LANGUAGES, MONTH_NAMES, formatMonth, makeTranslator, profileName } from './i18n.js';
 import { RAMP_GRADIENT_CSS } from './ramp.js';
 import { IconExpand, IconFlame, IconMinus, IconMoon, IconOrbit, IconPause, IconPlay, IconPlus, IconReset, IconSearch, IconShare, IconSun, IconTilt } from './Icons.jsx';
@@ -113,6 +113,7 @@ export default function AtlasApp() {
   const [geo, setGeo] = useState(null);
   const [data, setData] = useState(null);
   const [oni, setOni] = useState(null);
+  const [muniMensual, setMuniMensual] = useState(null);
   const [isFallback, setIsFallback] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [mode, setMode] = useState('acumulado');
@@ -181,6 +182,16 @@ export default function AtlasApp() {
       .catch(function ignore() {
         // el contexto de El Niño es opcional
       });
+    // Conteo por municipio/mes desde el servidor; si falla, se agrupa en el navegador
+    fetchMunicipiosMensual('', '', 15000)
+      .then(function saveMensual(payload) {
+        if (!cancelled && isValidMunicipiosMensual(payload)) {
+          setMuniMensual(payload);
+        }
+      })
+      .catch(function ignoreMensual() {
+        // respaldo: aggregateByMunicipality
+      });
     Promise.race([
       fetchHotspots3d('depto'),
       new Promise(function timeout(resolve, reject) {
@@ -213,9 +224,15 @@ export default function AtlasApp() {
       if (geo === null || data === null) {
         return null;
       }
+      if (USING_MOCKS) {
+        return seriesFromMunicipiosMensual(buildMockMunicipiosMensual(data, geo.municipalities), geo.municipalities, data.months);
+      }
+      if (muniMensual !== null && !isFallback) {
+        return seriesFromMunicipiosMensual(muniMensual, geo.municipalities, data.months);
+      }
       return aggregateByMunicipality(data, geo.municipalities);
     },
-    [geo, data]
+    [geo, data, muniMensual, isFallback]
   );
 
   const totals = useMemo(
@@ -734,7 +751,7 @@ export default function AtlasApp() {
   const inAtlas = phase === 'atlas';
   const onPage = page !== null;
   const currentRoute = page !== null ? page : inHero ? 'inicio' : 'atlas';
-  const isSample = (data !== null && data.isSample) || isFallback;
+  const isSample = (data !== null && data.isSample) || isFallback || (muniMensual !== null && muniMensual.isSample === true);
   const selectedMunicipality = geo !== null && selectedIdx !== null ? geo.municipalities[selectedIdx] : null;
   const hoverMunicipality = geo !== null && hover !== null && !inHero ? geo.municipalities[hover.idx] : null;
   const currentMonthText = data !== null ? formatMonth(language, data.months[monthIdx]) : '';
