@@ -382,19 +382,17 @@
   .atlas .rail .profile {
     flex: none;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 4px;
     margin-bottom: 10px;
   }
   .atlas .rail .profile button {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-width: 0;
-    padding: 5px 7px;
+    padding: 5px 9px;
     font-size: 0.72rem;
     line-height: 1.2;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .atlas .rail h2 {
     flex: none;
