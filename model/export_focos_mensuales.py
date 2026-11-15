@@ -14,8 +14,8 @@ Reglas del CLAUDE.md que se respetan aquí:
   - Filtros de confianza y type == 0.
 
 Uso (desde model/):
-    python export_focos_mensuales.py --input ../data/processed/detections_cochabamba.csv
-    python export_focos_mensuales.py --input ... --cell 0.02
+    python export_focos_mensuales.py            # recomendado: desde daily_cells.csv (= calendario)
+    python export_focos_mensuales.py --input ../data/processed/detections_cochabamba.csv   # alternativa
 
 Entrada: CSV con columnas latitude, longitude, acq_date y (source) o (instrument, satellite).
 Salida:  ../data/processed/focos_mensuales.json
@@ -86,13 +86,54 @@ def snap_to_cell_center(value, cell_size):
     return round(cell_index * cell_size + cell_size / 2, 5)
 
 
+def export_from_daily_cells(daily_cells_path, output_path):
+    """Suma harm_n de daily_cells.csv por celda y mes.
+
+    Es la forma recomendada: usa exactamente la misma serie armonizada que el calendario
+    (incluye Terra->Terra+Aqua antes de 2002 y el relleno de días sin S-NPP), así que el
+    calendario y el mapa 3D coinciden. Requiere que harmonize.py use celdas de 0.02°.
+    """
+    daily_cells = pd.read_csv(daily_cells_path)
+    print(f"Celdas-día leídas: {len(daily_cells)}")
+    with open(os.path.join(os.path.dirname(daily_cells_path), "metadata.json"), "r", encoding="utf-8") as metadata_file:
+        cell_size = float(json.load(metadata_file)["cell_size_deg"])
+    daily_cells["month"] = daily_cells["date"].str[:7]
+    monthly = daily_cells.groupby(["lon", "lat", "month"], as_index=False)["harm_n"].sum()
+    monthly = monthly.sort_values(["month", "lon", "lat"])
+    records = [[round(float(row.lon), 5), round(float(row.lat), 5), row.month, round(float(row.harm_n), 2)]
+               for row in monthly.itertuples(index=False)]
+    output_document = {
+        "metadata": {
+            "sintetico": False,
+            "armonizado": True,
+            "unidad": "detecciones (equivalente VIIRS S-NPP)",
+            "cellSizeDeg": cell_size,
+            "formato": "records = [longitud_centro, latitud_centro, 'YYYY-MM', cantidad]",
+            "origen": "suma mensual de daily_cells.csv (misma serie que el calendario)",
+            "generado": time.strftime("%Y-%m-%d %H:%M"),
+        },
+        "records": records,
+    }
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as output_file:
+        json.dump(output_document, output_file)
+    print(f"Listo: {len(records)} celdas-mes en {output_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Exporta focos mensuales por celda para la Vista 3D")
-    parser.add_argument("--input", required=True)
+    parser.add_argument("--input", default=None,
+                        help="(alternativa) CSV de detecciones; si no se da, se usa --daily-cells")
+    parser.add_argument("--daily-cells", default="../data/processed/daily_cells.csv",
+                        help="daily_cells.csv de harmonize.py (recomendado: coincide con el calendario)")
     parser.add_argument("--k-factors", default="../data/processed/k_factors.json")
     parser.add_argument("--output", default="../data/processed/focos_mensuales.json")
     parser.add_argument("--cell", type=float, default=0.02, help="Tamaño de celda en grados (0.02 ≈ 2,2 km)")
     arguments = parser.parse_args()
+
+    if arguments.input is None:
+        export_from_daily_cells(arguments.daily_cells, arguments.output)
+        return
 
     if os.path.exists(arguments.k_factors):
         with open(arguments.k_factors, "r", encoding="utf-8") as factors_file:
