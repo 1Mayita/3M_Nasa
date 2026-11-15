@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1530">
+<title>404 · Te perdiste en el espacio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230b1530'/%3E%3Ccircle cx='12' cy='12' r='5' fill='%23ffd479'/%3E%3Cellipse cx='12' cy='12' rx='10' ry='3' fill='none' stroke='%234d8dff' stroke-width='1.6' transform='rotate(-18 12 12)'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#eef3ff; --ink2:#b9c5e8; --accent:#ffc861; --accent-ink:#13203f;
+  --ring:#4d8dff; --focus:#9cc2ff;
+  --font:ui-rounded,"SF Pro Rounded","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{
+  min-height:100vh;min-height:100svh;color:var(--ink);font-family:var(--font);
+  background:#04070f radial-gradient(120% 85% at 50% 0%,#16285a 0%,#0b1530 38%,#050914 72%,#000 100%) fixed;
+  -webkit-font-smoothing:antialiased;
+}
+.scene{position:fixed;inset:0;overflow:hidden;pointer-events:none;contain:strict}
+.layer{position:absolute;inset:-48px}
+.stars{position:absolute;left:0;top:0;width:1px;height:1px;border-radius:50%;background:transparent}
+.s2{width:1.5px;height:1.5px}
+.s3{width:2px;height:2px}
+.tw{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;
+  box-shadow:0 0 6px 1px rgba(170,205,255,.8);opacity:.2;
+  animation:twinkle var(--d,4s) ease-in-out var(--dl,0s) infinite}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.15)}}
+.shoot{position:absolute;left:0;top:0;width:0;height:0}
+.shoot i{position:absolute;left:0;top:0;width:150px;height:2px;border-radius:2px;opacity:0;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(200,225,255,.6) 70%,#fff)}
+.shoot.go i{animation:shoot 1.1s cubic-bezier(.2,.6,.3,1) forwards}
+@keyframes shoot{0%{opacity:0;transform:translateX(0)}12%{opacity:1}100%{opacity:0;transform:translateX(520px)}}
+.moon{position:absolute;left:calc(7% + 48px);top:calc(12% + 48px);width:clamp(38px,5vw,62px);height:auto}
+.planet{position:absolute;right:calc(5% + 48px);top:calc(8% + 48px);width:clamp(96px,17vw,230px);height:auto}
+.earth{position:absolute;left:50%;top:calc(100% - 11vh);width:260vmax;height:260vmax;margin-left:-130vmax;border-radius:50%;
+  background:radial-gradient(circle at 50% 0%,#3a7fe0 0,#1a4a9a 1.2%,#0c2a63 3.5%,#06142f 9%,#020611 20%);
+  box-shadow:0 -6px 40px rgba(90,160,255,.35),0 -1px 0 rgba(160,205,255,.55)}
+.glyph{position:absolute;left:50%;top:63%;transform:translate(-50%,-50%);margin:0;
+  font-weight:900;line-height:.82;letter-spacing:-.04em;text-align:center;white-space:nowrap;
+  font-size:var(--gs,min(38vw,44vh));user-select:none}
+.base{color:transparent;
+  background:radial-gradient(circle,rgba(185,210,255,.72) 0 1.2px,transparent 1.8px) 0 0/10px 10px;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-stroke:1.5px rgba(150,185,255,.28)}
+.lit{position:absolute;inset:0;clip-path:circle(0 at 50% 50%)}
+.lit-in{position:absolute;inset:0;transform-origin:0 0}
+.hot{color:#ffe7ad;text-shadow:0 0 22px rgba(255,186,84,.55),0 0 2px #fff}
+.note{position:absolute;font:600 clamp(11px,1.1vw,14px)/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:#ffd98a;white-space:nowrap;transform:translate(-50%,-50%)}
+.astro{position:absolute;left:0;top:0;width:320px;height:260px;transform-origin:110px 140px;will-change:transform}
+.astro svg{display:block;width:320px;height:260px;overflow:visible}
+.wave{transform-box:view-box;transform-origin:86px 124px}
+.astro.waving .wave{animation:wave 1.5s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:rotate(0)}25%,75%{transform:rotate(-28deg)}50%{transform:rotate(12deg)}}
+.pbands{animation:bands 30s ease-in-out infinite alternate}
+@keyframes bands{to{transform:translateX(-60px)}}
+.ptilt{transform-box:view-box;transform-origin:120px 100px;animation:tilt 24s ease-in-out infinite alternate}
+@keyframes tilt{from{transform:rotate(-4deg)}to{transform:rotate(5deg)}}
+.puff{position:absolute;left:0;top:0;width:0;height:0}
+.puff i{position:absolute;left:-12px;top:-12px;width:24px;height:24px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 42% 38%,#fff 0,rgba(236,242,255,.9) 35%,rgba(200,215,245,0) 70%)}
+.flame{transform-box:fill-box;transform-origin:50% 0}
+.bubble{position:absolute;left:0;top:0;padding:7px 12px;border-radius:12px;background:#f4f7ff;color:#13203f;
+  font:700 13px/1.2 var(--font);white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;transition:opacity .35s ease}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;margin-left:-6px;background:#f4f7ff;transform:rotate(45deg);border-radius:2px}
+.bubble.on{opacity:1}
+.copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:max(9vh,64px) 20px 0;gap:14px}
+h1{margin:0;font-size:clamp(30px,4.6vw,58px);line-height:1.05;letter-spacing:-.02em;font-weight:850;
+  text-shadow:0 2px 24px rgba(5,9,20,.8);text-wrap:balance}
+.sub{margin:0;max-width:34ch;font-size:clamp(15px,1.5vw,18px);line-height:1.45;color:var(--ink2);text-wrap:balance;text-shadow:0 1px 12px rgba(5,9,20,.9)}
+.path{max-width:min(80vw,420px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12px/1 var(--mono);
+  color:#9fb0dc;padding:6px 10px;border:1px solid rgba(160,190,255,.18);border-radius:999px;background:rgba(10,20,48,.55)}
+.path:empty{display:none}
+.btn{margin-top:8px;display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border:0;border-radius:999px;
+  background:var(--accent);color:var(--accent-ink);font:800 16px/1 var(--font);text-decoration:none;cursor:pointer;
+  box-shadow:0 8px 26px rgba(255,190,80,.25);transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn svg{width:18px;height:18px}
+@media (hover:hover){.btn:hover{background:#ffd685;transform:translateY(-1px);box-shadow:0 12px 30px rgba(255,190,80,.35)}}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.btn[aria-busy="true"]{opacity:.75;cursor:progress}
+.status{margin:0;min-height:1.2em;font-size:13px;color:#9fb0dc}
+@media (max-width:640px){
+  .planet{top:auto;bottom:calc(19% + 48px);right:calc(4% + 48px)}
+  .moon{top:calc(37% + 48px);left:calc(9% + 48px)}
+  .glyph{font-size:var(--gs,min(46vw,40vh))}
+  .copy{padding-top:max(8vh,48px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .tw,.astro.waving .wave,.shoot.go i,.pbands,.ptilt{animation:none}
+  .tw{opacity:.6}
+  .note{display:none}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="scene" id="scene" aria-hidden="true">
+  <div class="layer" id="L1"><div class="stars s1" id="st1"></div></div>
+  <div class="layer" id="L2"><div class="stars s2" id="st2"></div><div id="tw"></div></div>
+  <div class="layer" id="L3"><div class="stars s3" id="st3"></div></div>
+  <div class="shoot" id="shoot"><i></i></div>
+  <div class="layer" id="L4">
+    <svg class="moon" viewBox="0 0 60 60"><defs><radialGradient id="mg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#eef0f6"/><stop offset=".6" stop-color="#b9bfd0"/><stop offset="1" stop-color="#6f7891"/></radialGradient></defs><circle cx="30" cy="30" r="28" fill="url(#mg)"/><circle cx="21" cy="22" r="6" fill="#9aa2b8" opacity=".55"/><circle cx="38" cy="36" r="8" fill="#9aa2b8" opacity=".45"/><circle cx="24" cy="42" r="3.5" fill="#9aa2b8" opacity=".5"/><circle cx="40" cy="18" r="2.5" fill="#9aa2b8" opacity=".5"/></svg>
+  </div>
+  <div class="layer" id="L5">
+    <svg class="planet" viewBox="0 0 240 200"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f7bff"/><stop offset=".55" stop-color="#4a33b8"/><stop offset="1" stop-color="#1c1452"/></linearGradient><clipPath id="pc"><circle cx="120" cy="100" r="58"/></clipPath></defs>
+      <g class="ptilt">
+      <path d="M22 112c10-30 210-62 196-12" fill="none" stroke="#2f5fc4" stroke-width="7" stroke-linecap="round" opacity=".75" transform="rotate(-14 120 100)"/>
+      <circle cx="120" cy="100" r="58" fill="url(#pg)"/>
+      <g clip-path="url(#pc)">
+        <g class="pbands" opacity=".32"><path d="M40 76h30M86 76h50M150 76h40M200 76h30M230 76h50M40 96h60M112 96h44M172 96h60M232 96h60M40 118h24M80 118h70M164 118h40M220 118h70" stroke="#d6ccff" stroke-width="7" stroke-linecap="round"/></g>
+        <circle cx="150" cy="128" r="62" fill="#0b0730" opacity=".6"/>
+      </g>
+      <path d="M22 112c-14 34 196 26 196-12" fill="none" stroke="#4d8dff" stroke-width="8" stroke-linecap="round" transform="rotate(-14 120 100)"/>
+      <path d="M34 112c-6 22 172 16 172-8" fill="none" stroke="#a9ccff" stroke-width="2.4" stroke-linecap="round" opacity=".8" transform="rotate(-14 120 100)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="layer" id="L6"><div class="earth"></div></div>
+  <p class="glyph base" id="gBase"></p>
+  <div class="lit" id="lit"><div class="lit-in" id="litIn"><p class="glyph hot" id="gHot"></p></div></div>
+  <div class="astro" id="astro">
+    <svg viewBox="0 0 320 260">
+      <defs>
+        <linearGradient id="vz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a5bb8"/><stop offset=".45" stop-color="#11285e"/><stop offset="1" stop-color="#050c22"/></linearGradient>
+        <linearGradient id="suit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe5f2"/></linearGradient>
+        <clipPath id="vclip"><rect x="94" y="48" width="70" height="54" rx="25"/></clipPath>
+        <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#b9c8ea"/><stop offset="1" stop-color="#6e7fae"/></linearGradient>
+        <radialGradient id="glass" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#cfe2ff" stop-opacity=".16"/><stop offset=".7" stop-color="#9cc2ff" stop-opacity=".04"/><stop offset="1" stop-color="#9cc2ff" stop-opacity=".14"/></radialGradient>
+        <radialGradient id="fl"cx=".5" cy="0" r="1"><stop offset="0" stop-color="#fff6d0"/><stop offset=".4" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6b3d" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse class="flame" id="flame" cx="70" cy="196" rx="11" ry="26" fill="url(#fl)"/>
+      <rect x="50" y="88" width="42" height="92" rx="13" fill="#d6ddeb" stroke="#97a3c2" stroke-width="3"/>
+      <rect x="58" y="102" width="26" height="6" rx="3" fill="#97a3c2"/><rect x="58" y="114" width="26" height="6" rx="3" fill="#97a3c2"/>
+      <g class="wave">
+        <rect x="72" y="66" width="26" height="66" rx="13" fill="url(#suit)" stroke="#a9b4cf" stroke-width="3"/>
+        <circle cx="85" cy="62" r="14" fill="#fff" stroke="#a9b4cf" stroke-width="3"/>
+        <path d="M78 52v-8M85 50v-10M92 52v-8" stroke="#a9b4cf" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(20 102 186)"><rect x="88" y="172" width="30" height="58" rx="14" fill="#e4e9f4" stroke="#a9b4cf" stroke-width="3"/><rect x="86" y="214" width="34" height="20" rx="9" fill="#7d8aab"/></g>
+      <rect x="78" y="108" width="78" height="86" rx="28" fill="url(#suit)" stroke="#a9b4cf" stroke-width="3"/>
+      <rect x="104" y="132" width="36" height="25" rx="7" fill="#e3e8f3" stroke="#b6c0d8" stroke-width="2"/>
+      <circle cx="114" cy="144" r="4" fill="#4d8dff"/><circle cx="125" cy="144" r="4" fill="#ff6b5b"/><circle cx="133" cy="150" r="2.6" fill="#ffc861"/>
+      <rect x="80" y="170" width="74" height="9" rx="4" fill="#cfd6e6"/>
+      <g transform="rotate(-12 132 186)"><rect x="118" y="172" width="31" height="58" rx="14" fill="url(#suit)" stroke="#a9b4cf" stroke-width="3"/><rect x="116" y="214" width="36" height="20" rx="9" fill="#8794b4"/></g>
+      <rect x="90" y="114" width="60" height="12" rx="6" fill="#cdd5e6" stroke="#a9b4cf" stroke-width="2"/>
+      <circle cx="118" cy="74" r="50" fill="url(#suit)" stroke="#a9b4cf" stroke-width="3"/>
+      <circle cx="74" cy="80" r="11" fill="#dfe5f2" stroke="#a9b4cf" stroke-width="2.5"/>
+      <rect x="92" y="46" width="74" height="58" rx="27" fill="url(#vz)" stroke="#1a2a52" stroke-width="4"/>
+      <g clip-path="url(#vclip)"><g id="refl">
+        <circle cx="112" cy="88" r="1.6" fill="#fff" opacity=".8"/><circle cx="128" cy="94" r="1.1" fill="#fff" opacity=".6"/>
+        <circle cx="146" cy="66" r="1.3" fill="#fff" opacity=".7"/><circle cx="158" cy="80" r="1" fill="#fff" opacity=".55"/>
+        <circle cx="122" cy="72" r=".9" fill="#fff" opacity=".5"/><circle cx="138" cy="84" r="1.2" fill="#cfe0ff" opacity=".7"/>
+        <path d="M150 88l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#cfe0ff" opacity=".75"/>
+        <path d="M96 100c22-8 46-8 70 0" stroke="#4d8dff" stroke-width="3" fill="none" opacity=".45"/>
+      </g></g>
+      <path d="M104 64c4-9 14-13 26-13" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".75"/>
+      <circle cx="102" cy="76" r="3" fill="#fff" opacity=".55"/>
+      <path d="M138 132C162 140 178 136 194 120" fill="none" stroke="#a9b4cf" stroke-width="27" stroke-linecap="round"/>
+      <path d="M138 132C162 140 178 136 194 120" fill="none" stroke="#fbfcff" stroke-width="21" stroke-linecap="round"/>
+      <line x1="206" y1="112" x2="226" y2="94" stroke="#1d2747" stroke-width="12" stroke-linecap="round"/>
+      <line x1="206" y1="112" x2="226" y2="94" stroke="#46557f" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="199" cy="117" r="13" fill="#fff" stroke="#a9b4cf" stroke-width="3"/>
+      <circle cx="258" cy="62" r="48" fill="url(#glass)"/>
+      <path d="M222 50a38 38 0 0 1 30-25" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".45"/>
+      <path d="M290 84a36 36 0 0 1-12 10" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".3"/>
+      <circle cx="258" cy="62" r="53" fill="none" stroke="#1d2747" stroke-width="12"/>
+      <circle cx="258" cy="62" r="53" fill="none" stroke="url(#rim)" stroke-width="6"/>
+      <circle cx="258" cy="62" r="49" fill="none" stroke="#fff" stroke-width="1.2" opacity=".35"/>
+    </svg>
+  </div>
+  <div class="bubble" id="bubble"></div>
+</div>
+
+<main class="copy">
+  <h1 id="h1">Te perdiste en el espacio</h1>
+  <p class="sub" id="sub">Esta dirección no existe. Ni siquiera en otra galaxia.</p>
+  <p class="path" id="path"></p>
+  <a class="btn" id="btn" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span id="btnTxt">Volver al inicio</span></a>
+  <p class="status" id="status" aria-live="polite"></p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var MODE = '404';
+  var EN = /^en\b/i.test(navigator.language || '');
+  var T = {
+    '404': {
+      es: { title: '404 · Te perdiste en el espacio', h1: 'Te perdiste en el espacio', sub: 'Esta dirección no existe. Ni siquiera en otra galaxia.', btn: 'Volver al inicio',
+        glyph: '404', notes: ['aquí no hay nada', 'ni una estrella', 'señal perdida', 'ni rastro'],
+        say: ['¿Houston?', 'Aquí no hay nada…', 'Ni una estrella con esa dirección', 'Juraría que era por aquí'] },
+      en: { title: '404 · Lost in space', h1: 'Lost in space', sub: 'This address doesn’t exist. Not even in another galaxy.', btn: 'Back to home',
+        glyph: '404', notes: ['nothing here', 'not a star', 'signal lost', 'no trace'],
+        say: ['Houston?', 'Nothing out here…', 'No star at this address', 'I swear it was around here'] }
+    },
+    'offline': {
+      es: { title: 'Sin conexión · Focos Cochabamba', h1: 'Sin conexión', sub: 'Revisa tu internet. Seguimos en órbita hasta que vuelva la señal.', btn: 'Reintentar',
+        glyph: 'SIN<br>CONEXIÓN', notes: ['0 barras', 'ping…', 'buscando señal', 'sin respuesta'],
+        say: ['¿Houston? ¿Me copian?', 'Buscando señal…', 'Cero barras por aquí', 'Sigo en órbita'],
+        busy: 'Reintentando…', back: 'Conexión recuperada. Volviendo…', hint: 'La página se recargará sola cuando vuelva la conexión.' },
+      en: { title: 'Offline · Focos Cochabamba', h1: 'You’re offline', sub: 'Check your internet. We’ll stay in orbit until the signal comes back.', btn: 'Try again',
+        glyph: 'OFF<br>LINE', notes: ['0 bars', 'ping…', 'searching', 'no reply'],
+        say: ['Houston, do you copy?', 'Searching for signal…', 'Zero bars out here', 'Still in orbit'],
+        busy: 'Retrying…', back: 'Back online. Reloading…', hint: 'This page will reload by itself when you’re back online.' }
+    }
+  }[MODE][EN ? 'en' : 'es'];
+
+  var $ = function (id) { return document.getElementById(id); };
+  if (EN) { document.documentElement.lang = 'en'; }
+  document.title = T.title;
+  $('h1').textContent = T.h1;
+  $('sub').textContent = T.sub;
+  $('btnTxt').textContent = T.btn;
+  $('gBase').innerHTML = T.glyph;
+  $('gHot').innerHTML = T.glyph;
+  if (MODE === 'offline') {
+    document.documentElement.style.setProperty('--gs', 'min(17vw,21vh)');
+  }
+
+  // Notas que solo se leen dentro de la lupa
+  var NOTE_POS = [[24, 50], [76, 47], [33, 83], [70, 81]];
+  T.notes.forEach(function (txt, i) {
+    var n = document.createElement('span');
+    n.className = 'note';
+    n.textContent = txt;
+    n.style.left = NOTE_POS[i][0] + '%';
+    n.style.top = NOTE_POS[i][1] + '%';
+    $('litIn').appendChild(n);
+  });
+
+  if (MODE === '404') {
+    var p = location.pathname + location.search;
+    if (p && p !== '/' && p !== '/404.html') { $('path').textContent = p; }
+  } else {
+    var btn = $('btn');
+    var status = $('status');
+    status.textContent = T.hint;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      btn.setAttribute('aria-busy', 'true');
+      $('btnTxt').textContent = T.busy;
+      location.reload();
+    });
+    window.addEventListener('online', function () {
+      status.textContent = T.back;
+      setTimeout(function () { location.reload(); }, 600);
+    });
+  }
+
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var scene = $('scene'), astro = $('astro'), lit = $('lit'), litIn = $('litIn');
+  var bubble = $('bubble'), flame = $('flame'), gBase = $('gBase');
+  var layers = [['L1', 6], ['L2', 14], ['L3', 26], ['L4', 18], ['L5', 34], ['L6', 8]].map(function (l) {
+    return { el: $(l[0]), d: l[1] };
+  });
+
+  // ---------- Estrellas (box-shadow, se pintan una vez) ----------
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function starfield(el, count, alpha) {
+    var w = innerWidth + 96, h = innerHeight + 96, out = [];
+    for (var i = 0; i < count; i++) {
+      var a = (alpha * rnd(0.45, 1)).toFixed(2);
+      var tint = Math.random() < 0.15 ? '255,228,190' : (Math.random() < 0.3 ? '190,215,255' : '255,255,255');
+      out.push(Math.round(rnd(0, w)) + 'px ' + Math.round(rnd(0, h)) + 'px rgba(' + tint + ',' + a + ')');
+    }
+    el.style.boxShadow = out.join(',');
+  }
+  function buildStars() {
+    var area = innerWidth * innerHeight;
+    starfield($('st1'), Math.min(420, Math.round(area / 3800)), 0.55);
+    starfield($('st2'), Math.min(200, Math.round(area / 9000)), 0.75);
+    starfield($('st3'), Math.min(70, Math.round(area / 26000)), 0.95);
+    var tw = $('tw'), html = '';
+    for (var i = 0; i < 16; i++) {
+      html += '<span class="tw" style="left:' + rnd(3, 97).toFixed(1) + '%;top:' + rnd(3, 70).toFixed(1) +
+        '%;--d:' + rnd(2.4, 6).toFixed(2) + 's;--dl:-' + rnd(0, 6).toFixed(2) + 's"></span>';
+    }
+    tw.innerHTML = html;
+  }
+  buildStars();
+
+  // ---------- Geometría ----------
+  var bw = 0, bh = 0;
+  var W, H, S, G; // S = escala del astronauta, G = caja del glifo
+  var LENS = { x: 148, y: -78, r: 48 }, HEAD = { x: 8, y: -116 }; // relativo al origen (110,140)
+  function measure() {
+    W = innerWidth; H = innerHeight;
+    S = Math.max(0.58, Math.min(1, Math.min(W, H * 1.25) / 1000));
+    var r = gBase.getBoundingClientRect();
+    G = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, h: r.height, right: r.right, top: r.top };
+  }
+  measure();
+
+  function world(ox, oy, x, y, rot, face) {
+    var c = Math.cos(rot), s = Math.sin(rot), lx = face * S * ox, ly = S * oy;
+    return [x + c * lx - s * ly, y + s * lx + c * ly];
+  }
+  function render(x, y, rot, face, bob) {
+    var yy = y + bob;
+    astro.style.transform = 'translate3d(' + (x - 110).toFixed(1) + 'px,' + (yy - 140).toFixed(1) + 'px,0) rotate(' +
+      rot.toFixed(4) + 'rad) scale(' + (face * S).toFixed(4) + ',' + S.toFixed(4) + ')';
+    var L = world(LENS.x, LENS.y, x, yy, rot, face);
+    var r = LENS.r * S * Math.max(0.12, Math.abs(face));
+    lit.style.clipPath = 'circle(' + r.toFixed(1) + 'px at ' + L[0].toFixed(1) + 'px ' + L[1].toFixed(1) + 'px)';
+    litIn.style.transform = 'translate3d(' + (-0.2 * L[0]).toFixed(1) + 'px,' + (-0.2 * L[1]).toFixed(1) + 'px,0) scale(1.2)';
+    var Hd = world(HEAD.x, HEAD.y, x, yy, rot, face);
+    bubble.style.transform = 'translate3d(' + (Hd[0] - bw / 2).toFixed(1) + 'px,' + (Hd[1] - bh - 14).toFixed(1) + 'px,0)';
+  }
+
+  // ---------- Movimiento reducido: escena quieta, texto completo ----------
+  if (reduce) {
+    lit.style.clipPath = 'none';
+    flame.style.opacity = '0';
+    var place = function () {
+      measure();
+      var x = Math.min(W - 120 * S, G.right + 40 * S), y = Math.min(H - 110 * S, G.top + G.h * 0.6);
+      astro.style.transform = 'translate3d(' + (x - 110) + 'px,' + (y - 140) + 'px,0) rotate(-0.12rad) scale(' + (-S) + ',' + S + ')';
+    };
+    place();
+    window.addEventListener('resize', place);
+    return;
+  }
+
+  // ---------- Física de gravedad cero ----------
+  var x = G.cx - 160 * S, y = G.cy + 40 * S, vx = 0, vy = 0;
+  var face = 1, faceT = 1, rot = 0, rotV = 0, waving = false;
+  var refl = $('refl');
+  var NOZZLE = { x: -40, y: 62 };
+  // Nubes de propulsión: pool fijo de 10, se reciclan
+  var puffs = [], puffI = 0, lastPuff = 0, pvx = 0, pvy = 0;
+  for (var pi = 0; pi < 10; pi++) {
+    var pf = document.createElement('div');
+    pf.className = 'puff';
+    pf.appendChild(document.createElement('i'));
+    scene.insertBefore(pf, astro);
+    puffs.push(pf);
+  }
+  function puff(px, py, dx, dy) {
+    var el = puffs[puffI++ % puffs.length];
+    el.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,0)';
+    var sc = ((1.4 + Math.random() * 0.9) * S).toFixed(2);
+    if (el.firstChild.animate) {
+      el.firstChild.animate([
+        { opacity: 0.85, transform: 'translate(0,0) scale(' + (0.35 * S).toFixed(2) + ')' },
+        { opacity: 0, transform: 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + sc + ')' }
+      ], { duration: 900, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' });
+    }
+  }
+  var tx = G.cx, ty = G.cy, manual = false, lastInput = -1e9;
+  var mx = 0, my = 0, pmx = 0, pmy = 0;
+  var t = 0, last = 0, raf = 0;
+
+  function onPoint(e) {
+    tx = e.clientX; ty = e.clientY; manual = true; lastInput = performance.now();
+  }
+  window.addEventListener('pointermove', onPoint, { passive: true });
+  window.addEventListener('pointerdown', onPoint, { passive: true });
+  document.addEventListener('pointerleave', function () { lastInput = performance.now() - 2500; });
+
+  var resizeT = 0;
+  window.addEventListener('resize', function () {
+    measure();
+    clearTimeout(resizeT);
+    resizeT = setTimeout(buildStars, 220);
+  });
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    var f = last ? Math.min(3, (now - last) / 16.667) : 1;
+    last = now; t += f / 60;
+
+    // Recorrido automático por el glifo si no hay cursor/toque reciente
+    if (manual && now - lastInput > 3500) manual = false;
+    var cx = tx, cy = ty;
+    if (!manual) {
+      cx = G.cx + Math.sin(t * 0.33) * G.w * 0.42;
+      cy = G.cy + Math.sin(t * 0.61 + 1) * G.h * 0.28;
+    }
+
+    // Mira hacia donde va (con histéresis para no girar a cada píxel)
+    // Gira con un pequeño impulso angular, como en gravedad cero
+    if (faceT > 0 && cx < x - 24 * S) { faceT = -1; rotV -= 0.035; }
+    else if (faceT < 0 && cx > x + 24 * S) { faceT = 1; rotV += 0.035; }
+    face += (faceT - face) * Math.min(1, 0.11 * f);
+
+    // El centro de la lupa persigue al objetivo: el cuerpo queda detrás
+    var gx = cx - faceT * S * LENS.x, gy = cy - S * LENS.y;
+    gx = Math.max(60 * S, Math.min(W - 60 * S, gx));
+    gy = Math.max(90 * S, Math.min(H - 70 * S, gy));
+    var k = manual ? 0.0062 : 0.0035, damp = Math.pow(manual ? 0.9 : 0.92, f);
+    vx = (vx + (gx - x) * k * f) * damp;
+    vy = (vy + (gy - y) * k * f) * damp;
+    var sp = Math.sqrt(vx * vx + vy * vy);
+    if (sp > 26) { vx *= 26 / sp; vy *= 26 / sp; sp = 26; }
+    x += vx * f; y += vy * f;
+
+    // Inclinación según la velocidad (resorte angular suave) + balanceo lento
+    var rotT = Math.max(-0.3, Math.min(0.3, vx * 0.022)) + Math.sin(t * 0.7) * 0.07;
+    rotV = (rotV + (rotT - rot) * 0.012 * f) * Math.pow(0.9, f);
+    rot += rotV * f;
+    var bob = Math.sin(t * 1.15) * 7 * S;
+    render(x, y, rot, face, bob);
+
+    var th = Math.min(1, sp / 9);
+    flame.style.opacity = (0.12 + th * 0.88).toFixed(2);
+    flame.style.transform = 'scale(' + (0.7 + th * 0.4).toFixed(2) + ',' + (0.35 + th * 0.9).toFixed(2) + ')';
+
+    // Nube de propulsión al acelerar
+    var acc = Math.abs(vx - pvx) + Math.abs(vy - pvy);
+    pvx = vx; pvy = vy;
+    if (sp > 3.5 && acc > 0.18 * f && now - lastPuff > 70) {
+      lastPuff = now;
+      var N = world(NOZZLE.x, NOZZLE.y, x, y + bob, rot, face);
+      puff(N[0], N[1], -vx * 5 + (Math.random() - 0.5) * 16, -vy * 5 + 18 + Math.random() * 10);
+    }
+
+    // Saluda cuando el cursor se queda quieto (o en recorrido automático, a ratos)
+    var still = manual ? now - lastInput > 1200 : (t % 9) < 3;
+    if (still !== waving) { waving = still; astro.classList.toggle('waving', still); }
+
+    // El visor refleja el cielo: las estrellas se desplazan con el parallax
+    refl.setAttribute('transform', 'translate(' + (-mx * 10).toFixed(2) + ' ' + (-my * 6).toFixed(2) + ')');
+
+    // Parallax suave
+    pmx = (cx / W - 0.5); pmy = (cy / H - 0.5);
+    mx += (pmx - mx) * Math.min(1, 0.04 * f); my += (pmy - my) * Math.min(1, 0.04 * f);
+    for (var i = 0; i < layers.length; i++) {
+      var d = layers[i].d;
+      layers[i].el.style.transform = 'translate3d(' + (-mx * d).toFixed(2) + 'px,' + (-my * d).toFixed(2) + 'px,0)';
+    }
+  }
+
+  function start() { if (!raf && !document.hidden) { last = 0; raf = requestAnimationFrame(frame); } }
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
+  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+  start();
+
+  // ---------- Globo de diálogo ----------
+  var sayI = 0;
+  function say() {
+    if (!document.hidden) {
+      bubble.textContent = T.say[sayI++ % T.say.length];
+      bw = bubble.offsetWidth; bh = bubble.offsetHeight; // se mide solo al cambiar el texto
+      bubble.classList.add('on');
+      setTimeout(function () { bubble.classList.remove('on'); }, 3200);
+    }
+    setTimeout(say, 7500);
+  }
+  setTimeout(say, 1600);
+
+  // ---------- Estrella fugaz ocasional ----------
+  var shoot = $('shoot');
+  function shootingStar() {
+    if (!document.hidden) {
+      shoot.classList.remove('go');
+      shoot.style.transform = 'translate3d(' + rnd(W * 0.05, W * 0.7).toFixed(0) + 'px,' + rnd(H * 0.03, H * 0.35).toFixed(0) +
+        'px,0) rotate(' + rnd(18, 34).toFixed(1) + 'deg)';
+      void shoot.offsetWidth;
+      shoot.classList.add('go');
+    }
+    setTimeout(shootingStar, rnd(5000, 12000));
+  }
+  setTimeout(shootingStar, 2500);
+})();
+</script>
+</body>
+</html>
