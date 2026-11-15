@@ -34,12 +34,18 @@ function Root() {
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><Root /></React.StrictMode>);
 
 // Service worker (solo producción): muestra /offline.html cuando no hay red. Ver public/sw.js.
+// Se registra de inmediato: el mapa sigue cargando mosaicos y el evento "load" puede tardar mucho.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', function registerSw() {
-    try {
-      navigator.serviceWorker.register('/sw.js').catch(function ignore() {});
-    } catch (e) {
-      // sin service worker la app funciona igual
+  try {
+    navigator.serviceWorker.register('/sw.js').catch(function ignore() {});
+  } catch (e) {
+    // sin service worker la app funciona igual
+  }
+  // Si se corta el internet con la página abierta, se muestra la página del astronauta
+  // (el service worker la sirve desde su caché) y al volver la conexión regresa a donde estaba.
+  window.addEventListener('offline', function goOffline() {
+    if (navigator.serviceWorker.controller) {
+      window.location.assign('/offline.html?volver=' + encodeURIComponent(window.location.hash || ''));
     }
   });
 }

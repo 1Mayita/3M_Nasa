@@ -1,7 +1,7 @@
 // Service worker mínimo: SOLO navegaciones, red primero.
 // Si no hay red, muestra /offline.html (precacheado). No cachea ni sirve assets de la app.
 const PREFIX = 'focos-nav-';
-const CACHE = PREFIX + 'v1';
+const CACHE = PREFIX + 'v2';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE = [OFFLINE_URL, '/404.html'];
 

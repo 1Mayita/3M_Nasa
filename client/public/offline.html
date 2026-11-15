@@ -247,11 +247,17 @@ h1{margin:0;font-size:clamp(30px,4.6vw,58px);line-height:1.05;letter-spacing:-.0
       e.preventDefault();
       btn.setAttribute('aria-busy', 'true');
       $('btnTxt').textContent = T.busy;
-      location.reload();
+      goBack();
     });
+    // Vuelve a la página donde estaba (o a la app si se abrió directo esta página)
+    function goBack() {
+      if (location.pathname.indexOf('offline') === -1) { location.reload(); return; }
+      var hash = new URLSearchParams(location.search).get('volver') || '';
+      location.replace('/' + (hash.charAt(0) === '#' ? hash : ''));
+    }
     window.addEventListener('online', function () {
       status.textContent = T.back;
-      setTimeout(function () { location.reload(); }, 600);
+      setTimeout(goBack, 600);
     });
   }
 
