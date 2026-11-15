@@ -28,6 +28,35 @@ import config as C
 URL = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/{key}/{src}/{area}/{days}/{date}"
 
 
+def fetch_range(key, source, start, end, chunk=5, sleep=1.0, retries=3):
+    """Baja `source` entre start y end (date) para el BBOX de Bolivia. Devuelve un DataFrame.
+    Si FIRMS responde con error o falla la red después de `retries` intentos, lanza RuntimeError."""
+    area = ",".join(str(v) for v in C.BBOX)  # west,south,east,north
+    d = start
+    frames = []
+    while d <= end:
+        n = min(chunk, (end - d).days + 1)
+        url = URL.format(key=key, src=source, area=area, days=n, date=d.isoformat())
+        txt = None
+        for attempt in range(1, retries + 1):
+            try:
+                txt = urllib.request.urlopen(url, timeout=120).read().decode()
+                break
+            except Exception as error:  # red inestable: reintentar
+                print(f"  {source} {d}: intento {attempt}/{retries} falló ({error})", flush=True)
+                time.sleep(10 * attempt)
+        if txt is None:
+            raise RuntimeError(f"No se pudo bajar {source} desde {d}")
+        if txt.lower().startswith("invalid") or "error" in txt[:100].lower():
+            raise RuntimeError(f"FIRMS respondió: {txt[:200]}")
+        df = pd.read_csv(io.StringIO(txt)) if txt.strip() else pd.DataFrame()
+        frames.append(df)
+        print(f"{source} {d} +{n}d: {len(df)} filas", flush=True)
+        d += timedelta(days=n)
+        time.sleep(sleep)
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--source", required=True)
@@ -40,25 +69,16 @@ def main():
     if not key:
         sys.exit("Falta FIRMS_MAP_KEY")
 
-    area = ",".join(str(v) for v in C.BBOX)  # west,south,east,north
-    d, end = date.fromisoformat(a.start), date.fromisoformat(a.end)
-    frames = []
-    while d <= end:
-        n = min(a.chunk, (end - d).days + 1)
-        url = URL.format(key=key, src=a.source, area=area, days=n, date=d.isoformat())
-        txt = urllib.request.urlopen(url, timeout=120).read().decode()
-        if txt.lower().startswith("invalid") or "error" in txt[:100].lower():
-            sys.exit(f"FIRMS respondió: {txt[:200]}")
-        df = pd.read_csv(io.StringIO(txt)) if txt.strip() else pd.DataFrame()
-        frames.append(df)
-        print(f"{a.source} {d} +{n}d: {len(df)} filas")
-        d += timedelta(days=n)
-        time.sleep(a.sleep)
+    try:
+        result = fetch_range(key, a.source, date.fromisoformat(a.start), date.fromisoformat(a.end),
+                             chunk=a.chunk, sleep=a.sleep)
+    except RuntimeError as error:
+        sys.exit(str(error))
 
     out_dir = os.path.join(C.RAW_DIR, "api")
     os.makedirs(out_dir, exist_ok=True)
     out = os.path.join(out_dir, f"{a.source.lower()}_{a.start}_{a.end}.csv")
-    pd.concat(frames, ignore_index=True).to_csv(out, index=False)
+    result.to_csv(out, index=False)
     print("guardado", out)
 
 
