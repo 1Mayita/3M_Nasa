@@ -710,6 +710,16 @@ export default function AtlasApp() {
     setMapReady(true);
   }, []);
 
+  // Respaldo: si el relieve (AWS) no carga en 8 s, se muestra el mapa igual
+  useEffect(function terrainFallback() {
+    const timerId = setTimeout(function showMapWithoutRelief() {
+      setMapReady(true);
+    }, 8000);
+    return function cancelTimer() {
+      clearTimeout(timerId);
+    };
+  }, []);
+
   function togglePlay() {
     if (mode !== 'mes') {
       setMode('mes');
