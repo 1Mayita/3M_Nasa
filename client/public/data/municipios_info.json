@@ -51,8 +51,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Campero (Cochabamba), con capital en Omereque y unos 762 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Omereque",
-  "image": null,
-  "credit": null
+  "image": "mun/030203.jpg",
+  "credit": {
+   "title": "Ruta Nacional 5 en el municipio de Omereque",
+   "author": "Josefito123",
+   "license": "CC0",
+   "url": "https://commons.wikimedia.org/wiki/File:Ruta_Nacional_5_20240708_082847.jpg"
+  }
  },
  "030301": {
   "name": "Ayopaya",
@@ -91,8 +96,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Ayopaya (Cochabamba), con capital en Cocapata y unos 7.067 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Cocapata",
-  "image": null,
-  "credit": null
+  "image": "mun/030303.jpg",
+  "credit": {
+   "title": "Alcaldía de Independencia (capital de la provincia Ayopaya, a la que pertenece Cocapata)",
+   "author": "Llaqwa",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Independencia_-_Rathaus.jpg"
+  }
  },
  "030401": {
   "name": "Tarata",
@@ -116,8 +126,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Villa de Anzaldo y unos 665 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Anzaldo",
-  "image": null,
-  "credit": null
+  "image": "mun/030402.jpg",
+  "credit": {
+   "title": "Penca y tuna en Anzaldo, 2008",
+   "author": "Ramiro Lizárraga Terrazas",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Penca_y_Tuna_en_Anzaldo,_2008.jpg"
+  }
  },
  "030403": {
   "name": "Arbieto",
@@ -141,8 +156,13 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Esteban Arze (Cochabamba), con capital en Sacabamba y unos 195 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Sacabamba",
-  "image": null,
-  "credit": null
+  "image": "mun/030404.jpg",
+  "credit": {
+   "title": "Río Sacabamba",
+   "author": "Fernando Just",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:R%C3%8DO_SACABAMBA.jpg"
+  }
  },
  "030501": {
   "name": "Arani",
@@ -166,8 +186,13 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Arani (Cochabamba), con capital en Vacas y unos 346 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Vacas_(Bolivia)",
-  "image": null,
-  "credit": null
+  "image": "mun/030502.jpg",
+  "credit": {
+   "title": "Laguna Asiruqucha, Vacas",
+   "author": "Wilmer",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Vacas,_Asiruqucha.JPG"
+  }
  },
  "030601": {
   "name": "Arque",
@@ -301,8 +326,13 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Quillacollo (Cochabamba), con capital en Sipesipe y unos 501 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Sipe_Sipe",
-  "image": null,
-  "credit": null
+  "image": "mun/030902.jpg",
+  "credit": {
+   "title": "Amanecer de Sipe Sipe",
+   "author": "Kevinleañoumss.practica I-B",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Amanecer_de_Sipe_Sipe.JPG"
+  }
  },
  "030903": {
   "name": "Tiquipaya",
@@ -491,8 +521,13 @@
   "populationYear": null,
   "summary": "Municipio de la provincia Carrasco (Cochabamba), con capital en Entre Ríos y unos 2.181 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Entre_R%C3%ADos_(Cochabamba)",
-  "image": null,
-  "credit": null
+  "image": "mun/031206.jpg",
+  "credit": {
+   "title": "Bulo Bulo (municipio de Entre Ríos, Carrasco)",
+   "author": "Gustavo Ayllón A.",
+   "license": "CC BY-SA 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Bulo_Bulo_-_panoramio.jpg"
+  }
  },
  "031301": {
   "name": "Mizque",
@@ -591,8 +626,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa José Quintín Mendoza y unos 140 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/San_Benito_(Bolivia)",
-  "image": null,
-  "credit": null
+  "image": "mun/031403.jpg",
+  "credit": {
+   "title": "Señor de los Milagros, Punata (provincia Punata, a la que pertenece San Benito)",
+   "author": "Franz lozada",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Cristo_Se%C3%B1or_de_los_Milagros-Punata.jpg"
+  }
  },
  "031404": {
   "name": "Tacachi",
@@ -601,8 +641,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Tacachi y unos 20 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Tacachi",
-  "image": null,
-  "credit": null
+  "image": "mun/031404.jpg",
+  "credit": {
+   "title": "Playa Mayor de Ganado, Punata (provincia Punata, a la que pertenece Tacachi)",
+   "author": "Franz lozada",
+   "license": "CC BY 3.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Playa_Mayor_de_Ganado_(Ciudad_de_Punata,_Bolivia).jpg"
+  }
  },
  "031405": {
   "name": "Villa Gualberto Villarroel",
@@ -611,8 +656,13 @@
   "populationYear": 2012,
   "summary": "Municipio de la provincia Punata (Cochabamba), con capital en Villa Gualberto Villarroel y unos 72 km² según la capa cartográfica.",
   "sourceUrl": "https://es.wikipedia.org/wiki/Cuchumuela",
-  "image": null,
-  "credit": null
+  "image": "mun/031405.jpg",
+  "credit": {
+   "title": "Monumento a Gualberto Villarroel en Punata (provincia Punata)",
+   "author": "Carlillasa",
+   "license": "CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Monumento_a_Gualberto_Villarroel_en_Punata.jpg"
+  }
  },
  "031501": {
   "name": "Bolívar",
