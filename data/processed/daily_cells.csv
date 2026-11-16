@@ -74370,3 +74370,6 @@ date,lat,lon,modis_n,viirs_n,harm_n,source
 2026-11-14,-15.99,-64.77,1,4,4.03,viirs_noaa20_scaled
 2026-11-14,-15.99,-64.75,0,2,2.015,viirs_noaa20_scaled
 2026-11-14,-15.97,-64.67,0,1,1.008,viirs_noaa20_scaled
+2026-11-15,-17.87,-65.65,0,1,1.008,viirs_noaa20_scaled
+2026-11-15,-17.39,-66.29,0,1,1.008,viirs_noaa20_scaled
+2026-11-16,-17.75,-64.99,0,1,1.008,viirs_noaa20_scaled
