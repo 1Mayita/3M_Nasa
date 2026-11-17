@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16T21:26",
+  "version": "2026-11-17T20:12",
   "is_sample": false,
   "cell_size_deg": 0.02,
   "bbox": [
@@ -12,7 +12,7 @@
   "output_area": "Departamento de Cochabamba (zona 'depto' + margen)",
   "viirs_start": "2012-01-20",
   "snpp_end": "2026-11-01",
-  "modis_end": "2026-11-16",
+  "modis_end": "2026-11-17",
   "aqua_start": "2002-07-04",
   "noaa20_start": "2018-04-01",
   "date_min": "2000-11-19",
@@ -87,9 +87,9 @@
     "min_detections": 5
   },
   "n_detections": {
-    "modis": 1778318,
+    "modis": 1778616,
     "snpp": 3716496,
-    "noaa20": 2871409
+    "noaa20": 2871590
   },
   "filters": {
     "modis_min_confidence": 30,
