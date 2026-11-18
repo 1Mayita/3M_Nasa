@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-17T20:12",
+  "version": "2026-11-18T19:45",
   "is_sample": false,
   "cell_size_deg": 0.02,
   "bbox": [
@@ -12,11 +12,11 @@
   "output_area": "Departamento de Cochabamba (zona 'depto' + margen)",
   "viirs_start": "2012-01-20",
   "snpp_end": "2026-11-01",
-  "modis_end": "2026-11-17",
+  "modis_end": "2026-11-18",
   "aqua_start": "2002-07-04",
   "noaa20_start": "2018-04-01",
   "date_min": "2000-11-19",
-  "date_max": "2026-11-16",
+  "date_max": "2026-11-17",
   "unit": "detecciones equivalentes a VIIRS S-NPP (375 m)",
   "method": "Antes de 2012-01-20: MODIS x k(mes), con k = suma VIIRS S-NPP / suma MODIS por mes del año en el período de solapamiento (antes de que existiera Aqua, Terra x a(mes) para equivaler a Terra+Aqua). 2012-01-20 en adelante: VIIRS S-NPP. Después del fin de S-NPP, y en los días en que S-NPP no tiene datos: NOAA-20 x k20(mes) calibrado contra S-NPP (o MODIS x k si tampoco hay NOAA-20). Nunca se suman MODIS y VIIRS.",
   "coefficients_by_month": {
@@ -87,9 +87,9 @@
     "min_detections": 5
   },
   "n_detections": {
-    "modis": 1778616,
+    "modis": 1778724,
     "snpp": 3716496,
-    "noaa20": 2871590
+    "noaa20": 2872167
   },
   "filters": {
     "modis_min_confidence": 30,
