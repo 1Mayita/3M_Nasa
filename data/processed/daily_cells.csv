@@ -74434,3 +74434,8 @@ date,lat,lon,modis_n,viirs_n,harm_n,source
 2026-11-20,-16.49,-65.75,0,1,1.008,viirs_noaa20_scaled
 2026-11-20,-16.49,-65.65,0,1,1.008,viirs_noaa20_scaled
 2026-11-20,-16.47,-65.67,0,1,1.008,viirs_noaa20_scaled
+2026-11-21,-18.25,-65.59,0,1,1.008,viirs_noaa20_scaled
+2026-11-22,-16.17,-64.75,0,1,1.008,viirs_noaa20_scaled
+2026-11-22,-16.15,-64.77,0,19,19.145,viirs_noaa20_scaled
+2026-11-22,-16.15,-64.75,0,3,3.023,viirs_noaa20_scaled
+2026-11-22,-16.13,-64.77,0,10,10.076,viirs_noaa20_scaled
